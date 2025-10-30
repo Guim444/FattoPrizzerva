@@ -4,6 +4,7 @@ public class CameraFollow : MonoBehaviour
 {
     [Header("Target")]
     public Transform player;      // Assign player in Inspector
+    public Transform center;
 
     [Header("Smoothness")]
     public float smoothSpeed = 5f;
@@ -23,10 +24,10 @@ public class CameraFollow : MonoBehaviour
     void Start()
     {
         if (player != null)
-            initialOffset = transform.position - player.position;
+            initialOffset = transform.position - center.position;
     }
 
-    void LateUpdate()
+    void Update()
     {
         if (player == null) return;
 

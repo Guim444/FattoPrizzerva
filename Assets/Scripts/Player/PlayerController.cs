@@ -16,11 +16,11 @@ public class PlayerController : MonoBehaviour
     [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
 
     bool isGrounded, isPunching, isInRun, onCooldown;
-        CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
+    bool flip; //To know if the player is facing left or right. Left is true, right is false.
+    CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
         public Animator animator; //Built-in component called for playing animations from code
         public LayerMask interactMask;   //A filter that will tell the raycast which layers of objects it should detect when the player tries to interact to avoid hitting everything
         public Camera myCamera;
-
         
         IEstaminable stamina;  //Interface representing everything related to Stamina usage (CurrentStamina, Consume(), Recover(), etc.)
         IAdrenalinable adrenaline;   //Same with adrenaline
@@ -117,7 +117,17 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A)) move += Vector3.left;      // X-
 
         move.y = 0; // never touch Y except gravity/jumps
+        if (move.x < 0) flip = true;
+        else if (move.x > 0) flip = false;
+        FlipChar(flip);
+
         return move.normalized;
+    }
+    public void FlipChar(bool flip)
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * (flip ? -1 : 1);
+        transform.localScale = scale;
     }
 
     // Formula for scaling based on Z

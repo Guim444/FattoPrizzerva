@@ -4,7 +4,6 @@ public class StairTrigger : MonoBehaviour
 {
     public GameObject stairDiagonal, stairBase;
     private Collider col;
-    private bool isPlayerOnStairs = false;
     private void Awake()
     {
         col = GetComponent<BoxCollider>();
@@ -15,7 +14,6 @@ public class StairTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("Enter");
-            isPlayerOnStairs = true;
             stairDiagonal.SetActive(true);
             stairBase.SetActive(false);
         }
@@ -25,7 +23,6 @@ public class StairTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("Exit");
-            isPlayerOnStairs = false;
             stairDiagonal.SetActive(false);
             stairBase.SetActive(true);
         }
