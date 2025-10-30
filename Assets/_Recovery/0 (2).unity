@@ -959,74 +959,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!1 &499402051
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 499402052}
-  - component: {fileID: 499402053}
-  - component: {fileID: 499402054}
-  m_Layer: 0
-  m_Name: InnerRing
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &499402052
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499402051}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.15, y: -0.8700003, z: -2.5300002}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1484828447}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &499402053
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499402051}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.7
-  m_Height: 4.5
-  m_Direction: 1
-  m_Center: {x: 0.025817847, y: 0.000000003077727, z: -0.0000000030777272}
---- !u!114 &499402054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499402051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafc9a2ee6c2b545b6c0f5f1d35678a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RingChildTrigger
 --- !u!1 &732628812
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,7 +1003,7 @@ GameObject:
   - component: {fileID: 783919750}
   - component: {fileID: 783919751}
   m_Layer: 0
-  m_Name: OuterRing
+  m_Name: RingCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1124,9 +1056,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 783919748}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafc9a2ee6c2b545b6c0f5f1d35678a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8970a24673f891d4183e8264b15fd676, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RingChildTrigger
+  m_EditorClassIdentifier: Assembly-CSharp::RingScript
+  col: {fileID: 0}
+  player: {fileID: 1304852959}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2565,7 +2499,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1484828447}
-  - component: {fileID: 1484828448}
   m_Layer: 0
   m_Name: Ring
   m_TagString: Untagged
@@ -2587,25 +2520,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 783919749}
-  - {fileID: 499402052}
   m_Father: {fileID: 214635525}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1484828448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1484828446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8970a24673f891d4183e8264b15fd676, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RingScript
-  colOutside: {fileID: 783919750}
-  colInside: {fileID: 499402053}
-  player: {fileID: 1304852959}
-  slowMultiplier: 0.5
 --- !u!1 &1490676009
 GameObject:
   m_ObjectHideFlags: 0
