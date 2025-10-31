@@ -82,7 +82,8 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded && velocity.y < 0) velocity.y = -2f; //When player touches the floor and falling in any speed (<0) it makes it -2 to stick the player on the floor 
            //StateMachine.Tick(Time.deltaTime);      //Updates the current state logic
-            cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
+           if (cc.enabled == true) cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
+
 
         State newState;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||

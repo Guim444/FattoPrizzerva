@@ -43,7 +43,7 @@ public class RunningState : IStateActions
             // toMove = ((toMove / player.resistenceToGirRunning) + lastDirection * 2).normalized;
         }
 
-        controller.Move(toMove * (baseSpeed + currentThrustPhase) * Time.deltaTime);
+        if (controller.enabled == true) controller.Move(toMove * (baseSpeed + currentThrustPhase) * Time.deltaTime);
 
         /* Apply gravity
         if (!controller.isGrounded)

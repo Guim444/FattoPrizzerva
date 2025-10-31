@@ -18,7 +18,7 @@ public class MovingState : IStateActions
     {
         Vector3 toMove = player.GetDirectionalInput();  //Variable that stores the final direction and speed of the character (calculated based on input and camera)
 
-        if (toMove != Vector3.zero)
+        if (toMove != Vector3.zero && controller.enabled == true)
         {
             controller.Move(toMove * speed * Time.deltaTime);
         }
