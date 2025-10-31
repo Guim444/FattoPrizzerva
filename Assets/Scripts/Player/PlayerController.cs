@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     /*public UnityEvent OnEnterPlantZone, OnExitPlantZone; // Event to assign inside the Unity Editor for when the player gets inside a plant */
 
     // StateMachine<State> sm; //A custom state machine object where <State> will be one of the different enums stated below 
-    private State currentState = State.Idle; //A variable that stores the current state
+    internal State currentState = State.Idle; //A variable that stores the current state
 
 
     void Awake()
@@ -82,7 +82,8 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded && velocity.y < 0) velocity.y = -2f; //When player touches the floor and falling in any speed (<0) it makes it -2 to stick the player on the floor 
            //StateMachine.Tick(Time.deltaTime);      //Updates the current state logic
-            cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
+           if (cc.enabled == true) cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
+
 
         State newState;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
