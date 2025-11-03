@@ -4,14 +4,20 @@ public class IdleState : IStateActions
 {
     public PlayerController player;
     public CharacterController controller;
-
+    public PlayerStaminaManager stamina;
+    public IdleState(PlayerStaminaManager staminaManager)
+    {
+        stamina = staminaManager;
+    }
     public void Enter()
     {
-        player.animator.SetFloat("Speed", 0f); // Set Speed to 0 for idle animation
+        stamina.SetIdle();
+        player.animator.SetFloat("Speed", 1f); // Set Speed to 0 for idle animation
     }
 
     public void Update()
     {
+        Vector3 toMove = player.ApplyInertia(Vector3.zero, Time.deltaTime, 10f); //reset the inertia while idle
         // No specific logic for idle state
     }
 

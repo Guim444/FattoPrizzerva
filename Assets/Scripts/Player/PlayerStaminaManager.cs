@@ -1,77 +1,68 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class PlayerStaminaManager : MonoBehaviour, IEstaminable
 {
-    public PlayerController playerController;
-    private float currentStamina, maxStamina = 100;
-    public float Stamina { get => currentStamina; set => currentStamina = value; }
+    [Header("Stamina Settings")]
+    public float maxStamina = 100f;
+    public float currentStamina { get; private set; }
+    public float Stamina { get; set; }
+
+    [Header("Rates Per Second")]
+    public float walkingRegen = 25f;
+    public float idleRegen = 50f;
+
+    private float staminaRate = 0f; // >0 regen, <0 drain
+
+    public bool isTired = false;
+
+    [Header("UI")]
     public TextMeshProUGUI staminaTextDisplay;
-    public void Awake()
+
+    private void Awake()
     {
         currentStamina = maxStamina;
-        playerController = GetComponent<PlayerController>();
-    }
-    public void LateUpdate()
-    {
-        switch (playerController.currentState)
-        {
-            case State.Running:
-                UseStamina(10f * Time.deltaTime);
-                break;
-            case State.Moving:
-                RecoverStamina(2 * Time.deltaTime);
-                break;
-            case State.Idle:
-                RecoverStamina(4 * Time.deltaTime);
-                break;
-            default:
-                break;
-        }
-    }
-    public void UseStamina(float amount)
-    {
-        if (amount <= 0f) return;
-        currentStamina -= amount;
-        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina); //It will never go below 0 or above maxStamina
         DisplayStamina();
     }
-    public void RecoverStamina(float stamina, bool maxStaminaReached = false)
+
+    private void Update()
     {
+        if (Mathf.Abs(staminaRate) > 0.01f)
         {
-            if (!maxStaminaReached)
-            {
-                currentStamina += stamina * RecoverMultiplier(currentStamina);
-                if (currentStamina > maxStamina)
-                {
-                    currentStamina = maxStamina;
-                }
-            }
-            else
-            {
-                maxStamina += stamina;
-                currentStamina = maxStamina;
-            }
-            DisplayStamina();
+            ModifyStamina(staminaRate * Time.deltaTime);
+        }
+
+        if (currentStamina <= 0)
+        {
+            isTired = true;
+        }
+        else if (currentStamina >= 20f)
+        {
+            isTired = false;
         }
     }
-    private float RecoverMultiplier(float currentStamina)
+
+    // Called by states on enter
+    public void SetRunning(float staminaCostPerSecond) => staminaRate = -staminaCostPerSecond;
+    public void SetWalking() => staminaRate = walkingRegen;
+    public void SetIdle() => staminaRate = idleRegen;
+    public void SetTired() => staminaRate = walkingRegen;
+    public void StopAllRegenDrain() => staminaRate = 0f; // optional
+
+    private void ModifyStamina(float amount)
     {
-        if (currentStamina < 20)
-        {
-            return 1f;
-        }
-        else if (currentStamina >= 20 && currentStamina < 60)
-        {
-            return 1.5f;
-        }
-        else
-        {
-            return 2f;
-        }
+        currentStamina = Mathf.Clamp(currentStamina + amount, 0, maxStamina);
+        DisplayStamina();
     }
+
     private void DisplayStamina()
     {
-        staminaTextDisplay.text = "Stamina: " + currentStamina.ToString("F0") + "%";
+        if (staminaTextDisplay != null)
+            staminaTextDisplay.text = $"Stamina: {currentStamina:F0}%";
+    }
+
+    public void UseStamina(float amount)
+    {
+        throw new System.NotImplementedException();
     }
 }

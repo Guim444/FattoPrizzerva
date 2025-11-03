@@ -15,5 +15,6 @@ using UnityEngine;
         Gliding,
         Knockedback,
         Interacting,
+        Tired,
     }
 

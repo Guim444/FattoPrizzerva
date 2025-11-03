@@ -29,6 +29,11 @@ public class PlayerController : MonoBehaviour
     // StateMachine<State> sm; //A custom state machine object where <State> will be one of the different enums stated below 
     internal State currentState = State.Idle; //A variable that stores the current state
 
+    public PlayerStaminaManager staminaManager;
+
+    public Vector3 currentSpeed, lastDirection = Vector3.zero;
+
+    public bool lastFacingPosition = false; // false = right, true = left
 
     void Awake()
         {
@@ -36,24 +41,30 @@ public class PlayerController : MonoBehaviour
             adrenaline = GetComponent<IAdrenalinable>();
             cc = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
-        
-        var idle = new IdleState();
+            staminaManager = GetComponent<PlayerStaminaManager>();
+
+        var idle = new IdleState(staminaManager);
         idle.player = this;
         idle.controller = GetComponent<CharacterController>();
 
-        var moving = new MovingState();
+        var moving = new MovingState(staminaManager);
         moving.player = this;
         moving.controller = GetComponent<CharacterController>();
 
-        var running = new RunningState();
+        var running = new RunningState(staminaManager);
         running.player = this;
         running.controller = GetComponent<CharacterController>();
 
-    
-            StateMachine.AddState(State.Idle, idle);
+        var tired = new TiredState(staminaManager);
+        tired.player = this;
+        tired.controller = GetComponent<CharacterController>();
+
+
+        StateMachine.AddState(State.Idle, idle);
             StateMachine.AddState(State.Moving, moving);
             //global: :State means: “Use the enum called State that exists in the global namespace (outside of any class/namespace), not something else that also happens to be called State.”
             StateMachine.AddState(State.Running, running);
+            StateMachine.AddState(State.Tired, tired);
             StateMachine.AddState(State.Punching, new PunchingState());
             StateMachine.AddState(State.PunchRunning, new PunchRunningState());
             StateMachine.AddState(State.Jumping, new JumpingState());
@@ -63,7 +74,7 @@ public class PlayerController : MonoBehaviour
             StateMachine.AddState(State.Knockedback, new KnockedbackState());
             StateMachine.AddState(State.Interacting, new InteractingState());
 
-            StateMachine.SetState(State.Idle);
+        StateMachine.SetState(State.Idle);
         }
 
 
@@ -89,7 +100,18 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
             Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
-            newState = Input.GetKey(KeyCode.LeftShift) ? State.Running : State.Moving;
+            if (staminaManager.isTired)
+            {
+                newState = State.Tired;
+            }
+            else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0)
+            {
+                newState = State.Running;
+            }
+            else
+            {
+                newState = State.Moving;
+            }
         }
         else
         {
@@ -117,12 +139,12 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) move += Vector3.right;     // X+
         if (Input.GetKey(KeyCode.A)) move += Vector3.left;      // X-
 
-        move.y = 0; // never touch Y except gravity/jumps
-        if (move.x < 0) flip = true;
-        else if (move.x > 0) flip = false;
-        FlipChar(flip);
+        //make it face to the last direction moved
+        lastFacingPosition = move.x < 0 ? true : move.x > 0 ? false : lastFacingPosition;
+        FlipChar(lastFacingPosition);
+        currentSpeed = move.normalized;
 
-        return move.normalized;
+        return currentSpeed;
     }
     public void FlipChar(bool flip)
     {
@@ -201,14 +223,24 @@ public class PlayerController : MonoBehaviour
           //  StartCoroutine(CooldownRoutine(duration));
         }
 
-      /*  IEnumerator CooldownRoutine(float t)
-        {
-            onCooldown = true;
-            yield return new WaitForSeconds(t);
-            onCooldown = false;
-        }
-      */
-        // … public helper methods for stamina, adrenalina, etc. 
+    public Vector3 ApplyInertia(Vector3 inputDir, float deltaTime, float turnSpeed)
+    {
+        if (inputDir.magnitude > 0.01f)
+            inputDir.Normalize();
+        //turnSpeed varies depending on the player's speed.
 
+        lastDirection = Vector3.MoveTowards(lastDirection, inputDir, turnSpeed * deltaTime);
+        return lastDirection;
     }
+
+    /*  IEnumerator CooldownRoutine(float t)
+      {
+          onCooldown = true;
+          yield return new WaitForSeconds(t);
+          onCooldown = false;
+      }
+    */
+    // … public helper methods for stamina, adrenalina, etc. 
+
+}
 
