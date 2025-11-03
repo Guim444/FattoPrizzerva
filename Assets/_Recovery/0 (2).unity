@@ -1059,8 +1059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8970a24673f891d4183e8264b15fd676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RingScript
-  col: {fileID: 0}
-  player: {fileID: 1304852959}
+  slowMultiplier: 0.1
+  jumpDistance: 0
+  ringArea: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2170,6 +2171,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   myCamera: {fileID: 330585545}
+  staminaManager: {fileID: 0}
+  currentSpeed: {x: 0, y: 0, z: 0}
+  lastDirection: {x: 0, y: 0, z: 0}
+  lastFacingPosition: 0
 --- !u!143 &1304852960
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2207,7 +2212,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b17660fa00f01e44a4869877e5ebe5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStaminaManager
-  playerController: {fileID: 1304852959}
+  maxStamina: 100
+  walkingRegen: 25
+  idleRegen: 50
+  isTired: 0
   staminaTextDisplay: {fileID: 2048021542}
 --- !u!1 &1403730134
 GameObject:
