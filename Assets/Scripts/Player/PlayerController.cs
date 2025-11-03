@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
 
     public bool lastFacingPosition = false; // false = right, true = left
 
+    public bool isInsideRing = false;
+
     void Awake()
         {
             stamina = GetComponent<IEstaminable>();

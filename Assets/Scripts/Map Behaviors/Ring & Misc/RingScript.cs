@@ -9,6 +9,8 @@ public class RingScript : MonoBehaviour
     //public bool canExit;
     public void OnTriggerEnter(Collider other)
     {
+        other.GetComponent<PlayerController>().isInsideRing = true;
+
         if (other.CompareTag("Player"))
         {
             StartCoroutine(GetIntoTheRing(other));

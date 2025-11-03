@@ -19,6 +19,8 @@ public class RingArena : MonoBehaviour
     }
     IEnumerator GetOffTheRing(Collider other)
     {
+        other.GetComponent<PlayerController>().isInsideRing = false;
+
         Debug.Log("Getting off the ring");
         other.gameObject.GetComponent<CharacterController>().enabled = false;
         GetComponent<CapsuleCollider>().enabled = false;
