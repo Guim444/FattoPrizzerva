@@ -49,7 +49,7 @@ public class PlayerStaminaManager : MonoBehaviour, IEstaminable
     public void SetTired() => staminaRate = walkingRegen;
     public void StopAllRegenDrain() => staminaRate = 0f; // optional
 
-    private void ModifyStamina(float amount)
+    public void ModifyStamina(float amount)
     {
         currentStamina = Mathf.Clamp(currentStamina + amount, 0, maxStamina);
         DisplayStamina();

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Collisionable element
+  - Enemy
   layers:
   - Default
   - TransparentFX

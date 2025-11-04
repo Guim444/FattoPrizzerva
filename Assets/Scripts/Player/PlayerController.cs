@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
 /*
 [RequireComponent(typeof(CharacterController))]
@@ -7,7 +8,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(IAdrenalinable))] */
   
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     {
        
         Vector3 velocity; //3D vector to store the current movement speed and direction of the character.
@@ -35,7 +36,12 @@ public class PlayerController : MonoBehaviour
 
     public bool lastFacingPosition = false; // false = right, true = left
 
-    public bool isInsideRing = false;
+    public bool isInsideRing = false; // To check if the player is inside the ring area
+
+    public float normalPunchTimer = 0; // Timer to control when the punch can deal damage again
+    public int endurance = 0; // Player's endurance level, affects knockback resistance
+
+    TypeOfDamage enduranceDistance = 0; // Variable to hold the type of damage based on endurance
 
     void Awake()
         {
@@ -61,13 +67,18 @@ public class PlayerController : MonoBehaviour
         tired.player = this;
         tired.controller = GetComponent<CharacterController>();
 
+        var punching = new PunchingState(staminaManager);
+        punching.player = this;
+        punching.controller = GetComponent<CharacterController>();
+        punching.punchCollider = GetComponent<SphereCollider>();
+
 
         StateMachine.AddState(State.Idle, idle);
             StateMachine.AddState(State.Moving, moving);
             //global: :State means: “Use the enum called State that exists in the global namespace (outside of any class/namespace), not something else that also happens to be called State.”
             StateMachine.AddState(State.Running, running);
             StateMachine.AddState(State.Tired, tired);
-            StateMachine.AddState(State.Punching, new PunchingState());
+            StateMachine.AddState(State.Punching, punching);
             StateMachine.AddState(State.PunchRunning, new PunchRunningState());
             StateMachine.AddState(State.Jumping, new JumpingState());
             StateMachine.AddState(State.Falling, new FallingState());
@@ -99,37 +110,54 @@ public class PlayerController : MonoBehaviour
 
 
         State newState;
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
-            Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+
+
+        if (normalPunchTimer > 0)
         {
-            if (staminaManager.isTired)
-            {
-                newState = State.Tired;
-            }
-            else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0)
-            {
-                newState = State.Running;
-            }
-            else
-            {
-                newState = State.Moving;
-            }
+            normalPunchTimer -= Time.deltaTime;
         }
         else
         {
-            newState = State.Idle;
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+            {
+                if (staminaManager.isTired)
+                {
+                    newState = State.Tired;
+                }
+                else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0)
+                {
+                    newState = State.Running;
+                    if (Input.GetMouseButton(0))
+                    {
+                        newState = State.PunchRunning;
+                    }
+                }
+                else
+                {
+                    newState = State.Moving;
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        newState = State.Punching;
+                    }
+                }
+            }
+            else
+            {
+                newState = State.Idle;
+                if (Input.GetMouseButton(0))
+                {
+                    newState = State.Punching;
+                }
+            }
+            // Change state only if different
+            if (newState != currentState)
+            {
+                currentState = newState;
+                StateMachine.SetState(currentState);
+            }
         }
-
-        // Change state only if different
-        if (newState != currentState)
-        {
-            currentState = newState;
-            StateMachine.SetState(currentState);
-        }
-
         // Let the state run its own Update logic
         StateMachine.Update();
-
     }
 
     public Vector3 GetDirectionalInput()
@@ -142,7 +170,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A)) move += Vector3.left;      // X-
 
         //make it face to the last direction moved
-        lastFacingPosition = move.x < 0 ? true : move.x > 0 ? false : lastFacingPosition;
+        if (move.x != 0)
+        {
+            lastFacingPosition = move.x < 0;
+        }
         FlipChar(lastFacingPosition);
         currentSpeed = move.normalized;
 
@@ -233,6 +264,54 @@ public class PlayerController : MonoBehaviour
 
         lastDirection = Vector3.MoveTowards(lastDirection, inputDir, turnSpeed * deltaTime);
         return lastDirection;
+    }
+
+    public void TakeDamage()
+    {
+        Debug.Log("Player took damage. Will be implemented later.");
+    }
+
+    public void PushForce(Vector3 direction, int enemyEndurance)
+    {
+        enduranceDistance = (TypeOfDamage)(2 - enemyEndurance + 2); //we add 2 to align the enum values with endurance distance values.
+        switch (enduranceDistance)
+        {
+            case TypeOfDamage.PushOnlySelf:
+                break;
+            case TypeOfDamage.PushMostlySelf:
+                cc.Move(direction * 0.75f);
+                break;
+            case TypeOfDamage.PushBoth:
+                cc.Move(direction * 0.5f);
+                break;
+            case TypeOfDamage.PushMostlyOther:
+                cc.Move(direction * 0.25f);
+                break;
+            case TypeOfDamage.PushOnlyOther:
+                break;
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        Vector3 knockbackDirection = GetDirectionalInput().normalized;
+        //if there's no input, we set a default knockback direction
+        if (knockbackDirection == Vector3.zero)
+        {
+            knockbackDirection = transform.right;
+        }
+        //we check if the collider belongs to an object with tag "Enemy"
+        if (other.CompareTag("Enemy"))
+        {
+            Debug.Log("Hit an enemy: " + other.name);
+            //we try to get the EnemyController component from the hit object
+            EnemyController enemy = other.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.PushForce(knockbackDirection, endurance);
+                PushForce(-knockbackDirection, enemy.endurance);
+            }
+        }
     }
 
     /*  IEnumerator CooldownRoutine(float t)

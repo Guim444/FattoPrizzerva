@@ -344,9 +344,10 @@ GameObject:
   - component: {fileID: 182187401}
   - component: {fileID: 182187402}
   - component: {fileID: 182187403}
+  - component: {fileID: 182187404}
   m_Layer: 0
   m_Name: RioTutte
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -470,6 +471,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.25, y: 0.75, z: 1}
   m_Center: {x: 0, y: -0.000000014901161, z: 0}
+--- !u!114 &182187404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182187399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f0c51e02ba05c942992632a661a58e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RioTutteScript
+  endurance: 0
+  enduranceDistance: 0
+  knockbackDirection: {x: 0, y: 0, z: 0}
+  controller: {fileID: 182187402}
 --- !u!1 &194976209
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +855,7 @@ MonoBehaviour:
   smoothSpeed: 2
   minZ: -7.65
   maxZ: 2.5
-  minX: -1.8
+  minX: -1.75
   maxX: 19.4
   marginX: 0
   marginZ: 1
@@ -899,7 +916,7 @@ Transform:
   m_GameObject: {fileID: 391001209}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.81, y: 0.18, z: 1.17}
+  m_LocalPosition: {x: 23.26, y: 0.18, z: -3.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2449,7 +2466,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.44
   m_Center: {x: 0.22349207, y: 2.6662287e-23, z: -0.000000057728467}
@@ -2506,6 +2523,8 @@ MonoBehaviour:
   lastDirection: {x: 0, y: 0, z: 0}
   lastFacingPosition: 0
   isInsideRing: 0
+  normalPunchTimer: 0
+  endurance: 0
 --- !u!143 &1304852960
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3471,7 +3490,7 @@ Transform:
   m_GameObject: {fileID: 1953101399}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.43746763, z: -0, w: 0.8992341}
-  m_LocalPosition: {x: 14.961159, y: 0.23373386, z: 5.8753743}
+  m_LocalPosition: {x: 15.28, y: 0.23373386, z: 6.55}
   m_LocalScale: {x: 0.7801765, y: 1, z: 1.1740698}
   m_ConstrainProportionsScale: 1
   m_Children: []

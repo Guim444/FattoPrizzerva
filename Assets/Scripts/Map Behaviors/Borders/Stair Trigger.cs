@@ -11,20 +11,26 @@ public class StairTrigger : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.isTrigger)
         {
-            Debug.Log("Enter");
-            stairDiagonal.SetActive(true);
-            stairBase.SetActive(false);
+            if (other.CompareTag("Player"))
+            {
+                Debug.Log("Enter");
+                stairDiagonal.SetActive(true);
+                stairBase.SetActive(false);
+            }
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.isTrigger)
         {
-            Debug.Log("Exit");
-            stairDiagonal.SetActive(false);
-            stairBase.SetActive(true);
+            if (other.CompareTag("Player"))
+            {
+                Debug.Log("Exit");
+                stairDiagonal.SetActive(false);
+                stairBase.SetActive(true);
+            }
         }
     }
 }
