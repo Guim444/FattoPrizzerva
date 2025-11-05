@@ -19,12 +19,15 @@ public class CameraFollow : MonoBehaviour
     public float marginX = 2f;    // How far player can move left/right before camera moves
     public float marginZ = 2f;    // How far player can move up/down before camera moves
 
+    public static CameraFollow instance;
     private Vector3 initialOffset;
 
-    void Start()
+    void Awake()
     {
         if (player != null)
             initialOffset = transform.position - center.position;
+
+        instance = this;
     }
 
     void Update()

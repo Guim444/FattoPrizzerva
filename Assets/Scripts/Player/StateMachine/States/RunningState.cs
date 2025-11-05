@@ -107,11 +107,16 @@ public class RunningState : IStateActions
                         actualSpeed = baseSpeed * 1.4f;
                         staminaCostPerSecond = 14;
                         stamina.SetRunning(staminaCostPerSecond);
+                        CameraFollow.instance.smoothSpeed = 3f;
                         break;
                     case 3:
                         actualSpeed = baseSpeed * 1.8f;
                         staminaCostPerSecond = 18;
                         stamina.SetRunning(staminaCostPerSecond);
+                        CameraFollow.instance.smoothSpeed = 4f;
+                        break;
+                    default:
+                        CameraFollow.instance.smoothSpeed = 2f;
                         break;
                 }
                 phaseTime = 0f;
@@ -136,6 +141,7 @@ public class RunningState : IStateActions
     {
         Debug.Log("Exited RunningState State");
         currentThrustPhase = 1;
+        CameraFollow.instance.smoothSpeed = 2f;
         //to do: apply inertia
     }
 } 

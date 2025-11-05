@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
 /*
 [RequireComponent(typeof(CharacterController))]
@@ -7,15 +9,15 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(IAdrenalinable))] */
   
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     {
        
         Vector3 velocity; //3D vector to store the current movement speed and direction of the character.
     [Header("Player Parameters")]
-    public float normalSpeed = 7f, runningSpeed = 10f, gravity = -9.81f, jumpForce = 5f, cooldownPunch = 0.75f; 
+    public float normalSpeed = 7f, runningSpeed = 10f, gravity = -9.81f, jumpForce = 5f;
     [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
 
-    bool isGrounded, isPunching, isInRun, onCooldown;
+    bool isGrounded, isPunching, isInRun;
     bool flip; //To know if the player is facing left or right. Left is true, right is false.
     CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
         public Animator animator; //Built-in component called for playing animations from code
@@ -29,13 +31,20 @@ public class PlayerController : MonoBehaviour
     // StateMachine<State> sm; //A custom state machine object where <State> will be one of the different enums stated below 
     internal State currentState = State.Idle; //A variable that stores the current state
 
-    public PlayerStaminaManager staminaManager;
+    public PlayerStaminaManager staminaManager; // Reference to the PlayerStaminaManager component
 
-    public Vector3 currentSpeed, lastDirection = Vector3.zero;
+    public Vector3 currentSpeed, lastDirection = Vector3.zero; // currentSpeed is the normalized direction of movement, lastDirection is used for saving the last movement direction for inertia calculations or animations.
 
-    public bool lastFacingPosition = false; // false = right, true = left
+    public bool isInsideRing = false; // To check if the player is inside the ring area
 
-    public bool isInsideRing = false;
+    public bool hasKnockback = false;
+    public Vector3 knockbackVelocity; // Velocity applied during knockback
+
+    public float normalPunchTimer = 0; // Timer to control when the punch can deal damage again
+    public float normalPunchCooldown = 0.5f; // Cooldown duration between punches
+    public int endurance = 0; // Player's endurance level, affects knockback resistance
+
+    public TypeOfDamage enduranceDistance = 0; // Variable to hold the type of damage based on endurance
 
     void Awake()
         {
@@ -61,13 +70,22 @@ public class PlayerController : MonoBehaviour
         tired.player = this;
         tired.controller = GetComponent<CharacterController>();
 
+        var punching = new PunchingState(staminaManager);
+        punching.player = this;
+        punching.controller = GetComponent<CharacterController>();
+        punching.punchCollider = GetComponent<SphereCollider>();
+
+        var knockedback = new KnockedbackState();
+        knockedback.player = this;
+        knockedback.controller = GetComponent<CharacterController>();
+
 
         StateMachine.AddState(State.Idle, idle);
             StateMachine.AddState(State.Moving, moving);
             //global: :State means: “Use the enum called State that exists in the global namespace (outside of any class/namespace), not something else that also happens to be called State.”
             StateMachine.AddState(State.Running, running);
             StateMachine.AddState(State.Tired, tired);
-            StateMachine.AddState(State.Punching, new PunchingState());
+            StateMachine.AddState(State.Punching, punching);
             StateMachine.AddState(State.PunchRunning, new PunchRunningState());
             StateMachine.AddState(State.Jumping, new JumpingState());
             StateMachine.AddState(State.Falling, new FallingState());
@@ -90,46 +108,83 @@ public class PlayerController : MonoBehaviour
         {
             UpdateScaleBasedOnZ();
             isGrounded = cc.isGrounded; //Uses the character controller's built-in ground detection
+
        // Debug.Log(transform.position.z);
 
 
-        if (isGrounded && velocity.y < 0) velocity.y = -2f; //When player touches the floor and falling in any speed (<0) it makes it -2 to stick the player on the floor 
-           //StateMachine.Tick(Time.deltaTime);      //Updates the current state logic
-           if (cc.enabled == true) cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
-
-
-        State newState;
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
-            Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        if (!hasKnockback)
         {
-            if (staminaManager.isTired)
-            {
-                newState = State.Tired;
-            }
-            else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0)
-            {
-                newState = State.Running;
-            }
-            else
-            {
-                newState = State.Moving;
-            }
+            if (isGrounded && velocity.y < 0) velocity.y = -2f; //When player touches the floor and falling in any speed (<0) it makes it -2 to stick the player on the floor 
+                                                                //StateMachine.Tick(Time.deltaTime);      //Updates the current state logic
+            if (cc.enabled == true) cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
         }
         else
         {
-            newState = State.Idle;
+            // Apply knockback movement
+            if (cc.enabled == true) cc.Move(knockbackVelocity * Time.deltaTime); knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 5f * Time.deltaTime);
+            //when lerp ends, we stop the knockback
+            if (knockbackVelocity.magnitude < 0.1f)
+            {
+                //end knockback
+                hasKnockback = false;
+            }
         }
 
-        // Change state only if different
-        if (newState != currentState)
+
+        State newState;
+
+
+        if (normalPunchTimer > 0) // During attacks, we don't change state until the punch timer ends
         {
-            currentState = newState;
-            StateMachine.SetState(currentState);
+            normalPunchTimer -= Time.deltaTime;
         }
-
+        else
+        {
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) // Movement input detected
+            {
+                if (staminaManager.isTired)
+                {
+                    newState = State.Tired;
+                }
+                else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0) // Running input detected and enough stamina
+                {
+                    newState = State.Running;
+                    if (Input.GetMouseButton(0))
+                    {
+                        newState = State.PunchRunning; // Punching while running
+                    }
+                }
+                else
+                {
+                    newState = State.Moving;
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        newState = State.Punching; // Punching while moving
+                    }
+                }
+            }
+            else
+            {
+                newState = State.Idle;
+                if (Input.GetMouseButton(0))
+                {
+                    newState = State.Punching; // Punching while idle
+                }
+            }
+            // Change state only if different
+            if (newState != currentState)
+            {
+                currentState = newState;
+                StateMachine.SetState(currentState);
+            }
+        }
         // Let the state run its own Update logic
         StateMachine.Update();
 
+        if (normalPunchCooldown > 0)
+        {
+            normalPunchCooldown -= Time.deltaTime; // Reduces the cooldown timer each frame
+        }
     }
 
     public Vector3 GetDirectionalInput()
@@ -141,18 +196,30 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) move += Vector3.right;     // X+
         if (Input.GetKey(KeyCode.A)) move += Vector3.left;      // X-
 
-        //make it face to the last direction moved
-        lastFacingPosition = move.x < 0 ? true : move.x > 0 ? false : lastFacingPosition;
-        FlipChar(lastFacingPosition);
+        if (move.magnitude > 0)
+        {
+            lastDirection = move.normalized; // Update lastDirection only when there's movement input
+        }
         currentSpeed = move.normalized;
+        if (!hasKnockback)
+        {
+            FlipCharacter(lastDirection);
+        }
 
         return currentSpeed;
     }
-    public void FlipChar(bool flip)
+
+    void FlipCharacter(Vector3 lastDir)
     {
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * (flip ? -1 : 1);
-        transform.localScale = scale;
+        if (Mathf.Abs(lastDir.x) < 0.01f) return; // if there's no horizontal input, do nothing
+
+        // Check the current facing direction and compare with desired direction
+        float currentSign = Mathf.Sign(transform.localScale.x);
+        float desiredSign = Mathf.Sign(lastDir.x);
+
+        // If they differ, flip the character by inverting the x scale
+        if (currentSign != desiredSign)
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
 
     // Formula for scaling based on Z
@@ -167,7 +234,9 @@ public class PlayerController : MonoBehaviour
         // Lerp between maxScale (near) and minScale (far)
         float scaleFactor = Mathf.Lerp(maxScale, minScale, t);
 
-        transform.localScale = Vector3.one * scaleFactor;
+        // Preserve the original sign of the x scale to maintain facing direction
+        float signX = Mathf.Sign(transform.localScale.x);
+        transform.localScale = new Vector3(scaleFactor * signX, scaleFactor, scaleFactor);
     }
 
     public void OnMove(InputAction.CallbackContext ctx)
@@ -235,6 +304,65 @@ public class PlayerController : MonoBehaviour
         return lastDirection;
     }
 
+    public void TakeDamage()
+    {
+        Debug.Log("Player took damage. Will be implemented later.");
+    }
+
+    public void PushForce(Vector3 direction, int enemyEndurance)
+    {
+        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2); //we add 2 to align the enum values with endurance distance values.
+        float pushMultiplier = 0;
+        switch (enduranceDistance)
+        {
+            case TypeOfDamage.PushOnlySelf:
+                pushMultiplier = 10f;
+                break;
+            case TypeOfDamage.PushMostlySelf:
+                pushMultiplier = 7.5f;
+                break;
+            case TypeOfDamage.PushBoth:
+                pushMultiplier = 5f;
+                break;
+            case TypeOfDamage.PushMostlyOther:
+                pushMultiplier = 2.5f;
+                break;
+            case TypeOfDamage.PushOnlyOther:
+                break;
+        }
+        Debug.Log("Player Push Force with multiplier: " + pushMultiplier);
+        if (pushMultiplier > 0)
+        {
+            //do a little knockback
+            knockbackVelocity = direction.normalized * pushMultiplier * 2f;
+            hasKnockback = true;
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (normalPunchCooldown <= 0 && normalPunchTimer > 0) //only during punch and if not on cooldown
+        {
+            Vector3 knockbackDirection = GetDirectionalInput().normalized;
+            //if there's no input, we set a default knockback direction
+            if (knockbackDirection == Vector3.zero)
+            {
+                knockbackDirection = transform.right;
+            }
+            //we check if the collider belongs to an object with tag "Enemy"
+            if (other.CompareTag("Enemy"))
+            {
+                Debug.Log("Hit an enemy: " + other.name);
+                //we try to get the EnemyController component from the hit object
+                EnemyController enemy = other.GetComponent<EnemyController>();
+                if (enemy != null)
+                {
+                    enemy.PushForce(knockbackDirection, endurance);
+                    PushForce(-knockbackDirection, enemy.endurance);
+                }
+            }
+        }
+    }
     /*  IEnumerator CooldownRoutine(float t)
       {
           onCooldown = true;
