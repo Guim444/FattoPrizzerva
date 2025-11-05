@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -6,7 +8,6 @@ public class PunchingState : IStateActions
     public float speed = 2f;
     public float staminaCostPunch = 5;
     public float baseDmg = 2;
-    public float damageTimer = 0.5f;
     public PlayerController player;
     public SphereCollider punchCollider;
     public CharacterController controller;
@@ -22,9 +23,8 @@ public class PunchingState : IStateActions
     {
         Debug.Log("Entered PunchingState State");
         player.staminaManager.ModifyStamina(-staminaCostPunch); // Example stamina cost for punching
-        player.normalPunchTimer = damageTimer;
-        player.GetComponent<SpriteRenderer>().color = Color.red; // Visual cue for punching state, just for testing
-        punchCollider.enabled = true;
+        player.normalPunchTimer = player.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
+        player.StartCoroutine(Punch(player.normalPunchTimer));
     }
 
     public void Update()
@@ -46,33 +46,12 @@ public class PunchingState : IStateActions
             controller.Move(Vector3.zero);
         }
     }
-    /*
-    public void Punch()
+    IEnumerator Punch(float duration)
     {
-        Vector3 knockbackDirection = player.GetDirectionalInput().normalized;
-        //if there's no input, we set a default knockback direction
-        if (knockbackDirection == Vector3.zero)
-        {
-            knockbackDirection = player.transform.right;
-        }
-        //we get all the colliders in the punch range. Important: we set the punchCollider as a trigger collider.
-        Collider[] hitColliders = Physics.OverlapSphere(punchCollider.transform.position, punchCollider.radius);
-        foreach (var hitCollider in hitColliders)
-        {
-            //we check if the collider belongs to an object with tag "Enemy"
-            if (hitCollider.CompareTag("Enemy"))
-            {
-                Debug.Log("Hit an enemy: " + hitCollider.name);
-                //we try to get the EnemyController component from the hit object
-                EnemyController enemy = hitCollider.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                }
-            }
-        }
-    }*/
-    
-
+        yield return new WaitForSeconds(duration/2);
+        player.GetComponent<SpriteRenderer>().color = Color.red; // Visual cue for punching state, just for testing
+        punchCollider.enabled = true;
+    }
     public void Exit()
     {
         Debug.Log("Exited PunchingState State");
