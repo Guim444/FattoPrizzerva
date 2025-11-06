@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public float normalSpeed = 7f, runningSpeed = 10f, gravity = -9.81f, jumpForce = 5f;
     [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
 
-    bool isGrounded, isPunching, isInRun;
+    public bool isGrounded, isPunching, isInRun;
     bool flip; //To know if the player is facing left or right. Left is true, right is false.
     CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
         public Animator animator; //Built-in component called for playing animations from code
@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public float normalPunchTimer = 0; // Timer to control when the punch can deal damage again
     public float normalPunchCooldown = 0.5f; // Cooldown duration between punches
+
+    public int damageBoost = 0; // This value is used to increase the damage dealt by the player when is punching while running. Zero by default.
     public int endurance = 0; // Player's endurance level, affects knockback resistance
 
     public TypeOfDamage enduranceDistance = 0; // Variable to hold the type of damage based on endurance
@@ -75,6 +77,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         punching.controller = GetComponent<CharacterController>();
         punching.punchCollider = GetComponent<SphereCollider>();
 
+        var punchRunning = new PunchRunningState(staminaManager);
+        punchRunning.player = this;
+        punchRunning.controller = GetComponent<CharacterController>();
+        punching.punchCollider = GetComponent<SphereCollider>();
+
         var knockedback = new KnockedbackState();
         knockedback.player = this;
         knockedback.controller = GetComponent<CharacterController>();
@@ -86,7 +93,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             StateMachine.AddState(State.Running, running);
             StateMachine.AddState(State.Tired, tired);
             StateMachine.AddState(State.Punching, punching);
-            StateMachine.AddState(State.PunchRunning, new PunchRunningState());
+            StateMachine.AddState(State.PunchRunning, punchRunning);
             StateMachine.AddState(State.Jumping, new JumpingState());
             StateMachine.AddState(State.Falling, new FallingState());
             StateMachine.AddState(State.PunchFalling, new PunchFallingState());
@@ -95,13 +102,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             StateMachine.AddState(State.Interacting, new InteractingState());
 
         StateMachine.SetState(State.Idle);
-        }
-
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
-        
         }
 
         void Update()
@@ -171,6 +171,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                     newState = State.Punching; // Punching while idle
                 }
             }
+
             // Change state only if different
             if (newState != currentState)
             {
@@ -219,7 +220,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
         // If they differ, flip the character by inverting the x scale
         if (currentSign != desiredSign)
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
     }
 
     // Formula for scaling based on Z
@@ -311,7 +312,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public void PushForce(Vector3 direction, int enemyEndurance)
     {
-        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2); //we add 2 to align the enum values with endurance distance values.
+        enduranceDistance = (TypeOfDamage)(endurance + damageBoost - enemyEndurance + 2); //we add 2 to align the enum values with endurance distance values.
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
@@ -330,7 +331,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             case TypeOfDamage.PushOnlyOther:
                 break;
         }
-        Debug.Log("Player Push Force with multiplier: " + pushMultiplier);
+        Debug.Log("Player Push Force with boost: " + damageBoost);
+        damageBoost = 0; // Reset damage boost after being used
         if (pushMultiplier > 0)
         {
             //do a little knockback
@@ -347,10 +349,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             //if there's no input, we set a default knockback direction
             if (knockbackDirection == Vector3.zero)
             {
-                knockbackDirection = transform.right;
+                knockbackDirection = lastDirection;
+                knockbackDirection.y = 0;
             }
             //we check if the collider belongs to an object with tag "Enemy"
-            if (other.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy") && !other.isTrigger)
             {
                 Debug.Log("Hit an enemy: " + other.name);
                 //we try to get the EnemyController component from the hit object
@@ -359,6 +362,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                 {
                     enemy.PushForce(knockbackDirection, endurance);
                     PushForce(-knockbackDirection, enemy.endurance);
+                    normalPunchTimer = 0;
                 }
             }
         }

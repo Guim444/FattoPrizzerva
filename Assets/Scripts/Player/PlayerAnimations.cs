@@ -2,22 +2,30 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
+    public static PlayerAnimations instance;
     public Animator animator;
     public PlayerController player;
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
-    void Update()
+    void LateUpdate()
     {
-        animator.SetBool("hasKnockback", player.hasKnockback); //set hasKnockback parameter based on player state
-        if (player.hasKnockback)
-            return; //if player has knockback, do not play other animations
 
-        bool isPunching = player.normalPunchTimer > 0; //set isPunching parameter based on player state
-        animator.SetBool("isPunching", isPunching);
+        animator.SetBool("hasKnockback", player.currentState == State.Knockedback); //set hasKnockback parameter based on player state
 
-        bool isRunning = player.currentState == State.Running; //set isRunning parameter based on player state
-        animator.SetBool("isRunning", isRunning);
+        animator.SetBool("isMoving", player.currentState == State.Moving); //set isMoving parameter based on player state
+
+        animator.SetBool("isPunching", player.currentState == State.Punching); //set isPunching parameter based on player state
+
+        animator.SetBool("isRunning", player.currentState == State.Running); //set isRunning parameter based on player state
     }
 }

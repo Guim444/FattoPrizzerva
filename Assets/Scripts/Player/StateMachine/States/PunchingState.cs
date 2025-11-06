@@ -23,7 +23,7 @@ public class PunchingState : IStateActions
     {
         Debug.Log("Entered PunchingState State");
         player.staminaManager.ModifyStamina(-staminaCostPunch); // Example stamina cost for punching
-        player.normalPunchTimer = player.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
+        player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
         player.StartCoroutine(Punch(player.normalPunchTimer));
     }
 
@@ -43,14 +43,16 @@ public class PunchingState : IStateActions
         else
         {
             stamina.SetIdle();
-            controller.Move(Vector3.zero);
+            if (controller.enabled == true) controller.Move(Vector3.zero);
         }
     }
     IEnumerator Punch(float duration)
     {
-        yield return new WaitForSeconds(duration/2);
-        player.GetComponent<SpriteRenderer>().color = Color.red; // Visual cue for punching state, just for testing
+        yield return new WaitForSeconds(2 * duration / 3); // enable collider after 2/3 of the punch animation for better timing
         punchCollider.enabled = true;
+
+        yield return new WaitForSeconds(4 * duration / 5); // disable collider after 3/4 of the punch animation, for better timing
+        punchCollider.enabled = false;
     }
     public void Exit()
     {
