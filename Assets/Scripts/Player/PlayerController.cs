@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public float normalSpeed = 7f, runningSpeed = 10f, gravity = -9.81f, jumpForce = 5f;
     [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
 
-    bool isGrounded, isPunching, isInRun;
+    public bool isGrounded, isPunching, isInRun;
     bool flip; //To know if the player is facing left or right. Left is true, right is false.
     CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
         public Animator animator; //Built-in component called for playing animations from code
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public PlayerStaminaManager staminaManager; // Reference to the PlayerStaminaManager component
 
     public Vector3 currentSpeed, lastDirection = Vector3.zero; // currentSpeed is the normalized direction of movement, lastDirection is used for saving the last movement direction for inertia calculations or animations.
+    public KeyCode lastVerticalKey = KeyCode.None, lastHorizontalKey = KeyCode.None; // These fields are used to save information of the input and avoid issues.
 
     public bool isInsideRing = false; // To check if the player is inside the ring area
 
@@ -42,6 +43,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public float normalPunchTimer = 0; // Timer to control when the punch can deal damage again
     public float normalPunchCooldown = 0.5f; // Cooldown duration between punches
+
+    public int damageBoost = 0; // This value is used to increase the damage dealt by the player when is punching while running. Zero by default.
     public int endurance = 0; // Player's endurance level, affects knockback resistance
 
     public TypeOfDamage enduranceDistance = 0; // Variable to hold the type of damage based on endurance
@@ -75,6 +78,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         punching.controller = GetComponent<CharacterController>();
         punching.punchCollider = GetComponent<SphereCollider>();
 
+        var punchRunning = new PunchRunningState(staminaManager);
+        punchRunning.player = this;
+        punchRunning.controller = GetComponent<CharacterController>();
+        punchRunning.punchCollider = GetComponent<BoxCollider>();
+
         var knockedback = new KnockedbackState();
         knockedback.player = this;
         knockedback.controller = GetComponent<CharacterController>();
@@ -86,7 +94,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             StateMachine.AddState(State.Running, running);
             StateMachine.AddState(State.Tired, tired);
             StateMachine.AddState(State.Punching, punching);
-            StateMachine.AddState(State.PunchRunning, new PunchRunningState());
+            StateMachine.AddState(State.PunchRunning, punchRunning);
             StateMachine.AddState(State.Jumping, new JumpingState());
             StateMachine.AddState(State.Falling, new FallingState());
             StateMachine.AddState(State.PunchFalling, new PunchFallingState());
@@ -97,26 +105,34 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         StateMachine.SetState(State.Idle);
         }
 
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
-        
-        }
-
         void Update()
         {
             UpdateScaleBasedOnZ();
             isGrounded = cc.isGrounded; //Uses the character controller's built-in ground detection
 
-       // Debug.Log(transform.position.z);
+        // Debug.Log(transform.position.z);
 
 
-        if (!hasKnockback)
+        if (hasKnockback)
         {
-            if (isGrounded && velocity.y < 0) velocity.y = -2f; //When player touches the floor and falling in any speed (<0) it makes it -2 to stick the player on the floor 
-                                                                //StateMachine.Tick(Time.deltaTime);      //Updates the current state logic
-            if (cc.enabled == true) cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
+            if (cc.enabled)
+            {
+                cc.Move(knockbackVelocity * Time.deltaTime);
+                knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 5f * Time.deltaTime);
+
+                //we reset inertia
+                lastDirection = Vector3.zero;
+                currentSpeed = Vector3.zero;
+
+            }
+
+            if (knockbackVelocity.magnitude < 1f) // when the lerp is almost done, we stop the knockback for more fluidity
+            {
+                hasKnockback = false;
+                currentState = State.Knockedback;
+                StateMachine.SetState(State.Idle);
+            }
+            return;
         }
         else
         {
@@ -171,11 +187,17 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                     newState = State.Punching; // Punching while idle
                 }
             }
+
             // Change state only if different
             if (newState != currentState)
             {
                 currentState = newState;
                 StateMachine.SetState(currentState);
+
+                if (!(currentState == State.Running || currentState == State.PunchRunning))
+                {
+                    damageBoost = 0;
+                }
             }
         }
         // Let the state run its own Update logic
@@ -191,14 +213,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     {
         Vector3 move = Vector3.zero;
 
-        if (Input.GetKey(KeyCode.W)) move += Vector3.forward;   // Z+
-        if (Input.GetKey(KeyCode.S)) move += Vector3.back;      // Z-
-        if (Input.GetKey(KeyCode.D)) move += Vector3.right;     // X+
-        if (Input.GetKey(KeyCode.A)) move += Vector3.left;      // X-
+        //This method will ensure we don't overlap inputs
+        CalcMovePriority();
+
+        if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S)))
+        {
+            if (lastVerticalKey == KeyCode.W) move += Vector3.forward;
+            else if (lastVerticalKey == KeyCode.S) move += Vector3.back;
+        }
+
+        if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.D)))
+        {
+            if (lastHorizontalKey == KeyCode.D) move += Vector3.right;
+            else if (lastHorizontalKey == KeyCode.A) move += Vector3.left;
+        }
+
 
         if (move.magnitude > 0)
         {
-            lastDirection = move.normalized; // Update lastDirection only when there's movement input
+            currentSpeed = move.normalized; // Update lastDirection only when there's movement input
         }
         currentSpeed = move.normalized;
         if (!hasKnockback)
@@ -207,6 +240,26 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         }
 
         return currentSpeed;
+    }
+
+    void CalcMovePriority()
+    {
+        //Calculate horizontal priority
+        if (Input.GetKeyDown(KeyCode.A)) lastHorizontalKey = KeyCode.A;
+        if (Input.GetKeyDown(KeyCode.D)) lastHorizontalKey = KeyCode.D;
+        if (Input.GetKeyUp(KeyCode.A) && lastHorizontalKey == KeyCode.A)
+            lastHorizontalKey = Input.GetKey(KeyCode.D) ? KeyCode.D : KeyCode.None;
+        if (Input.GetKeyUp(KeyCode.D) && lastHorizontalKey == KeyCode.D)
+            lastHorizontalKey = Input.GetKey(KeyCode.A) ? KeyCode.A : KeyCode.None;
+
+
+        //Calc vertical priority
+        if (Input.GetKeyDown(KeyCode.W)) lastVerticalKey = KeyCode.W;
+        if (Input.GetKeyDown(KeyCode.S)) lastVerticalKey = KeyCode.S;
+        if (Input.GetKeyUp(KeyCode.W) && lastVerticalKey == KeyCode.W)
+            lastVerticalKey = Input.GetKey(KeyCode.S) ? KeyCode.S : KeyCode.None;
+        if (Input.GetKeyUp(KeyCode.S) && lastVerticalKey == KeyCode.S)
+            lastVerticalKey = Input.GetKey(KeyCode.W) ? KeyCode.W : KeyCode.None;
     }
 
     void FlipCharacter(Vector3 lastDir)
@@ -219,7 +272,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
         // If they differ, flip the character by inverting the x scale
         if (currentSign != desiredSign)
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
     }
 
     // Formula for scaling based on Z
@@ -311,26 +364,32 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public void PushForce(Vector3 direction, int enemyEndurance)
     {
-        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2); //we add 2 to align the enum values with endurance distance values.
+        enduranceDistance = (TypeOfDamage)Mathf.Clamp(endurance - enemyEndurance + 2, 0, 4); //we add 2 to align the enum values with endurance distance values.
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
             case TypeOfDamage.PushOnlySelf:
+                //push the player at the knockback direction
                 pushMultiplier = 10f;
                 break;
             case TypeOfDamage.PushMostlySelf:
-                pushMultiplier = 7.5f;
-                break;
-            case TypeOfDamage.PushBoth:
+                //75% push player, 25% push enemy
                 pushMultiplier = 5f;
                 break;
+            case TypeOfDamage.PushBoth:
+                //50% push player, 50% push enemy
+                pushMultiplier = 3.5f;
+                break;
             case TypeOfDamage.PushMostlyOther:
-                pushMultiplier = 2.5f;
+                //25% push player, 75% push enemy
+                pushMultiplier = 3f;
                 break;
             case TypeOfDamage.PushOnlyOther:
+                //do not push player
+                pushMultiplier = 0f;
                 break;
         }
-        Debug.Log("Player Push Force with multiplier: " + pushMultiplier);
+        damageBoost = 0; // Reset damage boost after being used
         if (pushMultiplier > 0)
         {
             //do a little knockback
@@ -347,10 +406,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             //if there's no input, we set a default knockback direction
             if (knockbackDirection == Vector3.zero)
             {
-                knockbackDirection = transform.right;
+                knockbackDirection = Vector3.right;
+                knockbackDirection.x = Mathf.Sign(transform.localScale.x); //we use the character's facing direction
+                knockbackDirection.y = 0;
             }
             //we check if the collider belongs to an object with tag "Enemy"
-            if (other.CompareTag("Enemy"))
+            if (other.CompareTag("Enemy") && !other.isTrigger)
             {
                 Debug.Log("Hit an enemy: " + other.name);
                 //we try to get the EnemyController component from the hit object
@@ -359,6 +420,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                 {
                     enemy.PushForce(knockbackDirection, endurance);
                     PushForce(-knockbackDirection, enemy.endurance);
+                    normalPunchTimer = 0;
                 }
             }
         }

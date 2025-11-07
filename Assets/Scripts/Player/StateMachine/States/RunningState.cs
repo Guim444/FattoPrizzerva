@@ -6,7 +6,6 @@ public class RunningState : IStateActions
     public PlayerController player;
     public CharacterController controller;
     public float baseSpeed = 6f, actualSpeed;
-    public float gravity = -9.81f;
     public float staminaCostPerSecond;
 
     // Thrust phases
@@ -25,7 +24,9 @@ public class RunningState : IStateActions
 
     public void Enter()
     {
-        player.animator.SetFloat("Speed", 1f); // Set Speed to 1 for running animation
+        currentThrustPhase = 1; // Reset to phase 1 on entering running state
+
+        player.animator.speed = 1;
         actualSpeed = baseSpeed;
         staminaCostPerSecond = 10;
         stamina.SetRunning(staminaCostPerSecond);
@@ -33,67 +34,34 @@ public class RunningState : IStateActions
 
     public void Update()
     {
-        // TODO: Movement behavior here
+        float dt = Time.deltaTime;
 
-        dt = Time.deltaTime;
-
+        // get the real input direction (not lastDirection)
         Vector3 input = player.GetDirectionalInput();
-        Vector3 toMove = player.ApplyInertia(input, Time.deltaTime, 4f);
 
-        if (toMove.magnitude > 0.01f)
+        // handle thrust based on current input
+        HandleThrust(input);
+
+        // apply inertia to smooth turning
+        float inertiaTurnSpeed = 4f;
+        if (currentThrustPhase == 3) inertiaTurnSpeed = 2f; // less directional control in phase 3
+        Vector3 toMove = player.ApplyInertia(input, dt, inertiaTurnSpeed);
+        toMove.y = 0;
+
+        // move controller
+        if (controller.enabled)
         {
-            toMove.Normalize();
+            float moveSpeed = actualSpeed + (currentThrustPhase - 1);
+            controller.Move(toMove * moveSpeed * dt);
         }
 
-        // Handle thrust progression
-        HandleThrust(toMove);
-
-        // Reduced Y axis adaptability in phase 3 and 4
-        if (currentThrustPhase == 3)
-        {
-            input = Sprint();
-            toMove = player.ApplyInertia(input, Time.deltaTime, 2f);
-        }
-
-
-        if (controller.enabled == true) controller.Move(toMove * (actualSpeed + currentThrustPhase) * Time.deltaTime);
-
-        /* Apply gravity
-        if (!controller.isGrounded)
-        {
-            velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
-        }
-        else
-        {
-            velocity.y = -1f;
-        }
-
-        lastDirection = toMove;
-    */
+        // pass thrust info to player
     }
 
     void HandleThrust(Vector3 currentInput)
     {
         if (currentInput != Vector3.zero)
         {
-            /*if (Vector3.Dot(currentInput, lastDirection) > 0.9f)
-            {
-                phaseTime += Time.deltaTime;
-                if (phaseTime >= phaseThreshold && currentThrustPhase < 4)
-                {
-                    currentThrustPhase++;
-                    Debug.Log("Thrust Phase Increased to: " + currentThrustPhase);
-                    phaseTime = 0f;
-                }
-            }
-            else
-            {
-                currentThrustPhase = 1;
-                phaseTime = 0f;
-            }
-            */
-
             if (!controller.enabled) return;
             phaseTime += Time.deltaTime;
             if (phaseTime >= phaseThreshold && currentThrustPhase < 3)
@@ -105,18 +73,29 @@ public class RunningState : IStateActions
                 {
                     case 2:
                         actualSpeed = baseSpeed * 1.4f;
+                        player.damageBoost = 1;
                         staminaCostPerSecond = 14;
                         stamina.SetRunning(staminaCostPerSecond);
                         CameraFollow.instance.smoothSpeed = 3f;
+
+                        player.animator.speed = 1.5f;
+
                         break;
                     case 3:
                         actualSpeed = baseSpeed * 1.8f;
+                        player.damageBoost = 2;
                         staminaCostPerSecond = 18;
                         stamina.SetRunning(staminaCostPerSecond);
+
+                        player.animator.speed = 2;
+
                         CameraFollow.instance.smoothSpeed = 4f;
                         break;
                     default:
                         CameraFollow.instance.smoothSpeed = 2f;
+
+                        player.animator.speed = 1;
+
                         break;
                 }
                 phaseTime = 0f;
@@ -135,13 +114,14 @@ public class RunningState : IStateActions
         float moveZ = Input.GetAxis("Vertical") / 3;
 
         Vector3 sprintDirection = new Vector3(moveX, 0, moveZ).normalized;
+
         return sprintDirection;
     }
     public void Exit()
     {
         Debug.Log("Exited RunningState State");
-        currentThrustPhase = 1;
         CameraFollow.instance.smoothSpeed = 2f;
+        player.animator.speed = 1;
         //to do: apply inertia
     }
 } 

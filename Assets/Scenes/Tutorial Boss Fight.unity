@@ -345,6 +345,7 @@ GameObject:
   - component: {fileID: 182187402}
   - component: {fileID: 182187403}
   - component: {fileID: 182187404}
+  - component: {fileID: 182187405}
   m_Layer: 0
   m_Name: RioTutte
   m_TagString: Enemy
@@ -362,8 +363,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1.88, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4.75, y: 4.75, z: 4.75}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 344889073}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -465,12 +466,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.25, y: 0.75, z: 1}
-  m_Center: {x: 0, y: -0.000000014901161, z: 0}
+  m_Size: {x: 0.25, y: 0.47147214, z: 1}
+  m_Center: {x: 0, y: -0.06772864, z: -3.9500778e-16}
 --- !u!114 &182187404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,13 +484,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f0c51e02ba05c942992632a661a58e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RioTutteScript
-  endurance: 0
+  minZ: -12
+  maxZ: 3.25
+  minScale: 3.5
+  maxScale: 4.75
+  lastDir: {x: 0, y: 0, z: 0}
+  endurance: 1
   enduranceDistance: 0
   knockbackDirection: {x: 0, y: 0, z: 0}
   controller: {fileID: 182187402}
   player: {fileID: 1304852959}
+  hitCollider: {fileID: 182187405}
+  hitTimer: 0
+  maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  moveSpeed: 3
+  moveSpeed: 1.5
+--- !u!136 &182187405
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182187399}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.175
+  m_Height: 0.583356
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.053203005, z: -1.4988195e-16}
 --- !u!1 &194976209
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,7 +919,7 @@ Transform:
   m_GameObject: {fileID: 344889072}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.85, y: 0, z: -3.67505}
+  m_LocalPosition: {x: 19.76, y: 0, z: -3.67505}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2369,6 +2401,7 @@ GameObject:
   - component: {fileID: 1304852958}
   - component: {fileID: 1304852957}
   - component: {fileID: 1304852960}
+  - component: {fileID: 1304852964}
   - component: {fileID: 1304852959}
   - component: {fileID: 1304852961}
   - component: {fileID: 1304852962}
@@ -2472,8 +2505,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Radius: 0.44
-  m_Center: {x: 0.22349207, y: 2.6662287e-23, z: -0.000000057728467}
+  m_Radius: 0.30547637
+  m_Center: {x: 0.299675, y: 2.019484e-28, z: -0.000000059604645}
 --- !u!95 &1304852958
 Animator:
   serializedVersion: 7
@@ -2516,6 +2549,9 @@ MonoBehaviour:
   maxZ: 3.25
   minScale: 3
   maxScale: 4
+  isGrounded: 0
+  isPunching: 0
+  isInRun: 0
   animator: {fileID: 1304852958}
   interactMask:
     serializedVersion: 2
@@ -2524,11 +2560,14 @@ MonoBehaviour:
   staminaManager: {fileID: 0}
   currentSpeed: {x: 0, y: 0, z: 0}
   lastDirection: {x: 0, y: 0, z: 0}
+  lastVerticalKey: 0
+  lastHorizontalKey: 0
   isInsideRing: 0
   hasKnockback: 0
   knockbackVelocity: {x: 0, y: 0, z: 0}
   normalPunchTimer: 0
   normalPunchCooldown: 0.5
+  damageBoost: 0
   endurance: 0
   enduranceDistance: 0
 --- !u!143 &1304852960
@@ -2614,6 +2653,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimations
   animator: {fileID: 1304852958}
   player: {fileID: 1304852959}
+--- !u!65 &1304852964
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1304852954}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.7, y: 0.6, z: 0.5}
+  m_Center: {x: 0.5, y: 0, z: 0}
 --- !u!1 &1403730134
 GameObject:
   m_ObjectHideFlags: 0

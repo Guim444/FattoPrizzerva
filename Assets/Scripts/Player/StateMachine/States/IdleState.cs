@@ -12,7 +12,7 @@ public class IdleState : IStateActions
     public void Enter()
     {
         stamina.SetIdle();
-        player.animator.SetFloat("Speed", 1f); // Set Speed to 0 for idle animation
+        player.animator.speed = 1.0f;
     }
 
     public void Update()

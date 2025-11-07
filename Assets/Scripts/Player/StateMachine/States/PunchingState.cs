@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.XR;
 public class PunchingState : IStateActions
 {
     public float speed = 2f;
-    public float staminaCostPunch = 5;
+    public float staminaCostPunch = 2;
     public float baseDmg = 2;
     public PlayerController player;
     public SphereCollider punchCollider;
@@ -23,7 +23,7 @@ public class PunchingState : IStateActions
     {
         Debug.Log("Entered PunchingState State");
         player.staminaManager.ModifyStamina(-staminaCostPunch); // Example stamina cost for punching
-        player.normalPunchTimer = player.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
+        player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
         player.StartCoroutine(Punch(player.normalPunchTimer));
     }
 
@@ -43,14 +43,22 @@ public class PunchingState : IStateActions
         else
         {
             stamina.SetIdle();
-            controller.Move(Vector3.zero);
+            if (controller.enabled == true) controller.Move(Vector3.zero);
         }
     }
     IEnumerator Punch(float duration)
     {
-        yield return new WaitForSeconds(duration/2);
-        player.GetComponent<SpriteRenderer>().color = Color.red; // Visual cue for punching state, just for testing
+        //Time is divided in 30 parts for better timing control with the frame-based animation
+
+        yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
+        player.GetComponent<SpriteRenderer>().color = Color.red; // Change color to red when punch hits
+        player.endurance += 1; // Gain endurance on punch
         punchCollider.enabled = true;
+
+        yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
+        player.GetComponent<SpriteRenderer>().color = Color.white; // Reset color after punch
+        player.endurance -= 1; // Remove the gained endurance
+        punchCollider.enabled = false;
     }
     public void Exit()
     {
