@@ -109,14 +109,24 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             UpdateScaleBasedOnZ();
             isGrounded = cc.isGrounded; //Uses the character controller's built-in ground detection
 
-       // Debug.Log(transform.position.z);
+        // Debug.Log(transform.position.z);
 
 
-        if (!hasKnockback)
+        if (hasKnockback)
         {
-            if (isGrounded && velocity.y < 0) velocity.y = -2f; //When player touches the floor and falling in any speed (<0) it makes it -2 to stick the player on the floor 
-                                                                //StateMachine.Tick(Time.deltaTime);      //Updates the current state logic
-            if (cc.enabled == true) cc.Move(velocity * Time.deltaTime);  //Applies accumulated velocity
+            if (cc.enabled)
+            {
+                cc.Move(knockbackVelocity * Time.deltaTime);
+                knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 5f * Time.deltaTime);
+            }
+
+            if (knockbackVelocity.magnitude < 1f) // when the lerp is almost done, we stop the knockback for more fluidity
+            {
+                hasKnockback = false;
+                currentState = State.Knockedback;
+                StateMachine.SetState(State.Idle);
+            }
+            return;
         }
         else
         {
@@ -176,6 +186,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             if (newState != currentState)
             {
                 currentState = newState;
+                if (currentState != State.PunchRunning && currentState != State.Running)
+                {
+                    damageBoost = 1; // Reset damage boost when not running or punch running to avoid extra damage when not intended
+                }
                 StateMachine.SetState(currentState);
             }
         }
@@ -312,23 +326,29 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public void PushForce(Vector3 direction, int enemyEndurance)
     {
-        enduranceDistance = (TypeOfDamage)(endurance + damageBoost - enemyEndurance + 2); //we add 2 to align the enum values with endurance distance values.
+        enduranceDistance = (TypeOfDamage)Mathf.Clamp(endurance - enemyEndurance + 2, 0, 4); //we add 2 to align the enum values with endurance distance values.
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
             case TypeOfDamage.PushOnlySelf:
+                //push the player at the knockback direction
                 pushMultiplier = 10f;
                 break;
             case TypeOfDamage.PushMostlySelf:
-                pushMultiplier = 7.5f;
-                break;
-            case TypeOfDamage.PushBoth:
+                //75% push player, 25% push enemy
                 pushMultiplier = 5f;
                 break;
+            case TypeOfDamage.PushBoth:
+                //50% push player, 50% push enemy
+                pushMultiplier = 3.5f;
+                break;
             case TypeOfDamage.PushMostlyOther:
-                pushMultiplier = 2.5f;
+                //25% push player, 75% push enemy
+                pushMultiplier = 3f;
                 break;
             case TypeOfDamage.PushOnlyOther:
+                //do not push player
+                pushMultiplier = 0f;
                 break;
         }
         Debug.Log("Player Push Force with boost: " + damageBoost);
@@ -349,7 +369,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             //if there's no input, we set a default knockback direction
             if (knockbackDirection == Vector3.zero)
             {
-                knockbackDirection = lastDirection;
+                knockbackDirection = Vector3.right;
+                knockbackDirection.x = Mathf.Sign(transform.localScale.x); //we use the character's facing direction
                 knockbackDirection.y = 0;
             }
             //we check if the collider belongs to an object with tag "Enemy"

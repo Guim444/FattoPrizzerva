@@ -67,8 +67,19 @@ public class PunchRunningState : IStateActions
     {
         yield return new WaitForSeconds(2 * duration / 3); // enable collider after 2/3 of the punch animation for better timing
         punchCollider.enabled = true;
+        switch (player.damageBoost)
+        {
+            case 1:
+                player.endurance += 2; // Gain endurance on punch
+                break;
+            case 2:
+                player.endurance += 3; // Gain more endurance on stronger punch
+                break;
+        }
+
         yield return new WaitForSeconds(3 * duration / 4); // disable collider after 3/4 of the punch animation, for better timing
         punchCollider.enabled = false;
+        player.endurance = 0; // Reset endurance after punch
     }
 
     Vector3 Sprint()

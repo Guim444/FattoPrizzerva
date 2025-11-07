@@ -498,7 +498,7 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  moveSpeed: 2
+  moveSpeed: 0
 --- !u!136 &182187405
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -919,7 +919,7 @@ Transform:
   m_GameObject: {fileID: 344889072}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.85, y: 0, z: -3.67505}
+  m_LocalPosition: {x: 19.76, y: 0, z: -3.67505}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2505,8 +2505,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Radius: 0.30783325
-  m_Center: {x: 0.30203187, y: 2.019484e-28, z: -0.000000059604645}
+  m_Radius: 0.30547637
+  m_Center: {x: 0.299675, y: 2.019484e-28, z: -0.000000059604645}
 --- !u!95 &1304852958
 Animator:
   serializedVersion: 7
