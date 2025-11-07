@@ -18,11 +18,24 @@ public class PunchRunningState : IStateActions
     }
     public void Enter()
     {
+        player.animator.speed = 1;
         Debug.Log("Entered PunchingState State");
-        player.staminaManager.ModifyStamina(-staminaCost); // Example stamina cost for punching
-        player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
-        CalcSpeed();
-        player.StartCoroutine(Punch(player.normalPunchTimer));
+
+        switch (player.damageBoost)
+        {
+            case 0: staminaCost = 2; break;
+            case 1: staminaCost = 4; break;
+            case 2: staminaCost = 6; break;
+        }
+
+        if (player.staminaManager.currentStamina - staminaCost >= 0)
+        {
+            player.staminaManager.ModifyStamina(-staminaCost); // Example stamina cost for punching
+            player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
+            CalcSpeed();
+            player.StartCoroutine(Punch(player.normalPunchTimer));
+        }
+
     }
 
     public void Update()
@@ -47,15 +60,17 @@ public class PunchRunningState : IStateActions
     {
         switch (player.damageBoost)
         {
-            case 2:
+            case 1:
                 actualSpeed = baseSpeed * 1.4f;
-                player.damageBoost = 1;
                 CameraFollow.instance.smoothSpeed = 3f;
                 break;
-            case 3:
+            case 2:
                 actualSpeed = baseSpeed * 1.8f;
-                player.damageBoost = 2;
                 CameraFollow.instance.smoothSpeed = 4f;
+
+                punchCollider.size = new Vector3 (0.85f, punchCollider.size.y, punchCollider.size.z);
+                punchCollider.center = new Vector3 (0.6f, punchCollider.center.y, punchCollider.center.z);
+
                 break;
             default:
                 CameraFollow.instance.smoothSpeed = 2f;
@@ -65,21 +80,15 @@ public class PunchRunningState : IStateActions
 
     IEnumerator Punch(float duration)
     {
-        yield return new WaitForSeconds(2 * duration / 3); // enable collider after 2/3 of the punch animation for better timing
+        Debug.Log("Landed run punch in phase " + (player.damageBoost + 1));
+        yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
         punchCollider.enabled = true;
-        switch (player.damageBoost)
-        {
-            case 1:
-                player.endurance += 2; // Gain endurance on punch
-                break;
-            case 2:
-                player.endurance += 3; // Gain more endurance on stronger punch
-                break;
-        }
 
-        yield return new WaitForSeconds(3 * duration / 4); // disable collider after 3/4 of the punch animation, for better timing
+        player.endurance += player.damageBoost + 1;
+
+        yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
         punchCollider.enabled = false;
-        player.endurance = 0; // Reset endurance after punch
+        player.endurance -= (player.damageBoost + 1);
     }
 
     Vector3 Sprint()
@@ -95,6 +104,9 @@ public class PunchRunningState : IStateActions
 
     public void Exit()
     {
+        punchCollider.size = new Vector3 (0.7f, punchCollider.size.y, punchCollider.size.z);
+        punchCollider.center = new Vector3 (0.5f, punchCollider.center.y, punchCollider.center.z);
+
         Debug.Log("Exited PunchRunning State");
     }
 }

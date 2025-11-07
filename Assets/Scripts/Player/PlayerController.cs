@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public PlayerStaminaManager staminaManager; // Reference to the PlayerStaminaManager component
 
     public Vector3 currentSpeed, lastDirection = Vector3.zero; // currentSpeed is the normalized direction of movement, lastDirection is used for saving the last movement direction for inertia calculations or animations.
+    public KeyCode lastVerticalKey = KeyCode.None, lastHorizontalKey = KeyCode.None; // These fields are used to save information of the input and avoid issues.
 
     public bool isInsideRing = false; // To check if the player is inside the ring area
 
@@ -80,7 +81,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         var punchRunning = new PunchRunningState(staminaManager);
         punchRunning.player = this;
         punchRunning.controller = GetComponent<CharacterController>();
-        punching.punchCollider = GetComponent<SphereCollider>();
+        punchRunning.punchCollider = GetComponent<BoxCollider>();
 
         var knockedback = new KnockedbackState();
         knockedback.player = this;
@@ -118,6 +119,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             {
                 cc.Move(knockbackVelocity * Time.deltaTime);
                 knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 5f * Time.deltaTime);
+
+                //we reset inertia
+                lastDirection = Vector3.zero;
+                currentSpeed = Vector3.zero;
+
             }
 
             if (knockbackVelocity.magnitude < 1f) // when the lerp is almost done, we stop the knockback for more fluidity
@@ -186,11 +192,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             if (newState != currentState)
             {
                 currentState = newState;
-                if (currentState != State.PunchRunning && currentState != State.Running)
-                {
-                    damageBoost = 1; // Reset damage boost when not running or punch running to avoid extra damage when not intended
-                }
                 StateMachine.SetState(currentState);
+
+                if (!(currentState == State.Running || currentState == State.PunchRunning))
+                {
+                    damageBoost = 0;
+                }
             }
         }
         // Let the state run its own Update logic
@@ -206,14 +213,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     {
         Vector3 move = Vector3.zero;
 
-        if (Input.GetKey(KeyCode.W)) move += Vector3.forward;   // Z+
-        if (Input.GetKey(KeyCode.S)) move += Vector3.back;      // Z-
-        if (Input.GetKey(KeyCode.D)) move += Vector3.right;     // X+
-        if (Input.GetKey(KeyCode.A)) move += Vector3.left;      // X-
+        //This method will ensure we don't overlap inputs
+        CalcMovePriority();
+
+        if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S)))
+        {
+            if (lastVerticalKey == KeyCode.W) move += Vector3.forward;
+            else if (lastVerticalKey == KeyCode.S) move += Vector3.back;
+        }
+
+        if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.D)))
+        {
+            if (lastHorizontalKey == KeyCode.D) move += Vector3.right;
+            else if (lastHorizontalKey == KeyCode.A) move += Vector3.left;
+        }
+
 
         if (move.magnitude > 0)
         {
-            lastDirection = move.normalized; // Update lastDirection only when there's movement input
+            currentSpeed = move.normalized; // Update lastDirection only when there's movement input
         }
         currentSpeed = move.normalized;
         if (!hasKnockback)
@@ -222,6 +240,26 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         }
 
         return currentSpeed;
+    }
+
+    void CalcMovePriority()
+    {
+        //Calculate horizontal priority
+        if (Input.GetKeyDown(KeyCode.A)) lastHorizontalKey = KeyCode.A;
+        if (Input.GetKeyDown(KeyCode.D)) lastHorizontalKey = KeyCode.D;
+        if (Input.GetKeyUp(KeyCode.A) && lastHorizontalKey == KeyCode.A)
+            lastHorizontalKey = Input.GetKey(KeyCode.D) ? KeyCode.D : KeyCode.None;
+        if (Input.GetKeyUp(KeyCode.D) && lastHorizontalKey == KeyCode.D)
+            lastHorizontalKey = Input.GetKey(KeyCode.A) ? KeyCode.A : KeyCode.None;
+
+
+        //Calc vertical priority
+        if (Input.GetKeyDown(KeyCode.W)) lastVerticalKey = KeyCode.W;
+        if (Input.GetKeyDown(KeyCode.S)) lastVerticalKey = KeyCode.S;
+        if (Input.GetKeyUp(KeyCode.W) && lastVerticalKey == KeyCode.W)
+            lastVerticalKey = Input.GetKey(KeyCode.S) ? KeyCode.S : KeyCode.None;
+        if (Input.GetKeyUp(KeyCode.S) && lastVerticalKey == KeyCode.S)
+            lastVerticalKey = Input.GetKey(KeyCode.W) ? KeyCode.W : KeyCode.None;
     }
 
     void FlipCharacter(Vector3 lastDir)
@@ -351,7 +389,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                 pushMultiplier = 0f;
                 break;
         }
-        Debug.Log("Player Push Force with boost: " + damageBoost);
         damageBoost = 0; // Reset damage boost after being used
         if (pushMultiplier > 0)
         {

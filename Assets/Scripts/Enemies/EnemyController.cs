@@ -89,7 +89,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         {
             case TypeOfDamage.PushOnlySelf:
                 //push the enemy at the knockback direction
-                pushMultiplier = 10f;
+                pushMultiplier = 12f;
                 break;
             case TypeOfDamage.PushMostlySelf:
                 //75% push enemy, 25% push player

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.XR;
 public class PunchingState : IStateActions
 {
     public float speed = 2f;
-    public float staminaCostPunch = 5;
+    public float staminaCostPunch = 2;
     public float baseDmg = 2;
     public PlayerController player;
     public SphereCollider punchCollider;
