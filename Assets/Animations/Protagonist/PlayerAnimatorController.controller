@@ -101,9 +101,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: isMoving
     m_EventTreshold: 0
-  - m_ConditionMode: 1
-    m_ConditionEvent: isPunching
-    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2274521399191169737}
   m_Solo: 0
@@ -336,7 +333,7 @@ AnimatorStateMachine:
     m_Position: {x: 520, y: 290, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4711060368261535938}
-    m_Position: {x: 520, y: 430, z: 0}
+    m_Position: {x: 470, y: 430, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

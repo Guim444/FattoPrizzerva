@@ -353,6 +353,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             inputDir.Normalize();
         //turnSpeed varies depending on the player's speed.
 
+
         lastDirection = Vector3.MoveTowards(lastDirection, inputDir, turnSpeed * deltaTime);
         return lastDirection;
     }
@@ -364,7 +365,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public void PushForce(Vector3 direction, int enemyEndurance)
     {
-        enduranceDistance = (TypeOfDamage)Mathf.Clamp(endurance - enemyEndurance + 2, 0, 4); //we add 2 to align the enum values with endurance distance values.
+        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2);
+
+        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushTheHardest;
+        else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
+
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
@@ -387,6 +392,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             case TypeOfDamage.PushOnlyOther:
                 //do not push player
                 pushMultiplier = 0f;
+                break;
+            case TypeOfDamage.PushTheHardest:
+                pushMultiplier = 15f;
                 break;
         }
         damageBoost = 0; // Reset damage boost after being used
@@ -425,14 +433,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             }
         }
     }
-    /*  IEnumerator CooldownRoutine(float t)
-      {
-          onCooldown = true;
-          yield return new WaitForSeconds(t);
-          onCooldown = false;
-      }
-    */
-    // … public helper methods for stamina, adrenalina, etc. 
-
+    public void Die()
+    {
+        cc.enabled = false;
+    }
 }
 

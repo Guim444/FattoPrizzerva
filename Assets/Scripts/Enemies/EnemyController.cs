@@ -82,14 +82,18 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public abstract void FollowPlayerLogic(); // Implement specific player following logic in derived classes
     public void PushForce(Vector3 direction, int playerEndurance)
     {
-        enduranceDistance = (TypeOfDamage)Mathf.Clamp(endurance - playerEndurance + 2, 0, 4); //we add 2 to align the enum values with endurance distance values.
-        Debug.Log(enduranceDistance);
+        enduranceDistance = (TypeOfDamage)(endurance - playerEndurance + 2);
+
+        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushTheHardest;
+        else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
+
+            Debug.Log(enduranceDistance);
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
             case TypeOfDamage.PushOnlySelf:
                 //push the enemy at the knockback direction
-                pushMultiplier = 12f;
+                pushMultiplier = 10f;
                 break;
             case TypeOfDamage.PushMostlySelf:
                 //75% push enemy, 25% push player
@@ -107,7 +111,15 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
                 //do not push enemy
                 pushMultiplier = 0f;
                 break;
+            case TypeOfDamage.PushTheHardest:
+                pushMultiplier = 15f;
+                break;
         }
         knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+    }
+    public abstract void ChangeBossPhase();
+    public void Die()
+    {
+
     }
 }

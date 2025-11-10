@@ -27,6 +27,11 @@ public class RioTutteScript : EnemyController
         yield return new WaitForSeconds(0.5f);
         hitCollider.enabled = true;
     }
+
+    public override void ChangeBossPhase()
+    {
+        endurance += 1;
+    }
     void OnTriggerEnter(Collider other)
     {
         if (hitTimer <= 0 && other.CompareTag("Player") && !other.isTrigger)
