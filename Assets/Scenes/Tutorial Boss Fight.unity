@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 110771443}
   m_Layer: 0
   m_Name: Wall_5 (Right)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -346,6 +346,8 @@ GameObject:
   - component: {fileID: 182187403}
   - component: {fileID: 182187404}
   - component: {fileID: 182187405}
+  - component: {fileID: 182187406}
+  - component: {fileID: 182187407}
   m_Layer: 0
   m_Name: RioTutte
   m_TagString: Enemy
@@ -466,12 +468,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.25, y: 0.47147214, z: 1}
-  m_Center: {x: 0, y: -0.06772864, z: -3.9500778e-16}
+  m_Size: {x: 0.25, y: 0.5372747, z: 1}
+  m_Center: {x: 0, y: -0.1006299, z: -2.0228989e-16}
 --- !u!114 &182187404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,7 +491,7 @@ MonoBehaviour:
   minScale: 3.5
   maxScale: 4.75
   lastDir: {x: 0, y: 0, z: 0}
-  endurance: 1
+  endurance: 0
   enduranceDistance: 0
   knockbackDirection: {x: 0, y: 0, z: 0}
   controller: {fileID: 182187402}
@@ -498,7 +500,13 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
+  enemyPhase: 1
+  attackTime: 0
+  isAttacking: 0
+  isMoving: 0
+  animator: {fileID: 182187406}
   moveSpeed: 1.5
+  finalPosition: {x: 0, y: 0, z: 0}
 --- !u!136 &182187405
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -519,9 +527,45 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.175
-  m_Height: 0.583356
+  m_Height: 0.7003384
   m_Direction: 1
-  m_Center: {x: 0, y: -0.053203005, z: -1.4988195e-16}
+  m_Center: {x: 0, y: -0.11169418, z: -3.890039e-16}
+--- !u!95 &182187406
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182187399}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5f17b5e15c01525418b2e38fac616506, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &182187407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182187399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66b25578e4c9bcf428d4ad62bb7788fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RioTutteAnimations
+  animator: {fileID: 182187406}
+  enemy: {fileID: 182187404}
 --- !u!1 &194976209
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,7 +683,7 @@ GameObject:
   - component: {fileID: 265021936}
   m_Layer: 0
   m_Name: Wall_1 (Top Left)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1353,7 +1397,7 @@ GameObject:
   - component: {fileID: 875310463}
   m_Layer: 0
   m_Name: Wall_2 (Left)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2480,7 +2524,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.62, y: 0.83}
+  m_Size: {x: 0.78, y: 0.68}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2552,6 +2596,7 @@ MonoBehaviour:
   isGrounded: 0
   isPunching: 0
   isInRun: 0
+  cc: {fileID: 0}
   animator: {fileID: 1304852958}
   interactMask:
     serializedVersion: 2
@@ -2570,6 +2615,7 @@ MonoBehaviour:
   damageBoost: 0
   endurance: 0
   enduranceDistance: 0
+  canMove: 1
 --- !u!143 &1304852960
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3002,7 +3048,7 @@ GameObject:
   - component: {fileID: 1611410078}
   m_Layer: 0
   m_Name: Wall_3 (Top Center)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3234,7 +3280,7 @@ GameObject:
   - component: {fileID: 1786518438}
   m_Layer: 0
   m_Name: Wall_4 (Top Right)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3413,7 +3459,7 @@ GameObject:
   - component: {fileID: 1911560840}
   m_Layer: 0
   m_Name: Wall_3.5 (Upstairs limit)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3816,7 +3862,7 @@ GameObject:
   - component: {fileID: 2092698289}
   m_Layer: 0
   m_Name: Wall_6 (Bottom)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -38,14 +38,14 @@ public class RunningState : IStateActions
 
         // get the real input direction (not lastDirection)
         Vector3 input = player.GetDirectionalInput();
-
-        // handle thrust based on current input
-        HandleThrust(input);
+        HandleTurn(input);
 
         // apply inertia to smooth turning
-        float inertiaTurnSpeed = 4f;
+        float inertiaTurnSpeed;
         if (currentThrustPhase == 3) inertiaTurnSpeed = 2f; // less directional control in phase 3
-        Vector3 toMove = player.ApplyInertia(input, dt, inertiaTurnSpeed);
+        else inertiaTurnSpeed = 4;
+
+            Vector3 toMove = player.ApplyInertia(input, dt, inertiaTurnSpeed);
         toMove.y = 0;
 
         // move controller
@@ -56,6 +56,29 @@ public class RunningState : IStateActions
         }
 
         // pass thrust info to player
+    }
+
+    void HandleTurn(Vector3 input)
+    {
+        Vector3 previousDir = player.lastDirection;
+        bool sharpTurn = previousDir.magnitude > 0.01f && Vector3.Angle(previousDir, input) > 90f;
+        if (sharpTurn)
+        {
+            // Bajar thrust phase
+            currentThrustPhase = 1;
+            player.damageBoost = currentThrustPhase - 1;
+            player.animator.speed -= 0.5f;
+            player.animator.speed = 1;
+            phaseTime = 0f;
+            Debug.Log("Thrust decreased to " + currentThrustPhase);
+
+            // Forzar animación de andar
+            PlayerAnimations.instance.animator.SetBool("isRunning", false);
+        }
+        else
+        {
+            HandleThrust(input);
+        }
     }
 
     void HandleThrust(Vector3 currentInput)
@@ -122,7 +145,6 @@ public class RunningState : IStateActions
         Debug.Log("Exited RunningState State");
         CameraFollow.instance.smoothSpeed = 2f;
         player.animator.speed = 1;
-        //to do: apply inertia
     }
 } 
 

@@ -1,3 +1,5 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class EnemyController : MonoBehaviour, IDamageable
@@ -18,10 +20,19 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public float hitTimer = 0, maxHitTimer; // Time between hits to the player
 
     public Vector3 knockbackSpeed;
+
+    public int enemyPhase = 0;
+    public float attackTime; //Used to know when the enemy is ready to attack.
+
+    public float HP { get; set; }
+
+    //Animator controllers
+    public bool isAttacking, isMoving;
+    public Animator animator;
+
     // Update is called once per frame
     protected virtual void Update()
     {
-
         UpdateScaleBasedOnZ();
 
         if (knockbackSpeed.magnitude > 0.1f)
@@ -34,12 +45,18 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         {
             knockbackSpeed = Vector3.zero;
 
-            Vector3 input = player.transform.position - transform.position;
-            lastDir = new Vector3(input.x, 0, input.z).normalized;
+            if (!isAttacking)
+            {
+                isMoving = true;
+                Vector3 input = player.transform.position - transform.position;
+                lastDir = new Vector3(input.x, 0, input.z).normalized;
 
-            FollowPlayerLogic(); // Call the method to follow the player when not being knocked back. I put it here to avoid having to put it in every enemy script if they have different movement logic.
-            FlipCharacter(lastDir);
+                FlipCharacter(lastDir);
+                FollowPlayerLogic();
+            }
         }
+
+        UpdateAttackTimer();
 
         if (hitTimer > 0)
         {
@@ -66,7 +83,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         float signX = Mathf.Sign(transform.localScale.x);
         transform.localScale = new Vector3(scaleFactor * signX, scaleFactor, scaleFactor);
     }
-    void FlipCharacter(Vector3 lastDir)
+    public void FlipCharacter(Vector3 lastDir)
     {
         if (Mathf.Abs(lastDir.x) < 0.01f) return; // if there's no horizontal input, do nothing
 
@@ -78,18 +95,21 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         if (currentSign != desiredSign)
             transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
     }
-    public abstract void TakeDamage(); // Implement specific damage logic in derived classes
     public abstract void FollowPlayerLogic(); // Implement specific player following logic in derived classes
     public void PushForce(Vector3 direction, int playerEndurance)
     {
-        enduranceDistance = (TypeOfDamage)Mathf.Clamp(endurance - playerEndurance + 2, 0, 4); //we add 2 to align the enum values with endurance distance values.
-        Debug.Log(enduranceDistance);
+        enduranceDistance = (TypeOfDamage)(endurance - playerEndurance + 2);
+
+        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushOnlyOtherPlus;
+        else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
+
+            Debug.Log(enduranceDistance);
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
             case TypeOfDamage.PushOnlySelf:
                 //push the enemy at the knockback direction
-                pushMultiplier = 12f;
+                pushMultiplier = 10f;
                 break;
             case TypeOfDamage.PushMostlySelf:
                 //75% push enemy, 25% push player
@@ -107,7 +127,31 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
                 //do not push enemy
                 pushMultiplier = 0f;
                 break;
+            case TypeOfDamage.PushOnlyOtherPlus:
+                pushMultiplier = 15f;
+                break;
         }
         knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+    }
+    public abstract void ChangeBossPhase();
+    void UpdateAttackTimer()
+    {
+        if (attackTime <= 0)
+        {
+            isAttacking = true;
+            Attack();
+        }
+        else
+        {
+            attackTime -= Time.deltaTime;
+        }
+    }
+    public abstract void Attack();
+    public void Die()
+    {
+    }
+
+    public void TakeDamage(int dmg)
+    {
     }
 }

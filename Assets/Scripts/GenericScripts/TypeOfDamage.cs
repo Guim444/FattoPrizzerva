@@ -6,5 +6,6 @@ public enum TypeOfDamage
     PushMostlySelf,
     PushBoth,
     PushMostlyOther,
-    PushOnlyOther
+    PushOnlyOther,
+    PushOnlyOtherPlus
 }
