@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Collisionable element
   - Enemy
+  - Wall
   layers:
   - Default
   - TransparentFX

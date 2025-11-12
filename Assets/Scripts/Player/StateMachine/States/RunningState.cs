@@ -65,8 +65,10 @@ public class RunningState : IStateActions
         if (sharpTurn)
         {
             // Bajar thrust phase
-            currentThrustPhase = Mathf.Max(1, currentThrustPhase - 1);
+            currentThrustPhase = 1;
             player.damageBoost = currentThrustPhase - 1;
+            player.animator.speed -= 0.5f;
+            player.animator.speed = 1;
             phaseTime = 0f;
             Debug.Log("Thrust decreased to " + currentThrustPhase);
 

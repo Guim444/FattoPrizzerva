@@ -17,8 +17,10 @@ public class IdleState : IStateActions
 
     public void Update()
     {
-        Vector3 toMove = player.ApplyInertia(Vector3.zero, Time.deltaTime, 10f); //reset the inertia while idle
-        // No specific logic for idle state
+        //We want the player to inherit the inertia from previous movement
+        float currentVelocity = player.currentSpeed.magnitude * player.normalSpeed;
+        float turnSpeed = Mathf.Lerp(2f, 10f, currentVelocity / player.normalSpeed);
+        Vector3 inertia = player.ApplyInertia(Vector3.zero, Time.deltaTime, turnSpeed);
     }
 
     public void Exit()

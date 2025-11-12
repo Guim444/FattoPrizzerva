@@ -2,6 +2,7 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public void TakeDamage();
+    float HP { get; set; }
+    public void TakeDamage(int dmg);
     public void Die();
 }

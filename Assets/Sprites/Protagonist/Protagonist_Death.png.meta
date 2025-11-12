@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 68bb6967d010baa49814c6541a9eb854
+guid: 10d257ddc25da4b419e01c2f07e27875
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Riotutte_Walk_0
+      name: Protagonist_Death_0
       rect:
         serializedVersion: 2
-        x: 43
-        y: 14
-        width: 28
-        height: 85
+        x: 24
+        y: 32
+        width: 62
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,20 +112,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b504cfd08686d97479551f2b9c2eefb1
-      internalID: -343579227
+      spriteID: dbe4dcc14341fc84887838ebafed9c95
+      internalID: 938375479
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Riotutte_Walk_1
+      name: Protagonist_Death_1
       rect:
         serializedVersion: 2
-        x: 174
-        y: 20
-        width: 24
-        height: 79
+        x: 161
+        y: 31
+        width: 54
+        height: 82
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 05e4149f2cc90de479655e3691ad8d48
-      internalID: 299720064
+      spriteID: 4c9c21d58364928438e2fb5729b0984c
+      internalID: 1680136769
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Riotutte_Walk_2
+      name: Protagonist_Death_2
       rect:
         serializedVersion: 2
-        x: 300
-        y: 21
-        width: 23
-        height: 80
+        x: 299
+        y: 31
+        width: 46
+        height: 82
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6cd8f56bc0dddbd44979bb1e3a4093dd
-      internalID: 1338749845
+      spriteID: c316d4f612b05334fa70948e2ea1f932
+      internalID: 2405836
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Riotutte_Walk_3
+      name: Protagonist_Death_3
       rect:
         serializedVersion: 2
-        x: 428
-        y: 20
-        width: 20
-        height: 80
+        x: 420
+        y: 30
+        width: 79
+        height: 66
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +178,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1885ae07cb2b8504ca7d77a010207803
-      internalID: 318230812
+      spriteID: fe37dc0815d357844b0480fcec31b18e
+      internalID: 586349352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protagonist_Death_4
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 32
+        width: 127
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 452f168c970a42c43ba223eb1b9ba445
+      internalID: -334509933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protagonist_Death_5
+      rect:
+        serializedVersion: 2
+        x: 689
+        y: 33
+        width: 127
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72d8897aca7713e4ea5dbfb127d3dc74
+      internalID: 888870643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protagonist_Death_6
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 34
+        width: 119
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47615a4987db4ea46b504cc032b31823
+      internalID: -6428495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protagonist_Death_7
+      rect:
+        serializedVersion: 2
+        x: 997
+        y: 27
+        width: 147
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 259958180b9e2174983bfe797516dcd7
+      internalID: -955582574
       vertices: []
       indices: 
       edges: []
@@ -188,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a60d56fd87797e84da703d2fe30e021f
+    spriteID: d283e9b886f7d1143a401b878d5ae638
     internalID: 0
     vertices: []
     indices: 
@@ -200,10 +288,18 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Riotutte_Walk_0: -343579227
-      Riotutte_Walk_1: 299720064
-      Riotutte_Walk_2: 1338749845
-      Riotutte_Walk_3: 318230812
+      Protagonist_Death_0: 938375479
+      Protagonist_Death_1: 1680136769
+      Protagonist_Death_10: -867710560
+      Protagonist_Death_11: 1298108478
+      Protagonist_Death_2: 2405836
+      Protagonist_Death_3: 586349352
+      Protagonist_Death_4: -334509933
+      Protagonist_Death_5: 888870643
+      Protagonist_Death_6: -6428495
+      Protagonist_Death_7: -955582574
+      Protagonist_Death_8: 1136789730
+      Protagonist_Death_9: 355167887
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

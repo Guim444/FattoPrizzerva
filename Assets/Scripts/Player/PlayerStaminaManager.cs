@@ -9,8 +9,8 @@ public class PlayerStaminaManager : MonoBehaviour, IEstaminable
     public float Stamina { get; set; }
 
     [Header("Rates Per Second")]
-    public float walkingRegen = 25f;
-    public float idleRegen = 50f;
+    public float walkingRegen;
+    public float idleRegen;
 
     private float staminaRate = 0f; // >0 regen, <0 drain
 
@@ -46,7 +46,7 @@ public class PlayerStaminaManager : MonoBehaviour, IEstaminable
     public void SetRunning(float staminaCostPerSecond) => staminaRate = -staminaCostPerSecond;
     public void SetWalking() => staminaRate = walkingRegen;
     public void SetIdle() => staminaRate = idleRegen;
-    public void SetTired() => staminaRate = walkingRegen;
+    public void SetTired() => staminaRate = walkingRegen/2;
     public void StopAllRegenDrain() => staminaRate = 0f; // optional
 
     public void ModifyStamina(float amount)

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 /*
@@ -15,11 +17,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         Vector3 velocity; //3D vector to store the current movement speed and direction of the character.
     [Header("Player Parameters")]
     public float normalSpeed = 7f, runningSpeed = 10f, gravity = -9.81f, jumpForce = 5f;
-    [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
+    public float HP { get; set; }
 
+    [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
     public bool isGrounded, isPunching, isInRun;
     bool flip; //To know if the player is facing left or right. Left is true, right is false.
-    CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
+    public CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
         public Animator animator; //Built-in component called for playing animations from code
         public LayerMask interactMask;   //A filter that will tell the raycast which layers of objects it should detect when the player tries to interact to avoid hitting everything
         public Camera myCamera;
@@ -49,8 +52,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     public TypeOfDamage enduranceDistance = 0; // Variable to hold the type of damage based on endurance
 
+    public bool canMove = true; //This bool is used when the player shouldn't be moving, like when it's being attacked
+
     void Awake()
-        {
+    {
+        HP = 2;
+
             stamina = GetComponent<IEstaminable>();
             adrenaline = GetComponent<IAdrenalinable>();
             cc = GetComponent<CharacterController>();
@@ -145,60 +152,69 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                 hasKnockback = false;
             }
         }
-
-
-        State newState;
+            State newState;
 
 
         if (normalPunchTimer > 0) // During attacks, we don't change state until the punch timer ends
         {
             normalPunchTimer -= Time.deltaTime;
         }
-        else
+        else//this will avoid player movement when it's not wanted to do it
         {
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) // Movement input detected
+            if (canMove)
             {
-                if (staminaManager.isTired)
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) // Movement input detected
                 {
-                    newState = State.Tired;
-                }
-                else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0) // Running input detected and enough stamina
-                {
-                    newState = State.Running;
-                    if (Input.GetMouseButton(0))
+                    if (staminaManager.isTired)
                     {
-                        newState = State.PunchRunning; // Punching while running
+                        newState = State.Tired;
+                    }
+                    else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0) // Running input detected and enough stamina
+                    {
+                        newState = State.Running;
+                        if (Input.GetMouseButton(0))
+                        {
+                            newState = State.PunchRunning; // Punching while running
+                        }
+                    }
+                    else
+                    {
+                        newState = State.Moving;
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            newState = State.Punching; // Punching while moving
+                        }
                     }
                 }
                 else
                 {
-                    newState = State.Moving;
-                    if (Input.GetMouseButtonDown(0))
+                    if (staminaManager.isTired)
                     {
-                        newState = State.Punching; // Punching while moving
+                        newState = State.Tired;
+                    }
+                    else
+                    {
+                        newState = State.Idle;
+                        if (Input.GetMouseButton(0))
+                        {
+                            newState = State.Punching; // Punching while idle
+                        }
+                    }
+                }
+
+                // Change state only if different
+                if (newState != currentState)
+                {
+                    currentState = newState;
+                    StateMachine.SetState(currentState);
+
+                    if (!(currentState == State.Running || currentState == State.PunchRunning))
+                    {
+                        damageBoost = 0;
                     }
                 }
             }
-            else
-            {
-                newState = State.Idle;
-                if (Input.GetMouseButton(0))
-                {
-                    newState = State.Punching; // Punching while idle
-                }
-            }
-
-            // Change state only if different
-            if (newState != currentState)
-            {
-                currentState = newState;
-                StateMachine.SetState(currentState);
-
-                if (!(currentState == State.Running || currentState == State.PunchRunning))
-                {
-                    damageBoost = 0;
-                }
-            }
+            else currentState = State.Idle; //When it can't move, player is always idle.
         }
         // Let the state run its own Update logic
         StateMachine.Update();
@@ -262,7 +278,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             lastVerticalKey = Input.GetKey(KeyCode.W) ? KeyCode.W : KeyCode.None;
     }
 
-    void FlipCharacter(Vector3 lastDir)
+    public void FlipCharacter(Vector3 lastDir)
     {
         if (Mathf.Abs(lastDir.x) < 0.01f) return; // if there's no horizontal input, do nothing
 
@@ -355,19 +371,18 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
 
         lastDirection = Vector3.MoveTowards(lastDirection, inputDir, turnSpeed * deltaTime);
-        return lastDirection;
-    }
 
-    public void TakeDamage()
-    {
-        Debug.Log("Player took damage. Will be implemented later.");
+        if (lastDirection.magnitude < 0.01f)
+            lastDirection = Vector3.zero;
+
+        return lastDirection;
     }
 
     public void PushForce(Vector3 direction, int enemyEndurance)
     {
-        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2);
+        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2); //we add 2 to avoid negative numbers here
 
-        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushTheHardest;
+        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushOnlyOtherPlus; //any endurance distance less than 0 will be interpreted as the hardest push possible
         else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
 
         float pushMultiplier = 0;
@@ -393,11 +408,18 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                 //do not push player
                 pushMultiplier = 0f;
                 break;
-            case TypeOfDamage.PushTheHardest:
+            case TypeOfDamage.PushOnlyOtherPlus:
                 pushMultiplier = 15f;
                 break;
         }
+
+        if (damageBoost >= 2)
+        {
+            pushMultiplier = Mathf.Max(pushMultiplier, 3); //this ensures that the player will be knocked back when sprint-punching
+        }
+
         damageBoost = 0; // Reset damage boost after being used
+
         if (pushMultiplier > 0)
         {
             //do a little knockback
@@ -433,9 +455,19 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             }
         }
     }
+    public void TakeDamage(int dmg)
+    {
+        HP = Mathf.Max(0, HP - dmg);
+        if (HP == 0)
+        {
+            Die();
+        }
+    }
     public void Die()
     {
-        cc.enabled = false;
+        canMove = false;
+        animator.speed = 1;
+        animator.SetBool("isDead", true);
     }
 }
 
