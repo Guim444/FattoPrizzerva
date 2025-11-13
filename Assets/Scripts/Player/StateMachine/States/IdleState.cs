@@ -25,6 +25,6 @@ public class IdleState : IStateActions
 
     public void Exit()
     {
-        // Cleanup if needed
+        player.currentSpeed = Vector3.zero;
     }
 }

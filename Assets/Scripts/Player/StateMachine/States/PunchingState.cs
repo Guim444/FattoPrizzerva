@@ -21,11 +21,11 @@ public class PunchingState : IStateActions
     bool isMoving;
     public void Enter()
     {
-        Debug.Log("Entered PunchingState State");
         staminaCostPunch = player.punchStaminaCostPhase0; // Use player's tuning value
         player.staminaManager.ModifyStamina(-staminaCostPunch); // Example stamina cost for punching
         player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
         player.StartCoroutine(Punch(player.normalPunchTimer));
+        player.playerDamage = player.basicPunchDamage;
     }
 
     public void Update()
@@ -52,19 +52,16 @@ public class PunchingState : IStateActions
         //Time is divided in 30 parts for better timing control with the frame-based animation
 
         yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
-        player.GetComponent<SpriteRenderer>().color = Color.red; // Change color to red when punch hits
         player.endurance += 1; // Gain endurance on punch
         punchCollider.enabled = true;
 
         yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
-        player.GetComponent<SpriteRenderer>().color = Color.white; // Reset color after punch
         player.endurance -= 1; // Remove the gained endurance
         punchCollider.enabled = false;
     }
     public void Exit()
     {
-        Debug.Log("Exited PunchingState State");
-        player.GetComponent<SpriteRenderer>().color = Color.white; // Reset color on exit
         punchCollider.enabled = false;
+        player.playerDamage = 0;
     }
 }

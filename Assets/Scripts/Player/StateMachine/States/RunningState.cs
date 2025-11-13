@@ -79,7 +79,6 @@ public class RunningState : IStateActions
             player.animator.speed -= 0.5f;
             player.animator.speed = 1;
             phaseTime = 0f;
-            Debug.Log("Thrust decreased to " + currentThrustPhase);
 
             // Forzar animaci�n de andar
             PlayerAnimations.instance.animator.SetBool("isRunning", false);
@@ -99,7 +98,6 @@ public class RunningState : IStateActions
             if (phaseTime >= phaseThreshold && currentThrustPhase < 3)
             {
                 currentThrustPhase++;
-                Debug.Log("Thrust Phase Increased to: " + currentThrustPhase);
 
                 switch (currentThrustPhase)
                 {
@@ -151,7 +149,6 @@ public class RunningState : IStateActions
     }
     public void Exit()
     {
-        Debug.Log("Exited RunningState State");
         CameraFollow.instance.smoothSpeed = 2f;
         player.animator.speed = 1;
     }

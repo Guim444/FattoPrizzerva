@@ -19,7 +19,6 @@ public class PunchRunningState : IStateActions
     public void Enter()
     {
         player.animator.speed = 1;
-        Debug.Log("Entered PunchingState State");
         
         baseSpeed = player.punchRunningBaseSpeed; // Use player's tuning value
 
@@ -65,6 +64,7 @@ public class PunchRunningState : IStateActions
             case 1:
                 actualSpeed = baseSpeed * 1.4f;
                 CameraFollow.instance.smoothSpeed = 3f;
+                player.playerDamage = player.thrustDamage2;
                 break;
             case 2:
                 actualSpeed = baseSpeed * 1.8f;
@@ -72,17 +72,18 @@ public class PunchRunningState : IStateActions
 
                 punchCollider.size = new Vector3 (0.85f, punchCollider.size.y, punchCollider.size.z);
                 punchCollider.center = new Vector3 (0.6f, punchCollider.center.y, punchCollider.center.z);
+                player.playerDamage = player.thrustDamage3;
 
                 break;
             default:
                 CameraFollow.instance.smoothSpeed = 2f;
+                player.playerDamage = player.thrustDamage1;
                 break;
         }
     }
 
     IEnumerator Punch(float duration)
     {
-        Debug.Log("Landed run punch in phase " + (player.damageBoost + 1));
         yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
         punchCollider.enabled = true;
 
@@ -109,6 +110,6 @@ public class PunchRunningState : IStateActions
         punchCollider.size = new Vector3 (0.7f, punchCollider.size.y, punchCollider.size.z);
         punchCollider.center = new Vector3 (0.5f, punchCollider.center.y, punchCollider.center.z);
 
-        Debug.Log("Exited PunchRunning State");
+        player.playerDamage = 0;
     }
 }

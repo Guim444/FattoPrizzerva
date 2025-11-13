@@ -354,7 +354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &182187400
 Transform:
   m_ObjectHideFlags: 0
@@ -504,9 +504,12 @@ MonoBehaviour:
   attackTime: 0
   isAttacking: 0
   isMoving: 0
+  hasKnockback: 0
+  damageCondition: 0
   animator: {fileID: 182187406}
   moveSpeed: 1.5
   finalPosition: {x: 0, y: 0, z: 0}
+  phaseTwoHP: 100
 --- !u!136 &182187405
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2596,6 +2599,11 @@ MonoBehaviour:
   runningSpeed: 10
   gravity: -9.81
   jumpForce: 5
+  basicPunchDamage: 10
+  thrustDamage1: 20
+  thrustDamage2: 30
+  thrustDamage3: 50
+  playerDamage: 0
   walkingSpeed: 3
   runningBaseSpeed: 6
   runningPhase2Multiplier: 1.4

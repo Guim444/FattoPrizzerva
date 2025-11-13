@@ -10,7 +10,7 @@ public abstract class EnemyAnimationController : MonoBehaviour
         animator = GetComponent<Animator>();
         enemy = GetComponent<EnemyController>();
     }
-    void Update()
+    protected virtual void Update()
     {
         animator.SetBool("isMoving", enemy.isMoving);
         animator.SetBool("isAttacking", enemy.isAttacking);

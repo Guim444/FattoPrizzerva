@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,7 +28,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public float HP { get; set; }
 
     //Animator controllers
-    public bool isAttacking, isMoving;
+    [Header ("Animator controllers")] public bool isAttacking, isMoving, hasKnockback, damageCondition;
     public Animator animator;
 
     // Update is called once per frame
@@ -35,36 +36,47 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     {
         UpdateScaleBasedOnZ();
 
-        if (knockbackSpeed.magnitude > 0.1f)
+        if (player.battleIsActive)
         {
-            controller.Move(knockbackSpeed * Time.deltaTime);
-            // Gradually reduce knockback speed over time
-            knockbackSpeed = Vector3.Lerp(knockbackSpeed, Vector3.zero, 5f * Time.deltaTime);
-        }
-        else
-        {
-            knockbackSpeed = Vector3.zero;
-
-            if (!isAttacking)
+            if (knockbackSpeed.magnitude > 0.1f)
             {
-                isMoving = true;
-                Vector3 input = player.transform.position - transform.position;
-                lastDir = new Vector3(input.x, 0, input.z).normalized;
+                controller.Move(knockbackSpeed * Time.deltaTime);
+                // Gradually reduce knockback speed over time
+                knockbackSpeed = Vector3.Lerp(knockbackSpeed, Vector3.zero, 5f * Time.deltaTime);
+                hasKnockback = true;
+            }
+            else
+            {
+                knockbackSpeed = Vector3.zero;
+                hasKnockback = false;
 
-                FlipCharacter(lastDir);
-                FollowPlayerLogic();
+                if (!isAttacking)
+                {
+                    isMoving = true;
+                    Vector3 input = player.transform.position - transform.position;
+                    lastDir = new Vector3(input.x, 0, input.z).normalized;
+
+                    FlipCharacter(lastDir);
+                    FollowPlayerLogic();
+                }
+            }
+
+            UpdateAttackTimer();
+
+            if (hitTimer > 0)
+            {
+                hitTimer -= Time.deltaTime;
+            }
+            else
+            {
+                hitCollider.enabled = true;
             }
         }
-
-        UpdateAttackTimer();
-
-        if (hitTimer > 0)
-        {
-            hitTimer -= Time.deltaTime;
-        }
         else
         {
-            hitCollider.enabled = true;
+            isMoving = false;
+            isAttacking = false;
+            hasKnockback = false;
         }
     }
 
@@ -96,14 +108,13 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
     }
     public abstract void FollowPlayerLogic(); // Implement specific player following logic in derived classes
-    public void PushForce(Vector3 direction, int playerEndurance)
+    public void PushForce(Vector3 direction, int playerEndurance, GameObject attacker)
     {
         enduranceDistance = (TypeOfDamage)(endurance - playerEndurance + 2);
 
         if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushOnlyOtherPlus;
         else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
 
-            Debug.Log(enduranceDistance);
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
@@ -132,6 +143,16 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
                 break;
         }
         knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+
+        if ((int)enduranceDistance <= 2)
+        {
+            attackTime = Random.Range(3, 6);
+        }
+
+        if (attacker.CompareTag("Player"))
+        {
+            TakeDamage((int)player.playerDamage);
+        }
     }
     public abstract void ChangeBossPhase();
     void UpdateAttackTimer()
@@ -146,12 +167,15 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             attackTime -= Time.deltaTime;
         }
     }
-    public abstract void Attack();
     public void Die()
     {
     }
 
     public void TakeDamage(int dmg)
     {
+        //Here will be coded the common behaviours between enemies when damaged.
+        DamagedBehaviour(dmg);
     }
+    public abstract void Attack();
+    public abstract void DamagedBehaviour(int dmg); //Specific enemy damage calcs
 }

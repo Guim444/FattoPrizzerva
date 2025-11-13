@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TiredState : IStateActions
@@ -13,9 +14,9 @@ public class TiredState : IStateActions
     }
     public void Enter()
     {
-        stamina.SetTired();
-        // Note: "Speed" parameter doesn't exist in animator - removed to prevent error
-        // Animation is controlled by PlayerAnimations.cs based on state
+        stamina.StopAllRegenDrain();
+        float length = player.animator.GetCurrentAnimatorStateInfo(0).length;
+        player.StartCoroutine(StartStaminaDrop(length));
     }
 
     public void Exit()
@@ -42,6 +43,11 @@ public class TiredState : IStateActions
         }
     }
 
+    IEnumerator StartStaminaDrop(float length)
+    {
+        yield return new WaitForSeconds(length * 2);
+        stamina.SetTired();
+    }
     void IStateActions.Update()
     {
         Update();

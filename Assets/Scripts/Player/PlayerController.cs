@@ -29,10 +29,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public float gravity = -9.81f;
     public float jumpForce = 5f;
     public float HP { get; set; }
-    
+    public float basicPunchDamage, thrustDamage1, thrustDamage2, thrustDamage3;
+    public float playerDamage; // The base damage that the player inflicts. It's used every time the player attacks.
+    public bool battleIsActive; // If player dies, this will be false
+
     // ============================================
     // GAME DESIGN TUNING - MOVEMENT SPEEDS
     // ============================================
+
     [Header("Game Design: Movement Speeds")]
     [Tooltip("Walking speed (MovingState)")]
     public float walkingSpeed = 3f;
@@ -201,6 +205,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     // ============================================
     void Awake()
     {
+        battleIsActive = true;
         HP = 2;
         
         // Get component references
@@ -335,6 +340,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         if (!canMove)
         {
             currentState = State.Idle;
+            StateMachine.SetState(currentState);
             return;
         }
 
@@ -372,13 +378,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         Vector3 move = Vector3.zero;
         CalcMovePriority();
 
-        if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S)))
+        if ((Input.GetKey(KeyCode.W)) || Input.GetKey(KeyCode.S))
         {
             if (lastVerticalKey == KeyCode.W) move += Vector3.forward;
             else if (lastVerticalKey == KeyCode.S) move += Vector3.back;
         }
 
-        if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.D)))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             if (lastHorizontalKey == KeyCode.D) move += Vector3.right;
             else if (lastHorizontalKey == KeyCode.A) move += Vector3.left;
@@ -591,11 +597,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             
             if (other.CompareTag("Enemy") && !other.isTrigger)
             {
-                Debug.Log("Hit an enemy: " + other.name);
                 EnemyController enemy = other.GetComponent<EnemyController>();
                 if (enemy != null)
                 {
-                    enemy.PushForce(knockbackDirection, endurance);
+                    enemy.PushForce(knockbackDirection, endurance, gameObject);
                     PushForce(-knockbackDirection, enemy.endurance);
                     normalPunchTimer = 0;
                 }
@@ -620,6 +625,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         canMove = false;
         animator.speed = 1;
         animator.SetBool("isDead", true);
+        battleIsActive = false;
     }
 
     // ============================================

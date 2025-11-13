@@ -10,6 +10,8 @@ public class RioTutteScript : EnemyController
     bool isUsingDashGrab = false, isGrabbing = false;
     public Vector3 finalPosition = Vector3.zero; //used to dash
 
+    public float phaseTwoHP;
+
     private void Awake()
     {
         attackTime = Random.Range(3, 5);
@@ -17,7 +19,14 @@ public class RioTutteScript : EnemyController
 
     protected override void Update()
     {
-        base.Update();
+        if (phaseTwoHP > 0) base.Update();
+        else
+        {
+            isMoving = false;
+            isAttacking = false;
+            isGrabbing = false;
+            hasKnockback = false;
+        }
     }
     public override void FollowPlayerLogic()
     {
@@ -42,7 +51,7 @@ public class RioTutteScript : EnemyController
                 PlayerController player = other.GetComponent<PlayerController>();
                 if (player != null)
                 {
-                    PushForce(-knockbackDirection, player.endurance);
+                    PushForce(-knockbackDirection, player.endurance, other.gameObject);
                     player.PushForce(knockbackDirection, endurance);
 
                     hitTimer = maxHitTimer;
@@ -65,8 +74,7 @@ public class RioTutteScript : EnemyController
             moveSpeed = 1.5f;
             isUsingDashGrab = false;
             attackTime = Random.Range(4, 5);
-            Debug.Log(attackTime);
-            PushForce(-finalPosition, endurance + 1);
+            PushForce(-finalPosition, endurance + 1, hit.gameObject);
             finalPosition = Vector3.zero;
         }
         else if (isUsingDashGrab && hit.gameObject.CompareTag("Player"))
@@ -81,11 +89,13 @@ public class RioTutteScript : EnemyController
     {
         player.canMove = false;
 
-        transform.position = new Vector3(transform.position.x, transform.position.y, player.transform.position.z);
+        player.transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+
         isGrabbing = true;
         moveSpeed = 0;
         isAttacking = true;
         isMoving = false;
+
         float length = animator.GetCurrentAnimatorStateInfo(0).length;
         StartCoroutine(HitPlayer(length));
     }
@@ -109,7 +119,7 @@ public class RioTutteScript : EnemyController
     //Down here are the atack behaviours of RioTutte
     public override void Attack()
     {
-        if (enemyPhase == 1)
+        if (enemyPhase >= 1)
         {
             DashGrab();
         }
@@ -127,5 +137,24 @@ public class RioTutteScript : EnemyController
         moveSpeed = 7.5f;
         FlipCharacter(finalPosition);
         controller.Move(finalPosition * moveSpeed * Time.deltaTime);
+    }
+    public override void DamagedBehaviour(int dmg)
+    {
+        if (dmg >= 30)
+        {
+            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            sr.color = Color.red;
+            StartCoroutine(StopDamageAnim(sr));
+            phaseTwoHP = Mathf.Max(phaseTwoHP - dmg, 0);
+            Debug.Log(phaseTwoHP);
+        }
+    }
+    IEnumerator StopDamageAnim(SpriteRenderer sr)
+    {
+        while (knockbackSpeed.magnitude > 0.1f) //while having knockback and damaged, RioTutte will be red
+        {
+            yield return null;
+        }
+        sr.color = Color.white;
     }
 }
