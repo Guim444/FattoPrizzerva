@@ -354,7 +354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &182187400
 Transform:
   m_ObjectHideFlags: 0
@@ -2585,17 +2585,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9e4fa2dd312d84780f6798b78cdf81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  normalSpeed: 7
-  runningSpeed: 10
-  gravity: -9.81
-  jumpForce: 5
-  minZ: -12
-  maxZ: 3.25
-  minScale: 3
-  maxScale: 4
-  isGrounded: 0
-  isPunching: 0
-  isInRun: 0
   cc: {fileID: 0}
   animator: {fileID: 1304852958}
   interactMask:
@@ -2603,19 +2592,63 @@ MonoBehaviour:
     m_Bits: 0
   myCamera: {fileID: 330585545}
   staminaManager: {fileID: 0}
+  normalSpeed: 7
+  runningSpeed: 10
+  gravity: -9.81
+  jumpForce: 5
+  walkingSpeed: 3
+  runningBaseSpeed: 6
+  runningPhase2Multiplier: 1.4
+  runningPhase3Multiplier: 1.8
+  tiredSpeed: 1
+  glidingSpeed: 3
+  punchingSpeed: 2
+  punchRunningBaseSpeed: 6
+  runningStaminaCostPhase1: 10
+  runningStaminaCostPhase2: 14
+  runningStaminaCostPhase3: 18
+  punchStaminaCostPhase0: 2
+  punchRunningStaminaCostPhase1: 2
+  punchRunningStaminaCostPhase2: 4
+  punchRunningStaminaCostPhase3: 6
+  thrustPhaseThreshold: 1.5
+  runningTurnSpeedNormal: 4
+  runningTurnSpeedPhase3: 2
+  walkingTurnSpeed: 5
+  tiredTurnSpeed: 10
+  glidingTurnSpeed: 5
+  punchRunningTurnSpeed: 4
+  minZ: -12
+  maxZ: 3.25
+  minScale: 3
+  maxScale: 4
+  canMove: 1
+  isGrounded: 0
+  isPunching: 0
+  isInRun: 0
   currentSpeed: {x: 0, y: 0, z: 0}
   lastDirection: {x: 0, y: 0, z: 0}
   lastVerticalKey: 0
   lastHorizontalKey: 0
   isInsideRing: 0
-  hasKnockback: 0
-  knockbackVelocity: {x: 0, y: 0, z: 0}
+  ringSlopeHandler: {fileID: 0}
   normalPunchTimer: 0
   normalPunchCooldown: 0.5
   damageBoost: 0
   endurance: 0
   enduranceDistance: 0
-  canMove: 1
+  pushForceSelf: 10
+  pushForceMostlySelf: 5
+  pushForceBoth: 3.5
+  pushForceMostlyOther: 3
+  pushForceOnlyOther: 0
+  pushForceOtherPlus: 15
+  sprintPunchMinPush: 3
+  pushForceBaseMultiplier: 2
+  hasKnockback: 0
+  knockbackVelocity: {x: 0, y: 0, z: 0}
+  knockbackDecaySpeed: 5
+  knockbackMinVelocity: 1
 --- !u!143 &1304852960
 CharacterController:
   m_ObjectHideFlags: 0

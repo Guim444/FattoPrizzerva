@@ -7,19 +7,48 @@ public class RingScript : MonoBehaviour
     public float jumpDistance;
     public GameObject ringArea;
     //public bool canExit;
+    
+    private bool isTeleporting = false; // Prevent multiple simultaneous teleportations
     public void OnTriggerEnter(Collider other)
     {
-        other.GetComponent<PlayerController>().isInsideRing = true;
-
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !isTeleporting)
         {
-            StartCoroutine(GetIntoTheRing(other));
+            PlayerController pc = other.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.isInsideRing = true;
+                
+                // TEMPORARY: Always use teleportation for now
+                // TODO: Once teleportation is confirmed working from all angles, 
+                // transition to gliding system by uncommenting the conditional check below
+                // and commenting out the direct call
+                
+                // CRITICAL: Disable CharacterController IMMEDIATELY to prevent movement during teleport
+                CharacterController cc = other.gameObject.GetComponent<CharacterController>();
+                if (cc != null && cc.enabled)
+                {
+                    cc.enabled = false;
+                }
+                
+                isTeleporting = true;
+                StartCoroutine(GetIntoTheRing(other));
+                
+                // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+                // Phase 2: If slope system is not active, use teleportation as fallback
+                // if (pc.ringSlopeHandler == null || !pc.isOnSlope)
+                // {
+                //     StartCoroutine(GetIntoTheRing(other));
+                // }
+            }
         }
     }
     IEnumerator GetIntoTheRing(Collider other)
     {
         Debug.Log("Getting into the ring");
-        other.gameObject.GetComponent<CharacterController>().enabled = false;
+        
+        // CharacterController already disabled in OnTriggerEnter for immediate stop
+        // other.gameObject.GetComponent<CharacterController>().enabled = false;
+        
         gameObject.GetComponent<CapsuleCollider>().enabled = false;
         other.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 6;
 
@@ -31,10 +60,14 @@ public class RingScript : MonoBehaviour
             other.transform.position.y,
             other.transform.position.z + direction.z * 2 + jumpDistance
         );
-        other.gameObject.transform.position = Vector3.Lerp(other.gameObject.transform.position, desiredPosition, 0.75f);
+        
+        // Set position immediately instead of Lerp (Lerp with single value doesn't animate)
+        other.gameObject.transform.position = desiredPosition;
+        
         ringArea.GetComponent<CapsuleCollider>().enabled = true;
         yield return new WaitForSeconds(0.5f);
         other.gameObject.GetComponent<CharacterController>().enabled = true;
+        isTeleporting = false; // Allow teleportation again
     }
 
 

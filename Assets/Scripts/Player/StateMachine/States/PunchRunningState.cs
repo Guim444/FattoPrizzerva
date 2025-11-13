@@ -7,8 +7,8 @@ public class PunchRunningState : IStateActions
     public PlayerController player;
     public CharacterController controller;
     public PlayerStaminaManager stamina;
-    public float staminaCost = 5f;
-    public float baseSpeed = 6, actualSpeed;
+    public float staminaCost = 5f; // Will be overridden by player's tuning values
+    public float baseSpeed = 6, actualSpeed; // baseSpeed will be overridden by player.punchRunningBaseSpeed
 
     public BoxCollider punchCollider;
 
@@ -20,12 +20,14 @@ public class PunchRunningState : IStateActions
     {
         player.animator.speed = 1;
         Debug.Log("Entered PunchingState State");
+        
+        baseSpeed = player.punchRunningBaseSpeed; // Use player's tuning value
 
         switch (player.damageBoost)
         {
-            case 0: staminaCost = 2; break;
-            case 1: staminaCost = 4; break;
-            case 2: staminaCost = 6; break;
+            case 0: staminaCost = player.punchRunningStaminaCostPhase1; break;
+            case 1: staminaCost = player.punchRunningStaminaCostPhase2; break;
+            case 2: staminaCost = player.punchRunningStaminaCostPhase3; break;
         }
 
         if (player.staminaManager.currentStamina - staminaCost >= 0)
@@ -42,7 +44,7 @@ public class PunchRunningState : IStateActions
     {
         //will keep moving in X direction while punching, but you can modify Y direction with input.
         Vector3 input = player.lastDirection;
-        Vector3 toMove = player.ApplyInertia(input, Time.deltaTime, 4f);
+        Vector3 toMove = player.ApplyInertia(input, Time.deltaTime, player.punchRunningTurnSpeed);
         toMove.y = 0; // Keep Y movement zero to maintain horizontal movement only
 
         if (player.damageBoost == 2)

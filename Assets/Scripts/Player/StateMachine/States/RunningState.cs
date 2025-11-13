@@ -5,13 +5,13 @@ public class RunningState : IStateActions
 
     public PlayerController player;
     public CharacterController controller;
-    public float baseSpeed = 6f, actualSpeed;
+    public float baseSpeed = 6f, actualSpeed; // baseSpeed will be overridden by player.runningBaseSpeed
     public float staminaCostPerSecond;
 
     // Thrust phases
     private int currentThrustPhase = 1;
     public float phaseTime = 0f;
-    public float phaseThreshold = 1.5f;
+    public float phaseThreshold = 1.5f; // Will be overridden by player.thrustPhaseThreshold
 
     public PlayerStaminaManager stamina;
 
@@ -27,8 +27,10 @@ public class RunningState : IStateActions
         currentThrustPhase = 1; // Reset to phase 1 on entering running state
 
         player.animator.speed = 1;
+        baseSpeed = player.runningBaseSpeed; // Use player's tuning value
         actualSpeed = baseSpeed;
-        staminaCostPerSecond = 10;
+        phaseThreshold = player.thrustPhaseThreshold; // Use player's tuning value
+        staminaCostPerSecond = player.runningStaminaCostPhase1; // Use player's tuning value
         stamina.SetRunning(staminaCostPerSecond);
     }
 
@@ -42,14 +44,21 @@ public class RunningState : IStateActions
 
         // apply inertia to smooth turning
         float inertiaTurnSpeed;
-        if (currentThrustPhase == 3) inertiaTurnSpeed = 2f; // less directional control in phase 3
-        else inertiaTurnSpeed = 4;
+        if (currentThrustPhase == 3) inertiaTurnSpeed = player.runningTurnSpeedPhase3; // less directional control in phase 3
+        else inertiaTurnSpeed = player.runningTurnSpeedNormal;
 
-            Vector3 toMove = player.ApplyInertia(input, dt, inertiaTurnSpeed);
+        // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+        // Phase 2: Don't handle movement if on slope (GlidingState handles it)
+        // if (player.isOnSlope)
+        // {
+        //     return;
+        // }
+
+        Vector3 toMove = player.ApplyInertia(input, dt, inertiaTurnSpeed);
         toMove.y = 0;
 
         // move controller
-        if (controller.enabled)
+        if (controller.enabled && toMove != Vector3.zero)
         {
             float moveSpeed = actualSpeed + (currentThrustPhase - 1);
             controller.Move(toMove * moveSpeed * dt);
@@ -72,7 +81,7 @@ public class RunningState : IStateActions
             phaseTime = 0f;
             Debug.Log("Thrust decreased to " + currentThrustPhase);
 
-            // Forzar animación de andar
+            // Forzar animaciï¿½n de andar
             PlayerAnimations.instance.animator.SetBool("isRunning", false);
         }
         else
@@ -95,9 +104,9 @@ public class RunningState : IStateActions
                 switch (currentThrustPhase)
                 {
                     case 2:
-                        actualSpeed = baseSpeed * 1.4f;
+                        actualSpeed = baseSpeed * player.runningPhase2Multiplier; // Use player's tuning value
                         player.damageBoost = 1;
-                        staminaCostPerSecond = 14;
+                        staminaCostPerSecond = player.runningStaminaCostPhase2; // Use player's tuning value
                         stamina.SetRunning(staminaCostPerSecond);
                         CameraFollow.instance.smoothSpeed = 3f;
 
@@ -105,9 +114,9 @@ public class RunningState : IStateActions
 
                         break;
                     case 3:
-                        actualSpeed = baseSpeed * 1.8f;
+                        actualSpeed = baseSpeed * player.runningPhase3Multiplier; // Use player's tuning value
                         player.damageBoost = 2;
-                        staminaCostPerSecond = 18;
+                        staminaCostPerSecond = player.runningStaminaCostPhase3; // Use player's tuning value
                         stamina.SetRunning(staminaCostPerSecond);
 
                         player.animator.speed = 2;

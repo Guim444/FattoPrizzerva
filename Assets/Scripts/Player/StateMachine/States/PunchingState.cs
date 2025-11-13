@@ -5,8 +5,8 @@ using UnityEngine.InputSystem.XR;
 
 public class PunchingState : IStateActions
 {
-    public float speed = 2f;
-    public float staminaCostPunch = 2;
+    public float speed = 2f; // Will be overridden by player.punchingSpeed
+    public float staminaCostPunch = 2; // Will be overridden by player.punchStaminaCostPhase0
     public float baseDmg = 2;
     public PlayerController player;
     public SphereCollider punchCollider;
@@ -22,6 +22,7 @@ public class PunchingState : IStateActions
     public void Enter()
     {
         Debug.Log("Entered PunchingState State");
+        staminaCostPunch = player.punchStaminaCostPhase0; // Use player's tuning value
         player.staminaManager.ModifyStamina(-staminaCostPunch); // Example stamina cost for punching
         player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
         player.StartCoroutine(Punch(player.normalPunchTimer));
@@ -37,7 +38,7 @@ public class PunchingState : IStateActions
             input = player.GetDirectionalInput();
             if (controller.enabled == true)
             {
-                controller.Move(input * speed * Time.deltaTime); //move the character based on input and speed, the same as moving state
+                controller.Move(input * player.punchingSpeed * Time.deltaTime); //move the character based on input and speed, the same as moving state
             }
         }
         else
