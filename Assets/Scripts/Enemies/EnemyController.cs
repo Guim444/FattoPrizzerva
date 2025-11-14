@@ -18,6 +18,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public PlayerController player; // Reference to the player
 
     public CapsuleCollider hitCollider; // Collider to damage the player on contact
+    public bool canHitPlayer;
     public float hitTimer = 0, maxHitTimer; // Time between hits to the player
 
     public Vector3 knockbackSpeed;
@@ -38,12 +39,21 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
 
         if (player.battleIsActive)
         {
-            if (knockbackSpeed.magnitude > 0.1f)
+            if (knockbackSpeed.magnitude > 0.01f)
             {
-                controller.Move(knockbackSpeed * Time.deltaTime);
-                // Gradually reduce knockback speed over time
-                knockbackSpeed = Vector3.Lerp(knockbackSpeed, Vector3.zero, 5f * Time.deltaTime);
                 hasKnockback = true;
+                CollisionFlags flags = controller.Move(knockbackSpeed * Time.deltaTime);
+
+                if ((flags & CollisionFlags.Sides) != 0)
+                {
+                    knockbackSpeed = Vector3.Reflect(knockbackSpeed, Vector3.right) * 0.5f;
+                }
+                else
+                {
+                    knockbackSpeed = Vector3.Lerp(knockbackSpeed, Vector3.zero, 5f * Time.deltaTime);
+                }
+
+                hasKnockback = knockbackSpeed.magnitude > 0.01f;
             }
             else
             {
@@ -69,7 +79,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             }
             else
             {
-                hitCollider.enabled = true;
+                canHitPlayer = true;
             }
         }
         else
@@ -154,7 +164,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             TakeDamage((int)player.playerDamage);
         }
     }
-    public abstract void ChangeBossPhase();
+    public abstract IEnumerator ChangeBossPhase();
     void UpdateAttackTimer()
     {
         if (attackTime <= 0)

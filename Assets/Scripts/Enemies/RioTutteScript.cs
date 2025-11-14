@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class RioTutteScript : EnemyController
     public Vector3 finalPosition = Vector3.zero; //used to dash
 
     public float phaseTwoHP;
+    public List<GameObject> phaseThreeCollisionedObjects = new List<GameObject>();
+    public bool hasHitAnObjectAfterAPunch = false;
 
     private void Awake()
     {
@@ -19,14 +22,18 @@ public class RioTutteScript : EnemyController
 
     protected override void Update()
     {
-        if (phaseTwoHP > 0) base.Update();
+        base.Update();
+        if (enemyPhase == 2 && hasHitAnObjectAfterAPunch && knockbackSpeed.magnitude <= 0.01f)
+        {
+            hasHitAnObjectAfterAPunch = false;
+        }
+        /*if (phaseTwoHP > 0) base.Update();
         else
         {
             isMoving = false;
             isAttacking = false;
             isGrabbing = false;
-            hasKnockback = false;
-        }
+        }*/
     }
     public override void FollowPlayerLogic()
     {
@@ -35,13 +42,28 @@ public class RioTutteScript : EnemyController
         controller.Move(move * Time.deltaTime);
     }
 
-    public override void ChangeBossPhase()
+    public override IEnumerator ChangeBossPhase()
     {
-        endurance += 1;
+        while (hasKnockback)
+        {
+            yield return null;
+        }
+
+        player.battleIsActive = false;
+        player.canMove = false;
+        
+        //A little pause between phases
+        yield return new WaitForSeconds(1);
+        player.canMove = true;
+        player.battleIsActive = true;
+        enemyPhase += 1;
+
+        if (enemyPhase == 1) endurance++;
+
     }
     void OnTriggerEnter(Collider other)
     {
-        if (hitTimer <= 0 && other.CompareTag("Player") && !other.isTrigger && !isAttacking)
+        if (hitTimer <= 0 && other.CompareTag("Player") && !other.isTrigger && !isAttacking && canHitPlayer)
         {
             if (!isUsingDashGrab)
             {
@@ -55,7 +77,7 @@ public class RioTutteScript : EnemyController
                     player.PushForce(knockbackDirection, endurance);
 
                     hitTimer = maxHitTimer;
-                    hitCollider.enabled = false;
+                    canHitPlayer = false;
                 }
             }
             else //this will happen when collides with the player.
@@ -68,13 +90,24 @@ public class RioTutteScript : EnemyController
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (isUsingDashGrab && hit.gameObject.CompareTag("Wall"))
+        if ((isUsingDashGrab || hasHitAnObjectAfterAPunch) && (hit.gameObject.CompareTag("Wall") || hit.gameObject.CompareTag("Collisionable element")))
         {
             isAttacking = false;
             moveSpeed = 1.5f;
             isUsingDashGrab = false;
             attackTime = Random.Range(4, 5);
             PushForce(-finalPosition, endurance + 1, hit.gameObject);
+            if (enemyPhase == 2 && hasKnockback && hasHitAnObjectAfterAPunch && hit.gameObject.CompareTag("Collisionable element"))
+            {
+                if (!phaseThreeCollisionedObjects.Contains(hit.gameObject))
+                {
+                    phaseThreeCollisionedObjects.Add(hit.gameObject);
+
+                    SpriteRenderer sr = GetComponent<SpriteRenderer>();
+                    StartCoroutine(StopDamageAnim(sr));
+                    Debug.Log("Added object to the 'ban list'");
+                }
+            }
             finalPosition = Vector3.zero;
         }
         else if (isUsingDashGrab && hit.gameObject.CompareTag("Player"))
@@ -140,21 +173,39 @@ public class RioTutteScript : EnemyController
     }
     public override void DamagedBehaviour(int dmg)
     {
-        if (dmg >= 30)
+        if (enemyPhase == 1)
         {
-            SpriteRenderer sr = GetComponent<SpriteRenderer>();
-            sr.color = Color.red;
-            StartCoroutine(StopDamageAnim(sr));
-            phaseTwoHP = Mathf.Max(phaseTwoHP - dmg, 0);
-            Debug.Log(phaseTwoHP);
+            if (dmg >= 30)
+            {
+                SpriteRenderer sr = GetComponent<SpriteRenderer>();
+                StartCoroutine(StopDamageAnim(sr));
+                phaseTwoHP = Mathf.Max(phaseTwoHP - dmg, 0);
+                Debug.Log(phaseTwoHP);
+
+                if (phaseTwoHP <= 0)
+                {
+                    StartCoroutine(ChangeBossPhase());
+                }
+            }
+        }
+        else
+        {
+            hasHitAnObjectAfterAPunch = true; //We set it true so it can enter the collision controller if mandatory
+            StartCoroutine(AutomaticDeactivationOfHitAfterPunch());
         }
     }
     IEnumerator StopDamageAnim(SpriteRenderer sr)
     {
-        while (knockbackSpeed.magnitude > 0.1f) //while having knockback and damaged, RioTutte will be red
+        sr.color = Color.red;
+        while (hasKnockback)
         {
             yield return null;
         }
         sr.color = Color.white;
+    }
+    IEnumerator AutomaticDeactivationOfHitAfterPunch()
+    {
+        yield return new WaitForSeconds(1);
+        hasHitAnObjectAfterAPunch = false;
     }
 }
