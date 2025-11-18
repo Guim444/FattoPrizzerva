@@ -11,6 +11,8 @@ public class PunchRunningState : IStateActions
     public float baseSpeed = 6, actualSpeed; // baseSpeed will be overridden by player.punchRunningBaseSpeed
 
     public BoxCollider punchCollider;
+    public int tempEndurance = 0;
+
 
     public PunchRunningState(PlayerStaminaManager staminaManager)
     {
@@ -18,15 +20,16 @@ public class PunchRunningState : IStateActions
     }
     public void Enter()
     {
+        tempEndurance = player.endurance;
         player.animator.speed = 1;
         
         baseSpeed = player.punchRunningBaseSpeed; // Use player's tuning value
 
         switch (player.damageBoost)
         {
-            case 0: staminaCost = player.punchRunningStaminaCostPhase1; break;
-            case 1: staminaCost = player.punchRunningStaminaCostPhase2; break;
-            case 2: staminaCost = player.punchRunningStaminaCostPhase3; break;
+            case 0: staminaCost = player.punchRunningStaminaCostPhase1; player.endurance += 1; break;
+            case 1: staminaCost = player.punchRunningStaminaCostPhase2; player.endurance += 2; break;
+            case 2: staminaCost = player.punchRunningStaminaCostPhase3; player.endurance += 3; break;
         }
 
         if (player.staminaManager.currentStamina - staminaCost >= 0)
@@ -87,11 +90,8 @@ public class PunchRunningState : IStateActions
         yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
         punchCollider.enabled = true;
 
-        player.endurance += player.damageBoost + 1;
-
         yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
         punchCollider.enabled = false;
-        player.endurance -= (player.damageBoost + 1);
     }
 
     Vector3 Sprint()
@@ -111,5 +111,6 @@ public class PunchRunningState : IStateActions
         punchCollider.center = new Vector3 (0.5f, punchCollider.center.y, punchCollider.center.z);
 
         player.playerDamage = 0;
+        player.endurance = tempEndurance; //we reset the endurance
     }
 }

@@ -17,7 +17,7 @@ public class RioTutteScript : EnemyController
 
     private void Awake()
     {
-        attackTime = Random.Range(3, 5);
+        attackTime = Random.Range(3, 6);
     }
 
     protected override void Update()
@@ -63,7 +63,8 @@ public class RioTutteScript : EnemyController
     }
     void OnTriggerEnter(Collider other)
     {
-        if (hitTimer <= 0 && other.CompareTag("Player") && !other.isTrigger && !isAttacking && canHitPlayer)
+
+        /*if (hitTimer <= 0 && other.CompareTag("Player") && !other.isTrigger && !isAttacking && canHitPlayer)
         {
             if (!isUsingDashGrab)
             {
@@ -85,6 +86,39 @@ public class RioTutteScript : EnemyController
                 finalPosition = Vector3.zero;
                 GrabPlayer();
             }
+        }*/
+
+        if (!other.CompareTag("Player") || other.isTrigger || hitTimer > 0 || !canHitPlayer)
+            return;
+
+        if (isAttacking && !isUsingDashGrab)
+            return;
+
+        PlayerController player = other.GetComponent<PlayerController>();
+        if (player != null)
+        {
+            Vector3 knockbackDirection = (player.transform.position - transform.position).normalized;
+            knockbackDirection.y = 0;
+
+            if (isUsingDashGrab)
+            {
+                player.StopAllCoroutines();
+
+                player.currentState = State.Idle;
+                StateMachine.SetState(player.currentState);
+
+                finalPosition = Vector3.zero;
+                GrabPlayer();
+                return;
+            }
+            else
+            {
+                PushForce(-knockbackDirection, player.endurance, other.gameObject);
+                player.PushForce(knockbackDirection, endurance);
+
+                hitTimer = maxHitTimer;
+                canHitPlayer = false;
+            }
         }
     }
 
@@ -95,14 +129,15 @@ public class RioTutteScript : EnemyController
             isAttacking = false;
             moveSpeed = 1.5f;
             isUsingDashGrab = false;
-            attackTime = Random.Range(4, 5);
-            PushForce(-finalPosition, endurance + 1, hit.gameObject);
+            attackTime = Random.Range(3, 6);
+            float magnitude = Mathf.Max(finalPosition.magnitude, hit.transform.position.magnitude);
+            finalPosition *= magnitude;
+            StartCoroutine(DelayedPush(-finalPosition, hit.gameObject));
             if (enemyPhase == 2 && hasKnockback && hasHitAnObjectAfterAPunch && hit.gameObject.CompareTag("Collisionable element"))
             {
                 if (!phaseThreeCollisionedObjects.Contains(hit.gameObject))
                 {
                     phaseThreeCollisionedObjects.Add(hit.gameObject);
-
                     SpriteRenderer sr = GetComponent<SpriteRenderer>();
                     StartCoroutine(StopDamageAnim(sr));
                     Debug.Log("Added object to the 'ban list'");
@@ -120,17 +155,20 @@ public class RioTutteScript : EnemyController
     }
     public void GrabPlayer()
     {
-        player.canMove = false;
+        if (!isGrabbing)
+        {
+            player.canMove = false;
 
-        player.transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+            player.transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
 
-        isGrabbing = true;
-        moveSpeed = 0;
-        isAttacking = true;
-        isMoving = false;
+            isGrabbing = true;
+            moveSpeed = 0;
+            isAttacking = true;
+            isMoving = false;
 
-        float length = animator.GetCurrentAnimatorStateInfo(0).length;
-        StartCoroutine(HitPlayer(length));
+            float length = animator.GetCurrentAnimatorStateInfo(0).length;
+            StartCoroutine(HitPlayer(length));
+        }
     }
 
     IEnumerator HitPlayer(float length)
@@ -173,6 +211,18 @@ public class RioTutteScript : EnemyController
     }
     public override void DamagedBehaviour(int dmg)
     {
+        if (!isUsingDashGrab)
+        {
+            if (dmg >= 30)
+            {
+                isMoving = false;
+                isAttacking = false;
+                moveSpeed = 1.5f;
+                isUsingDashGrab = false;
+                if (attackTime <= 0) attackTime = Random.Range(3, 6);
+            }
+        }
+
         if (enemyPhase == 1)
         {
             if (dmg >= 30)
@@ -196,6 +246,7 @@ public class RioTutteScript : EnemyController
     }
     IEnumerator StopDamageAnim(SpriteRenderer sr)
     {
+        yield return null;
         sr.color = Color.red;
         while (hasKnockback)
         {
@@ -207,5 +258,11 @@ public class RioTutteScript : EnemyController
     {
         yield return new WaitForSeconds(1);
         hasHitAnObjectAfterAPunch = false;
+    }
+
+    IEnumerator DelayedPush(Vector3 dir, GameObject obj)
+    {
+        yield return null;
+        PushForce(dir, endurance + 1, obj);
     }
 }

@@ -152,7 +152,19 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
                 pushMultiplier = 15f;
                 break;
         }
-        knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+        //knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+
+        Vector3 newKnockback = direction.normalized * pushMultiplier * 2f;
+
+        if (Vector3.Dot(knockbackSpeed, newKnockback) > 0)
+        {
+            knockbackSpeed += newKnockback;
+        }
+        else
+        {
+            float inertiaFactor = 0.5f;
+            knockbackSpeed = knockbackSpeed * inertiaFactor + newKnockback;
+        }
 
         if ((int)enduranceDistance <= 2)
         {

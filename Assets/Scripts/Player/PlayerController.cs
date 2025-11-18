@@ -107,6 +107,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public bool isGrounded;
     public bool isPunching;
     public bool isInRun;
+    public bool canAttack = true;
 
     // ============================================
     // MOVEMENT & INPUT
