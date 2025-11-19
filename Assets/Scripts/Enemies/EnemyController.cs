@@ -26,6 +26,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public int enemyPhase = 0;
     public float attackTime; //Used to know when the enemy is ready to attack.
 
+    public bool canBeKnockedback;
     public float HP { get; set; }
 
     //Animator controllers

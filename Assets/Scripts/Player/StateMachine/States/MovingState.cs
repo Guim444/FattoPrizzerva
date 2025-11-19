@@ -16,7 +16,6 @@ public class MovingState : IStateActions
     private Vector3 velocity;
     public void Enter()
     {
-        Debug.Log("Entered Moving State");
         stamina.SetWalking();
     }
 
@@ -39,7 +38,6 @@ public class MovingState : IStateActions
     }
     public void Exit()
     {
-        Debug.Log("Exited Moving State");
     }
 
 }

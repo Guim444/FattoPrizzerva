@@ -645,8 +645,9 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  enemyPhase: 1
+  enemyPhase: 2
   attackTime: 0
+  canBeKnockedback: 1
   isAttacking: 0
   isMoving: 0
   hasKnockback: 0
@@ -3128,6 +3129,7 @@ MonoBehaviour:
   isGrounded: 0
   isPunching: 0
   isInRun: 0
+  canAttack: 1
   currentSpeed: {x: 0, y: 0, z: 0}
   lastDirection: {x: 0, y: 0, z: 0}
   lastVerticalKey: 0

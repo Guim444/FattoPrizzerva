@@ -44,22 +44,30 @@ public class RioTutteScript : EnemyController
 
     public override IEnumerator ChangeBossPhase()
     {
-        while (hasKnockback)
+        if (enemyPhase == 1) //The float starts in zero, so phase 2 is enemyPhase = 1
         {
-            yield return null;
+            while (hasKnockback)
+            {
+                yield return null;
+            }
+
+            player.battleIsActive = false;
+            player.canMove = false;
+
+            //A little pause between phases
+            yield return new WaitForSeconds(1);
+            player.canMove = true;
+            player.battleIsActive = true;
+            endurance++;
         }
+        else if (enemyPhase == 2)
+        {
+            Debug.Log("A");
+            player.battleIsActive = false;
+            player.canMove = false;
 
-        player.battleIsActive = false;
-        player.canMove = false;
-        
-        //A little pause between phases
-        yield return new WaitForSeconds(1);
-        player.canMove = true;
-        player.battleIsActive = true;
-        enemyPhase += 1;
-
-        if (enemyPhase == 1) endurance++;
-
+        }
+        enemyPhase++;
     }
     void OnTriggerEnter(Collider other)
     {
@@ -144,6 +152,13 @@ public class RioTutteScript : EnemyController
                 }
             }
             finalPosition = Vector3.zero;
+
+            Debug.Log(phaseThreeCollisionedObjects.Count);
+            if (phaseThreeCollisionedObjects.Count >= 1)
+            {
+                StartCoroutine(ChangeBossPhase());
+            }
+
         }
         else if (isUsingDashGrab && hit.gameObject.CompareTag("Player"))
         {
@@ -211,11 +226,11 @@ public class RioTutteScript : EnemyController
     }
     public override void DamagedBehaviour(int dmg)
     {
-        if (!isUsingDashGrab)
+        if (isUsingDashGrab)
         {
-            if (dmg >= 30)
+            if (canBeKnockedback)
             {
-                isMoving = false;
+                isMoving = true;
                 isAttacking = false;
                 moveSpeed = 1.5f;
                 isUsingDashGrab = false;
@@ -238,8 +253,9 @@ public class RioTutteScript : EnemyController
                 }
             }
         }
-        else
+        else if (enemyPhase == 2)
         {
+
             hasHitAnObjectAfterAPunch = true; //We set it true so it can enter the collision controller if mandatory
             StartCoroutine(AutomaticDeactivationOfHitAfterPunch());
         }
