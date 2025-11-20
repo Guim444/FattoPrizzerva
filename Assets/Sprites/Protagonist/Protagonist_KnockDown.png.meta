@@ -100,7 +100,7 @@ TextureImporter:
       name: Protagonist_KnockDown_0
       rect:
         serializedVersion: 2
-        x: 82
+        x: 110
         y: 664
         width: 64
         height: 85
@@ -122,7 +122,7 @@ TextureImporter:
       name: Protagonist_KnockDown_1
       rect:
         serializedVersion: 2
-        x: 342
+        x: 366
         y: 663
         width: 60
         height: 75
@@ -144,7 +144,7 @@ TextureImporter:
       name: Protagonist_KnockDown_2
       rect:
         serializedVersion: 2
-        x: 102
+        x: 81
         y: 541
         width: 73
         height: 81
@@ -166,7 +166,7 @@ TextureImporter:
       name: Protagonist_KnockDown_3
       rect:
         serializedVersion: 2
-        x: 357
+        x: 334
         y: 551
         width: 77
         height: 70
@@ -188,7 +188,7 @@ TextureImporter:
       name: Protagonist_KnockDown_4
       rect:
         serializedVersion: 2
-        x: 103
+        x: 84
         y: 403
         width: 69
         height: 72
@@ -210,7 +210,7 @@ TextureImporter:
       name: Protagonist_KnockDown_5
       rect:
         serializedVersion: 2
-        x: 356
+        x: 334
         y: 407
         width: 78
         height: 68
@@ -232,7 +232,7 @@ TextureImporter:
       name: Protagonist_KnockDown_6
       rect:
         serializedVersion: 2
-        x: 100
+        x: 62
         y: 282
         width: 94
         height: 55
@@ -254,7 +254,7 @@ TextureImporter:
       name: Protagonist_KnockDown_7
       rect:
         serializedVersion: 2
-        x: 356
+        x: 303
         y: 282
         width: 109
         height: 35
@@ -276,7 +276,7 @@ TextureImporter:
       name: Protagonist_KnockDown_8
       rect:
         serializedVersion: 2
-        x: 100
+        x: 30
         y: 154
         width: 126
         height: 25
@@ -298,7 +298,7 @@ TextureImporter:
       name: Protagonist_KnockDown_9
       rect:
         serializedVersion: 2
-        x: 356
+        x: 286
         y: 154
         width: 126
         height: 25
@@ -320,7 +320,7 @@ TextureImporter:
       name: Protagonist_KnockDown_10
       rect:
         serializedVersion: 2
-        x: 100
+        x: 30
         y: 26
         width: 126
         height: 25
