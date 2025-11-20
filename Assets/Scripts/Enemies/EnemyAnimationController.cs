@@ -5,7 +5,7 @@ public abstract class EnemyAnimationController : MonoBehaviour
     public Animator animator;
     public EnemyController enemy;
     // Update is called once per frame
-    private void Awake()
+    protected virtual void Awake()
     {
         animator = GetComponent<Animator>();
         enemy = GetComponent<EnemyController>();
@@ -14,5 +14,7 @@ public abstract class EnemyAnimationController : MonoBehaviour
     {
         animator.SetBool("isMoving", enemy.isMoving);
         animator.SetBool("isAttacking", enemy.isAttacking);
+        animator.SetBool("hasKnockback", enemy.hasKnockback);
+        animator.SetBool("damageCondition", enemy.damageCondition);
     }
 }

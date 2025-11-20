@@ -25,6 +25,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
 
     public int enemyPhase = 0;
     public float attackTime; //Used to know when the enemy is ready to attack.
+    public bool attackChosen; //Used to know if the enemy has already picked one attack randomly.
 
     public bool canBeKnockedback;
     public float HP { get; set; }

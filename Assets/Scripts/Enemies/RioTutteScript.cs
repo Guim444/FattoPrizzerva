@@ -3,21 +3,26 @@ using System.Collections.Generic;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RioTutteScript : EnemyController
 {
     public float moveSpeed;
 
-    bool isUsingDashGrab = false, isGrabbing = false;
+    public bool isUsingDashGrab = false, isGrabbing = false;
     public Vector3 finalPosition = Vector3.zero; //used to dash
 
     public float phaseTwoHP;
     public List<GameObject> phaseThreeCollisionedObjects = new List<GameObject>();
     public bool hasHitAnObjectAfterAPunch = false;
 
+    public List<UnityAction> attackList = new List<UnityAction>();
+    int randomAttackSlot = 0; //this is used to choose randomly one of the attacks
+
     private void Awake()
     {
         attackTime = Random.Range(3, 6);
+        attackList.Add(DashGrab);
     }
 
     protected override void Update()
@@ -45,9 +50,13 @@ public class RioTutteScript : EnemyController
     public override IEnumerator ChangeBossPhase()
     {
         enemyPhase++;
-
-        if (enemyPhase == 2)
+        if (enemyPhase == 1)
         {
+            if (!attackList.Contains(DashGrab)) attackList.Add(DashGrab);
+        }
+        else if (enemyPhase == 2)
+        {
+            if (!attackList.Contains(FireDash)) attackList.Add(FireDash);
             player.canMove = false;
 
             yield return new WaitForSeconds(0.5f);
@@ -212,7 +221,12 @@ public class RioTutteScript : EnemyController
     {
         if (enemyPhase >= 1)
         {
-            DashGrab();
+            if (attackChosen)
+            {
+                randomAttackSlot = Random.Range(0, attackList.Count + 1);
+                attackChosen = true;
+            }
+            attackList[randomAttackSlot].Invoke();
         }
     }
 
@@ -229,6 +243,13 @@ public class RioTutteScript : EnemyController
         FlipCharacter(finalPosition);
         controller.Move(finalPosition * moveSpeed * Time.deltaTime);
     }
+
+    public void FireDash()
+    {
+        Debug.Log("Por implementar");
+        attackTime = Random.Range(3, 6);
+    }
+
     public override void DamagedBehaviour(int dmg)
     {
         if (isUsingDashGrab)
