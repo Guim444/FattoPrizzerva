@@ -64,6 +64,11 @@ public class PunchRunningState : IStateActions
     {
         switch (player.damageBoost)
         {
+            case 0:
+                actualSpeed = baseSpeed * 1.2f;
+                CameraFollow.instance.smoothSpeed = 2f;
+                player.playerDamage = player.thrustDamage1;
+                break;
             case 1:
                 actualSpeed = baseSpeed * 1.4f;
                 CameraFollow.instance.smoothSpeed = 3f;
@@ -88,10 +93,16 @@ public class PunchRunningState : IStateActions
     IEnumerator Punch(float duration)
     {
         yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
-        punchCollider.enabled = true;
 
-        yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
-        punchCollider.enabled = false;
+        if (player.canAttack)
+        {
+            player.endurance += 1; // Gain endurance on punch
+            punchCollider.enabled = true;
+
+            yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
+            player.endurance -= 1; // Remove gained endurance
+            punchCollider.enabled = false;
+        }
     }
 
     Vector3 Sprint()

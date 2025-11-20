@@ -38,7 +38,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     {
         UpdateScaleBasedOnZ();
 
-        if (player.battleIsActive)
+        if (GenericBattleManager.instance.battleIsActive)
         {
             if (knockbackSpeed.magnitude > 0.01f)
             {

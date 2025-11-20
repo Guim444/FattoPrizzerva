@@ -596,7 +596,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!65 &182187403
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -645,7 +645,7 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  enemyPhase: 2
+  enemyPhase: 1
   attackTime: 0
   canBeKnockedback: 1
   isAttacking: 0
@@ -1046,7 +1046,7 @@ Transform:
   m_GameObject: {fileID: 297645029}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.14, y: -5.56, z: -0}
+  m_LocalPosition: {x: -6.01, y: -6.73, z: -0}
   m_LocalScale: {x: 0.26, y: 0.3148523, z: 0.25999996}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1295,7 +1295,7 @@ Transform:
   m_GameObject: {fileID: 344889072}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.76, y: 0, z: -3.67505}
+  m_LocalPosition: {x: 20, y: 0, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1327,7 +1327,7 @@ Transform:
   m_GameObject: {fileID: 391001209}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.47, y: 0.18, z: -3.61}
+  m_LocalPosition: {x: 8.5, y: 0.18, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3098,7 +3098,6 @@ MonoBehaviour:
   thrustDamage2: 30
   thrustDamage3: 50
   playerDamage: 0
-  battleIsActive: 0
   walkingSpeed: 3
   runningBaseSpeed: 6
   runningPhase2Multiplier: 1.4
@@ -3775,7 +3774,7 @@ Transform:
   m_GameObject: {fileID: 1609285430}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15.26, y: -6.34, z: 0}
+  m_LocalPosition: {x: 15.58, y: -6.68, z: 0}
   m_LocalScale: {x: -0.26, y: 0.3148523, z: 0.25999996}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4308,6 +4307,53 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.015025898, y: 4.9398518, z: 0.34254882}
   m_Center: {x: 0.026157783, y: 0.10007107, z: 0.11542752}
+--- !u!1 &1900286386
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1900286387}
+  - component: {fileID: 1900286388}
+  m_Layer: 0
+  m_Name: BattleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1900286387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900286386}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.65255, y: 0, z: -2.3635}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1900286388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900286386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6e3f72c46fd0a4288bc96b9ec39b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RioTutteBattleManager
+  player: {fileID: 1304852959}
+  battleIsActive: 1
+  rioTutte: {fileID: 182187404}
 --- !u!1 &1911560837
 GameObject:
   m_ObjectHideFlags: 0
@@ -4993,3 +5039,4 @@ SceneRoots:
   - {fileID: 1403730137}
   - {fileID: 832575519}
   - {fileID: 410087041}
+  - {fileID: 1900286387}

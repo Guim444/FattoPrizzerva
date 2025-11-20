@@ -31,7 +31,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public float HP { get; set; }
     public float basicPunchDamage, thrustDamage1, thrustDamage2, thrustDamage3;
     public float playerDamage; // The base damage that the player inflicts. It's used every time the player attacks.
-    public bool battleIsActive; // If player dies, this will be false
 
     // ============================================
     // GAME DESIGN TUNING - MOVEMENT SPEEDS
@@ -206,7 +205,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     // ============================================
     void Awake()
     {
-        battleIsActive = true;
+        if (GenericBattleManager.instance != null)
+        {
+            GenericBattleManager.instance.battleIsActive = true;
+        }
+
         HP = 2;
         
         // Get component references
@@ -626,7 +629,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         canMove = false;
         animator.speed = 1;
         animator.SetBool("isDead", true);
-        battleIsActive = false;
+        GenericBattleManager.instance.battleIsActive = false;
     }
 
     // ============================================

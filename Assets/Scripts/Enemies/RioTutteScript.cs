@@ -44,30 +44,28 @@ public class RioTutteScript : EnemyController
 
     public override IEnumerator ChangeBossPhase()
     {
-        if (enemyPhase == 1) //The float starts in zero, so phase 2 is enemyPhase = 1
-        {
-            while (hasKnockback)
-            {
-                yield return null;
-            }
+        enemyPhase++;
 
-            player.battleIsActive = false;
+        if (enemyPhase == 2)
+        {
             player.canMove = false;
+
+            yield return new WaitForSeconds(0.5f);
+            yield return new WaitUntil(() => !hasKnockback);
+
+            RioTutteBattleManager.instance.battleIsActive = false;
 
             //A little pause between phases
             yield return new WaitForSeconds(1);
             player.canMove = true;
-            player.battleIsActive = true;
+            RioTutteBattleManager.instance.battleIsActive = true;
             endurance++;
         }
-        else if (enemyPhase == 2)
+        else if (enemyPhase == 3)
         {
-            Debug.Log("A");
-            player.battleIsActive = false;
-            player.canMove = false;
-
+            yield return null;
+            RioTutteBattleManager.instance.TriggerCinematic();
         }
-        enemyPhase++;
     }
     void OnTriggerEnter(Collider other)
     {
@@ -172,9 +170,12 @@ public class RioTutteScript : EnemyController
     {
         if (!isGrabbing)
         {
-            player.canMove = false;
+            int extraX = player.transform.position.x > transform.position.x ? 1 : -1;
+            Vector3 grabbedPosition = new Vector3(transform.position.x + extraX, player.transform.position.y, transform.position.z);
+            Vector3 displacement = grabbedPosition - player.transform.position;
+            player.cc.Move(displacement);
 
-            player.transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+            player.canMove = false;
 
             isGrabbing = true;
             moveSpeed = 0;
@@ -191,6 +192,10 @@ public class RioTutteScript : EnemyController
         yield return new WaitForSeconds(length);
         Vector3 pushDirection = new Vector3((player.transform.position - transform.position).x, 0, (player.transform.position - transform.position).z);
         player.PushForce(pushDirection, player.endurance + 2); //we ensure this value is always superior to the player's endurance
+
+        player.currentState = State.Knockedback;
+        StateMachine.SetState(player.currentState);
+
         player.TakeDamage(1);
         if (player.HP > 0) player.canMove = true;
         attackTime = Random.Range(3, 6);
@@ -281,4 +286,6 @@ public class RioTutteScript : EnemyController
         yield return null;
         PushForce(dir, endurance + 1, obj);
     }
+
+    
 }

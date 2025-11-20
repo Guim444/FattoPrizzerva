@@ -52,12 +52,16 @@ public class PunchingState : IStateActions
         //Time is divided in 30 parts for better timing control with the frame-based animation
 
         yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
-        player.endurance += 1; // Gain endurance on punch
-        punchCollider.enabled = true;
 
-        yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
-        player.endurance -= 1; // Remove the gained endurance
-        punchCollider.enabled = false;
+        if (player.canAttack)
+        {
+            player.endurance += 1; // Gain endurance on punch
+            punchCollider.enabled = true;
+
+            yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
+            player.endurance -= 1; // Remove gained endurance
+            punchCollider.enabled = false;
+        }
     }
     public void Exit()
     {
