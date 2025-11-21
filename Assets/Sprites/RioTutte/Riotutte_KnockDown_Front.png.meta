@@ -95,12 +95,232 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 16
+        width: 28
+        height: 85
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 483bd1d0d964bae46830cfc51ce89e59
+      internalID: -690984266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_1
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 16
+        width: 27
+        height: 83
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bfec5ad3eb53a1044b0a668a09188b0f
+      internalID: -1346132619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_2
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 16
+        width: 26
+        height: 81
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 93cfe374585ca9a4b807e6dd76fee3e7
+      internalID: -1748129016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_3
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 16
+        width: 24
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da25242c46b04cc4487c2ed33b56f0f9
+      internalID: -1954915878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_4
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 17
+        width: 24
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d43cf1150536e0044be7f18897d7dcb3
+      internalID: -1154549148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_6
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 20
+        width: 33
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c9ccf4a1de7ece48a147a8e7a194dd3
+      internalID: -121280494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_7
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 16
+        width: 36
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d41b2a0293393948b4b84ddaacc5f3d
+      internalID: -1786783789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_8
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 20
+        width: 36
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 857737059618fdd4e8dce3b5cf16c661
+      internalID: -2038620725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_9
+      rect:
+        serializedVersion: 2
+        x: 498
+        y: 20
+        width: 67
+        height: 66
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2a50f07cd6f8eb44a40be5be9b18763
+      internalID: 29717301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_KnockDown_Front_10
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 12
+        width: 83
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d7207989e3f2f84585eb814efc87a80
+      internalID: -1861749267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b0d84b6774930e54c8f2eb8460dfc5e4
     internalID: 0
     vertices: []
     indices: 
@@ -108,8 +328,21 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Riotutte_KnockDown_Front_0: -690984266
+      Riotutte_KnockDown_Front_1: -1346132619
+      Riotutte_KnockDown_Front_10: -1861749267
+      Riotutte_KnockDown_Front_2: -1748129016
+      Riotutte_KnockDown_Front_3: -1954915878
+      Riotutte_KnockDown_Front_4: -1154549148
+      Riotutte_KnockDown_Front_5: 936257718
+      Riotutte_KnockDown_Front_6: -121280494
+      Riotutte_KnockDown_Front_7: -1786783789
+      Riotutte_KnockDown_Front_8: -2038620725
+      Riotutte_KnockDown_Front_9: 29717301
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

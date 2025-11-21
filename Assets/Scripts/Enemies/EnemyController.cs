@@ -188,6 +188,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         }
         else
         {
+            attackChosen = false;
             attackTime -= Time.deltaTime;
         }
     }

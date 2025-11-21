@@ -9,7 +9,7 @@ public class RioTutteScript : EnemyController
 {
     public float moveSpeed;
 
-    public bool isUsingDashGrab = false, isGrabbing = false;
+    public bool isUsingDashGrab = false, isGrabbing = false, isUsingFireDash = false;
     public Vector3 finalPosition = Vector3.zero; //used to dash
 
     public float phaseTwoHP;
@@ -19,10 +19,13 @@ public class RioTutteScript : EnemyController
     public List<UnityAction> attackList = new List<UnityAction>();
     int randomAttackSlot = 0; //this is used to choose randomly one of the attacks
 
+    public float fireDashDistance;
+
     private void Awake()
     {
         attackTime = Random.Range(3, 6);
-        attackList.Add(DashGrab);
+        //attackList.Add(DashGrab);
+        attackList.Add(FireDash);
     }
 
     protected override void Update()
@@ -79,34 +82,13 @@ public class RioTutteScript : EnemyController
     void OnTriggerEnter(Collider other)
     {
 
-        /*if (hitTimer <= 0 && other.CompareTag("Player") && !other.isTrigger && !isAttacking && canHitPlayer)
-        {
-            if (!isUsingDashGrab)
-            {
-                knockbackDirection = lastDir;
-                knockbackDirection.y = 0;
-
-                PlayerController player = other.GetComponent<PlayerController>();
-                if (player != null)
-                {
-                    PushForce(-knockbackDirection, player.endurance, other.gameObject);
-                    player.PushForce(knockbackDirection, endurance);
-
-                    hitTimer = maxHitTimer;
-                    canHitPlayer = false;
-                }
-            }
-            else //this will happen when collides with the player.
-            {
-                finalPosition = Vector3.zero;
-                GrabPlayer();
-            }
-        }*/
-
         if (!other.CompareTag("Player") || other.isTrigger || hitTimer > 0 || !canHitPlayer)
             return;
 
         if (isAttacking && !isUsingDashGrab)
+            return;
+
+        if (isUsingFireDash)
             return;
 
         PlayerController player = other.GetComponent<PlayerController>();
@@ -167,6 +149,9 @@ public class RioTutteScript : EnemyController
             }
 
         }
+
+
+
         else if (isUsingDashGrab && hit.gameObject.CompareTag("Player"))
         {
             //In this case, it grabs the player when he's not looking at RioTutte. That's why player should flip.
@@ -221,10 +206,11 @@ public class RioTutteScript : EnemyController
     {
         if (enemyPhase >= 1)
         {
-            if (attackChosen)
+            if (!attackChosen)
             {
-                randomAttackSlot = Random.Range(0, attackList.Count + 1);
+                randomAttackSlot = Random.Range(0, attackList.Count);
                 attackChosen = true;
+                Debug.Log(randomAttackSlot);
             }
             attackList[randomAttackSlot].Invoke();
         }
@@ -246,10 +232,54 @@ public class RioTutteScript : EnemyController
 
     public void FireDash()
     {
-        Debug.Log("Por implementar");
-        attackTime = Random.Range(3, 6);
-    }
+        if (!isUsingFireDash)
+        {
+            Vector3 distance = lastDir;
+            finalPosition = new Vector3(distance.x, 0, distance.z).normalized;
+            isAttacking = true;
+            isUsingFireDash = true;
 
+            Collider[] colliders = GetComponents<Collider>();
+            controller.detectCollisions = false;
+            foreach (Collider collider in colliders)
+            {
+                if (!(collider is CharacterController))
+                {
+                    collider.isTrigger = true;
+                }
+            }
+        }
+        moveSpeed = 15;
+        FlipCharacter(finalPosition);
+        controller.Move(finalPosition * moveSpeed * Time.deltaTime);
+        float length = animator.GetCurrentAnimatorStateInfo(0).length;
+        StartCoroutine(EndFireDash(length));
+    }
+    IEnumerator EndFireDash(float length)
+    {
+        Vector3 startPosition = transform.position;
+
+        yield return new WaitForSeconds(length);
+
+        Collider[] colliders = GetComponents<Collider>();
+        controller.detectCollisions = false;
+        foreach (Collider collider in colliders)
+        {
+            if (!(collider is CharacterController))
+            {
+                collider.isTrigger = true;
+            }
+        }
+
+        moveSpeed = 0;
+        isUsingFireDash = false;
+        attackTime = Random.Range(3, 6);
+        //reset values
+        isMoving = true;
+        isAttacking = false;
+        moveSpeed = 1.5f;
+        yield return new WaitForSeconds(1);
+    }
     public override void DamagedBehaviour(int dmg)
     {
         if (isUsingDashGrab)

@@ -12,5 +12,6 @@ public class RioTutteAnimations : EnemyAnimationController
     {
         base.Update();
         animator.SetBool("dashGrab", rioTutte.isUsingDashGrab);
+        animator.SetBool("fireDash", rioTutte.isUsingFireDash);
     }
 }
