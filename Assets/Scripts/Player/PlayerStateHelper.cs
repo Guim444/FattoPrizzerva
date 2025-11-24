@@ -55,7 +55,7 @@ public static class PlayerStateHelper
             }
             else
             {
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButtonDown(0))
                 {
                     return State.Punching; // Punching while idle
                 }

@@ -13,5 +13,8 @@ public class RioTutteAnimations : EnemyAnimationController
         base.Update();
         animator.SetBool("dashGrab", rioTutte.isUsingDashGrab);
         animator.SetBool("fireDash", rioTutte.isUsingFireDash);
+
+        animator.SetBool("frontFall", rioTutte.groundedTimer > 0 && rioTutte.fallDirection);
+        animator.SetBool("backFall", rioTutte.groundedTimer > 0 && !rioTutte.fallDirection);
     }
 }

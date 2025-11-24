@@ -27,7 +27,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public float attackTime; //Used to know when the enemy is ready to attack.
     public bool attackChosen; //Used to know if the enemy has already picked one attack randomly.
 
-    public bool canBeKnockedback;
+    public bool canBeKnockedback, canAttack;
     public float HP { get; set; }
 
     //Animator controllers
@@ -73,7 +73,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
                 }
             }
 
-            UpdateAttackTimer();
+            if (canAttack) UpdateAttackTimer();
 
             if (hitTimer > 0)
             {

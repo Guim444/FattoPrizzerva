@@ -13,6 +13,7 @@ public class PunchRunningState : IStateActions
     public BoxCollider punchCollider;
     public int tempEndurance = 0;
 
+    bool punchExecuted = false;
 
     public PunchRunningState(PlayerStaminaManager staminaManager)
     {
@@ -20,6 +21,10 @@ public class PunchRunningState : IStateActions
     }
     public void Enter()
     {
+        if (punchExecuted) return;
+        punchExecuted = true;
+
+
         tempEndurance = player.endurance;
         player.animator.speed = 1;
         
@@ -96,12 +101,11 @@ public class PunchRunningState : IStateActions
 
         if (player.canAttack)
         {
-            player.endurance += 1; // Gain endurance on punch
             punchCollider.enabled = true;
 
             yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
-            player.endurance -= 1; // Remove gained endurance
             punchCollider.enabled = false;
+
         }
     }
 
@@ -123,5 +127,6 @@ public class PunchRunningState : IStateActions
 
         player.playerDamage = 0;
         player.endurance = tempEndurance; //we reset the endurance
+        punchExecuted = false;
     }
 }

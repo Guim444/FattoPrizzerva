@@ -7,6 +7,8 @@ TagManager:
   - Collisionable element
   - Enemy
   - Wall
+  - Back fall
+  - Front fall
   layers:
   - Default
   - TransparentFX

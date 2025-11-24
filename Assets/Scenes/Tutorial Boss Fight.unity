@@ -591,12 +591,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 0.85000014
-  m_Radius: 0.1
+  m_Radius: 0.125
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.1, z: 0}
+  m_Center: {x: 0, y: 0.025, z: 0}
 --- !u!65 &182187403
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -645,19 +645,27 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  enemyPhase: 1
+  enemyPhase: 2
   attackTime: 0
+  attackChosen: 0
   canBeKnockedback: 1
+  canAttack: 1
   isAttacking: 0
   isMoving: 0
   hasKnockback: 0
   damageCondition: 0
   animator: {fileID: 182187406}
   moveSpeed: 1.5
+  isUsingDashGrab: 0
+  isGrabbing: 0
+  isUsingFireDash: 0
   finalPosition: {x: 0, y: 0, z: 0}
   phaseTwoHP: 100
   phaseThreeCollisionedObjects: []
   hasHitAnObjectAfterAPunch: 0
+  groundedTimer: 0
+  fallDirection: 0
+  fireDashDistance: 0
 --- !u!136 &182187405
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1032,7 +1040,7 @@ GameObject:
   - component: {fileID: 297645031}
   m_Layer: 0
   m_Name: SackManager (3)
-  m_TagString: Collisionable element
+  m_TagString: Front fall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3098,11 +3106,11 @@ MonoBehaviour:
   thrustDamage2: 30
   thrustDamage3: 50
   playerDamage: 0
-  walkingSpeed: 3
-  runningBaseSpeed: 6
+  walkingSpeed: 4.44
+  runningBaseSpeed: 7.5
   runningPhase2Multiplier: 1.4
   runningPhase3Multiplier: 1.8
-  tiredSpeed: 1
+  tiredSpeed: 2.25
   glidingSpeed: 3
   punchingSpeed: 2
   punchRunningBaseSpeed: 6
@@ -3724,7 +3732,7 @@ GameObject:
   - component: {fileID: 1589692172}
   m_Layer: 0
   m_Name: Wallbar Manager
-  m_TagString: Untagged
+  m_TagString: Front fall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3760,7 +3768,7 @@ GameObject:
   - component: {fileID: 1609285432}
   m_Layer: 0
   m_Name: Deeps Bars
-  m_TagString: Collisionable element
+  m_TagString: Back fall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

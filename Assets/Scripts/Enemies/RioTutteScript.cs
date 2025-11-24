@@ -4,6 +4,7 @@ using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class RioTutteScript : EnemyController
 {
@@ -19,18 +20,30 @@ public class RioTutteScript : EnemyController
     public List<UnityAction> attackList = new List<UnityAction>();
     int randomAttackSlot = 0; //this is used to choose randomly one of the attacks
 
-    public float fireDashDistance;
+    public float groundedTimer = 0;
+    public bool fallDirection; //true = front, false = back
+    bool isFalling;
+
+    private float fallSpeed = 2f;
+    private float fallDistance = 1f;
+    private float fallen = 0f;
 
     private void Awake()
     {
         attackTime = Random.Range(3, 6);
-        //attackList.Add(DashGrab);
-        attackList.Add(FireDash);
+        attackList.Add(DashGrab);
+        //attackList.Add(FireDash);
     }
 
     protected override void Update()
     {
         base.Update();
+
+        if (groundedTimer > 0)
+        {
+            groundedTimer -= Time.deltaTime;
+        }
+
         if (enemyPhase == 2 && hasHitAnObjectAfterAPunch && knockbackSpeed.magnitude <= 0.01f)
         {
             hasHitAnObjectAfterAPunch = false;
@@ -42,6 +55,8 @@ public class RioTutteScript : EnemyController
             isAttacking = false;
             isGrabbing = false;
         }*/
+
+
     }
     public override void FollowPlayerLogic()
     {
@@ -124,34 +139,40 @@ public class RioTutteScript : EnemyController
         if ((isUsingDashGrab || hasHitAnObjectAfterAPunch) && (hit.gameObject.CompareTag("Wall") || hit.gameObject.CompareTag("Collisionable element")))
         {
             isAttacking = false;
-            moveSpeed = 1.5f;
             isUsingDashGrab = false;
             attackTime = Random.Range(3, 6);
-            float magnitude = Mathf.Max(finalPosition.magnitude, hit.transform.position.magnitude);
-            finalPosition *= magnitude;
-            StartCoroutine(DelayedPush(-finalPosition, hit.gameObject));
-            if (enemyPhase == 2 && hasKnockback && hasHitAnObjectAfterAPunch && hit.gameObject.CompareTag("Collisionable element"))
+
+            if (enemyPhase == 2 && hasKnockback && hasHitAnObjectAfterAPunch && hit.gameObject.CompareTag("Collisionable element") && !phaseThreeCollisionedObjects.Contains(hit.gameObject))
             {
-                if (!phaseThreeCollisionedObjects.Contains(hit.gameObject))
-                {
-                    phaseThreeCollisionedObjects.Add(hit.gameObject);
-                    SpriteRenderer sr = GetComponent<SpriteRenderer>();
-                    StartCoroutine(StopDamageAnim(sr));
-                    Debug.Log("Added object to the 'ban list'");
-                }
+                canAttack = false;
+                moveSpeed = 0;
+                groundedTimer = 3;
+                fallDirection = hit.transform.parent.CompareTag("Front fall");
+                canHitPlayer = false;
+
+                StartCoroutine(FallBackDuringAnimation(animator.GetCurrentAnimatorStateInfo(0).length, 2f));
+
+                /*phaseThreeCollisionedObjects.Add(hit.gameObject);
+                SpriteRenderer sr = GetComponent<SpriteRenderer>();
+                StartCoroutine(StopDamageAnim(sr));
+                Debug.Log("Added object to the 'ban list'");*/
+            }
+            else
+            {
+                moveSpeed = 1.5f;
+                float magnitude = Mathf.Max(finalPosition.magnitude, hit.transform.position.magnitude);
+                finalPosition *= magnitude;
+                StartCoroutine(DelayedPush(-finalPosition, hit.gameObject));
             }
             finalPosition = Vector3.zero;
 
             Debug.Log(phaseThreeCollisionedObjects.Count);
-            if (phaseThreeCollisionedObjects.Count >= 1)
+            if (phaseThreeCollisionedObjects.Count >= 3)
             {
-                StartCoroutine(ChangeBossPhase());
+                StartCoroutine(ChangeBossPhase()); 
             }
 
         }
-
-
-
         else if (isUsingDashGrab && hit.gameObject.CompareTag("Player"))
         {
             //In this case, it grabs the player when he's not looking at RioTutte. That's why player should flip.
@@ -180,7 +201,6 @@ public class RioTutteScript : EnemyController
             StartCoroutine(HitPlayer(length));
         }
     }
-
     IEnumerator HitPlayer(float length)
     {
         yield return new WaitForSeconds(length);
@@ -338,5 +358,36 @@ public class RioTutteScript : EnemyController
         PushForce(dir, endurance + 1, obj);
     }
 
-    
+    /*void FallingLogic()
+    {
+        float step = fallSpeed * Time.deltaTime;
+
+        fallen += step;
+        controller.Move(new Vector3(0, 0, -step));
+
+        if (fallen >= fallDistance)
+        {
+            isFalling = false;
+            fallen = 0f;
+        }
+    }*/
+    IEnumerator FallBackDuringAnimation(float animationLength, float fallDistance)
+    {
+        string clipName = fallDirection ? "RioTutteFallFront" : "RioTutteFallBack";
+
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName(clipName));
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        float startZ = transform.position.z;
+        float targetZ = startZ - fallDistance;
+
+        while (state.normalizedTime < 1f)
+        {
+            state = animator.GetCurrentAnimatorStateInfo(0);
+            float t = state.normalizedTime;
+            float newZ = Mathf.Lerp(startZ, targetZ, t);
+            controller.Move(new Vector3(0, 0, newZ - transform.position.z));
+            yield return null;
+        }
+    }
 }

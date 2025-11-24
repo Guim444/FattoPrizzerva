@@ -13,6 +13,7 @@ public class PunchingState : IStateActions
     public CharacterController controller;
     public PlayerStaminaManager stamina;
 
+    bool punchExecuted = false;
     public PunchingState(PlayerStaminaManager staminaManager)
     {
         stamina = staminaManager;
@@ -21,6 +22,7 @@ public class PunchingState : IStateActions
     bool isMoving;
     public void Enter()
     {
+        if (punchExecuted) return;
         staminaCostPunch = player.punchStaminaCostPhase0; // Use player's tuning value
         player.staminaManager.ModifyStamina(-staminaCostPunch); // Example stamina cost for punching
         player.normalPunchTimer = player.animator.GetCurrentAnimatorStateInfo(0).length; // Set punch timer based on animation length
@@ -61,11 +63,13 @@ public class PunchingState : IStateActions
             yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
             player.endurance -= 1; // Remove gained endurance
             punchCollider.enabled = false;
+            player.canAttack = false;
         }
     }
     public void Exit()
     {
         punchCollider.enabled = false;
         player.playerDamage = 0;
+        player.canAttack = true;
     }
 }

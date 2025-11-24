@@ -279,7 +279,7 @@ TextureImporter:
         x: 498
         y: 20
         width: 67
-        height: 66
+        height: 49
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -298,10 +298,10 @@ TextureImporter:
       name: Riotutte_KnockDown_Front_10
       rect:
         serializedVersion: 2
-        x: 563
+        x: 565
         y: 12
         width: 83
-        height: 45
+        height: 24
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
