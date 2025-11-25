@@ -89,6 +89,14 @@ public class RunningState : IStateActions
         }
     }
 
+    void HandleSpeed()
+    {
+        //The speed will slowly increase. Each thrust phase will have a different acceleration instead of a different speed.
+        //Thrust phases will change when player reaches a certain speed.
+        //Formula will be the acceleration formula: v = v0 * at
+        //v = speed, v0 = initial speed, a = acceleration, t = time
+    }
+
     void HandleThrust(Vector3 currentInput)
     {
         if (currentInput != Vector3.zero)

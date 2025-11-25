@@ -14,7 +14,7 @@ public abstract class EnemyAnimationController : MonoBehaviour
     {
         animator.SetBool("isMoving", enemy.isMoving);
         animator.SetBool("isAttacking", enemy.isAttacking);
-        animator.SetBool("hasKnockback", enemy.hasKnockback);
+        animator.SetBool("hasKnockback", enemy.hasBeenPushed);
         animator.SetBool("damageCondition", enemy.damageCondition);
     }
 }

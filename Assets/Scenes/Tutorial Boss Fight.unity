@@ -119,6 +119,59 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &85474138
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 85474139}
+  - component: {fileID: 85474140}
+  m_Layer: 9
+  m_Name: StairEnemyRoadblock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &85474139
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85474138}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.6572862, y: -0.13196377, z: -0.016830903, w: 0.7418067}
+  m_LocalPosition: {x: -1.6158, y: 0.89533, z: 0.098204}
+  m_LocalScale: {x: 2.9488375, y: 0.20698948, z: 1.9715885}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1007499849}
+  m_LocalEulerAnglesHint: {x: 0, y: 32.094, z: 0}
+--- !u!65 &85474140
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85474138}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7577057, y: 1, z: 0.85791326}
+  m_Center: {x: -0.200981, y: -0.9499388, z: -0.44460347}
 --- !u!1 &94072373
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 102424659}
   - component: {fileID: 102424660}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallbarsLow
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -324,7 +377,7 @@ GameObject:
   - component: {fileID: 110771445}
   - component: {fileID: 110771444}
   - component: {fileID: 110771443}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_5 (Right)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -432,7 +485,7 @@ GameObject:
   m_Component:
   - component: {fileID: 131439128}
   - component: {fileID: 131439131}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WallbarsCollider
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -453,6 +506,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1470401674}
+  - {fileID: 1996753572}
   m_Father: {fileID: 1589692172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &131439131
@@ -492,7 +546,7 @@ GameObject:
   - component: {fileID: 182187405}
   - component: {fileID: 182187406}
   - component: {fileID: 182187407}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RioTutte
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -591,7 +645,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 0.85000014
-  m_Radius: 0.125
+  m_Radius: 0.1
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -616,8 +670,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.25, y: 0.5372747, z: 1}
-  m_Center: {x: 0, y: -0.1006299, z: -2.0228989e-16}
+  m_Size: {x: 0.25, y: 0.42258966, z: 1}
+  m_Center: {x: 0, y: -0.043287553, z: 1.7445173e-17}
 --- !u!114 &182187404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,7 +699,7 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  enemyPhase: 2
+  enemyPhase: 0
   attackTime: 0
   attackChosen: 0
   canBeKnockedback: 1
@@ -653,6 +707,7 @@ MonoBehaviour:
   isAttacking: 0
   isMoving: 0
   hasKnockback: 0
+  hasBeenPushed: 0
   damageCondition: 0
   animator: {fileID: 182187406}
   moveSpeed: 1.5
@@ -665,7 +720,6 @@ MonoBehaviour:
   hasHitAnObjectAfterAPunch: 0
   groundedTimer: 0
   fallDirection: 0
-  fireDashDistance: 0
 --- !u!136 &182187405
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -685,10 +739,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.175
-  m_Height: 0.7003384
+  m_Radius: 0.16
+  m_Height: 0.7
   m_Direction: 1
-  m_Center: {x: 0, y: -0.11169418, z: -3.890039e-16}
+  m_Center: {x: 0, y: -0.11, z: -3.890039e-16}
 --- !u!95 &182187406
 Animator:
   serializedVersion: 7
@@ -838,7 +892,7 @@ GameObject:
   m_Component:
   - component: {fileID: 254444901}
   - component: {fileID: 254444902}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bars 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -930,7 +984,7 @@ GameObject:
   - component: {fileID: 265021938}
   - component: {fileID: 265021937}
   - component: {fileID: 265021936}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_1 (Top Left)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1038,9 +1092,9 @@ GameObject:
   m_Component:
   - component: {fileID: 297645030}
   - component: {fileID: 297645031}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SackManager (3)
-  m_TagString: Front fall
+  m_TagString: Back fall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1615,7 +1669,7 @@ GameObject:
   m_Component:
   - component: {fileID: 784540613}
   - component: {fileID: 784540614}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallbarsMid
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -1825,7 +1879,7 @@ GameObject:
   - component: {fileID: 875310465}
   - component: {fileID: 875310464}
   - component: {fileID: 875310463}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_2 (Left)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -2059,9 +2113,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1007499849}
   - component: {fileID: 1007499850}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stair Collider
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2082,6 +2136,7 @@ Transform:
   - {fileID: 1163608116}
   - {fileID: 1265507656}
   - {fileID: 1068906158}
+  - {fileID: 85474139}
   m_Father: {fileID: 1582827235}
   m_LocalEulerAnglesHint: {x: 76.1, y: 97.2, z: 55.698}
 --- !u!136 &1007499850
@@ -2209,7 +2264,7 @@ GameObject:
   - component: {fileID: 1068906162}
   - component: {fileID: 1068906161}
   - component: {fileID: 1068906160}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stair Handrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2318,7 +2373,7 @@ GameObject:
   - component: {fileID: 1088311497}
   m_Layer: 0
   m_Name: Wall_System
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2458,7 +2513,7 @@ GameObject:
   - component: {fileID: 1139353458}
   - component: {fileID: 1139353459}
   - component: {fileID: 1139353460}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bars Collider
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -2534,7 +2589,7 @@ GameObject:
   - component: {fileID: 1163608120}
   - component: {fileID: 1163608119}
   - component: {fileID: 1163608118}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stair Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2782,7 +2837,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1247888264}
   - component: {fileID: 1247888265}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sack Collider
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -2839,7 +2894,7 @@ GameObject:
   - component: {fileID: 1265507660}
   - component: {fileID: 1265507659}
   - component: {fileID: 1265507658}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stair Diagonal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2955,7 +3010,7 @@ GameObject:
   - component: {fileID: 1304852961}
   - component: {fileID: 1304852962}
   - component: {fileID: 1304852963}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -3054,8 +3109,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Radius: 0.30547637
-  m_Center: {x: 0.299675, y: 2.019484e-28, z: -0.000000059604645}
+  m_Radius: 0.30048794
+  m_Center: {x: 0.3565433, y: 2.019484e-28, z: -0.000000059604645}
 --- !u!95 &1304852958
 Animator:
   serializedVersion: 7
@@ -3179,12 +3234,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.04
-  m_Radius: 0.31
+  m_Radius: 0.26
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0.1, y: -0.06, z: -0.03}
+  m_Center: {x: 0.15, y: -0.05, z: -0.03}
 --- !u!114 &1304852961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3465,7 +3520,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1422604691}
   - component: {fileID: 1422604692}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bars 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3555,7 +3610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1470401674}
   - component: {fileID: 1470401675}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WallbarColliderBottom
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -3730,7 +3785,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1589692172}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wallbar Manager
   m_TagString: Front fall
   m_Icon: {fileID: 0}
@@ -3766,7 +3821,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1609285431}
   - component: {fileID: 1609285432}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Deeps Bars
   m_TagString: Back fall
   m_Icon: {fileID: 0}
@@ -3861,7 +3916,7 @@ GameObject:
   - component: {fileID: 1611410080}
   - component: {fileID: 1611410079}
   - component: {fileID: 1611410078}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_3 (Top Center)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -3969,7 +4024,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1621101685}
   - component: {fileID: 1621101687}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SackManager
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -4060,7 +4115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1622590425}
   - component: {fileID: 1622590426}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sack Collider
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -4148,7 +4203,7 @@ GameObject:
   - component: {fileID: 1786518440}
   - component: {fileID: 1786518439}
   - component: {fileID: 1786518438}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_4 (Top Right)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -4374,7 +4429,7 @@ GameObject:
   - component: {fileID: 1911560842}
   - component: {fileID: 1911560841}
   - component: {fileID: 1911560840}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_3.5 (Upstairs limit)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -4629,6 +4684,59 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953101399}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1996753571
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1996753572}
+  - component: {fileID: 1996753573}
+  m_Layer: 8
+  m_Name: WallbarColliderBottom (1)
+  m_TagString: Collisionable element
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1996753572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996753571}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0.18881512, w: 0.9820127}
+  m_LocalPosition: {x: 0.55, y: -0.66, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 131439128}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -21.767}
+--- !u!65 &1996753573
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996753571}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.2434552, y: 1, z: 3}
+  m_Center: {x: 1.3311194, y: 0.0000010988525, z: -0.7499998}
 --- !u!1 &2031450014
 GameObject:
   m_ObjectHideFlags: 0
@@ -4639,7 +4747,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2031450015}
   - component: {fileID: 2031450016}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallbarsTop
   m_TagString: Collisionable element
   m_Icon: {fileID: 0}
@@ -4867,7 +4975,7 @@ GameObject:
   - component: {fileID: 2092698291}
   - component: {fileID: 2092698290}
   - component: {fileID: 2092698289}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_6 (Bottom)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -4883,7 +4991,7 @@ Transform:
   m_GameObject: {fileID: 2092698286}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.03, y: 0, z: -16.72}
+  m_LocalPosition: {x: 11.03, y: 0, z: -17.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []

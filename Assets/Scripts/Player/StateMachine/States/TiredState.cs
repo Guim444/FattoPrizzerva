@@ -7,6 +7,7 @@ public class TiredState : IStateActions
     public CharacterController controller;
     public PlayerStaminaManager stamina;
     public float speed = 1f; // Will be overridden by player.tiredSpeed
+    float temp;
 
     public TiredState(PlayerStaminaManager staminaManager)
     {
@@ -14,6 +15,9 @@ public class TiredState : IStateActions
     }
     public void Enter()
     {
+        temp = player.endurance;
+        player.endurance = -2; //We force player to be pushed as much as it can by temporary reducing its endurance
+
         stamina.StopAllRegenDrain();
         float length = player.animator.GetCurrentAnimatorStateInfo(0).length;
         player.StartCoroutine(StartStaminaDrop(length));
@@ -21,6 +25,7 @@ public class TiredState : IStateActions
 
     public void Exit()
     {
+        player.endurance = (int)temp;
     }
 
 

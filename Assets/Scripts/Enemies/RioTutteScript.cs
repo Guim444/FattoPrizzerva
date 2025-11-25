@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -22,17 +23,18 @@ public class RioTutteScript : EnemyController
 
     public float groundedTimer = 0;
     public bool fallDirection; //true = front, false = back
-    bool isFalling;
 
-    private float fallSpeed = 2f;
-    private float fallDistance = 1f;
-    private float fallen = 0f;
+    int layerNum;
 
     private void Awake()
     {
+        layerNum = gameObject.layer;
         attackTime = Random.Range(3, 6);
+
         attackList.Add(DashGrab);
-        //attackList.Add(FireDash);
+        attackList.Add(FireDash);
+
+        if (enemyPhase < 1) canAttack = false;
     }
 
     protected override void Update()
@@ -48,6 +50,7 @@ public class RioTutteScript : EnemyController
         {
             hasHitAnObjectAfterAPunch = false;
         }
+
         /*if (phaseTwoHP > 0) base.Update();
         else
         {
@@ -55,8 +58,6 @@ public class RioTutteScript : EnemyController
             isAttacking = false;
             isGrabbing = false;
         }*/
-
-
     }
     public override void FollowPlayerLogic()
     {
@@ -97,7 +98,7 @@ public class RioTutteScript : EnemyController
     void OnTriggerEnter(Collider other)
     {
 
-        if (!other.CompareTag("Player") || other.isTrigger || hitTimer > 0 || !canHitPlayer)
+        if (!other.CompareTag("Player") || other.isTrigger)
             return;
 
         if (isAttacking && !isUsingDashGrab)
@@ -125,6 +126,7 @@ public class RioTutteScript : EnemyController
             }
             else
             {
+                hasBeenPushed = false;
                 PushForce(-knockbackDirection, player.endurance, other.gameObject);
                 player.PushForce(knockbackDirection, endurance);
 
@@ -141,6 +143,7 @@ public class RioTutteScript : EnemyController
             isAttacking = false;
             isUsingDashGrab = false;
             attackTime = Random.Range(3, 6);
+            hasBeenPushed = true;
 
             if (enemyPhase == 2 && hasKnockback && hasHitAnObjectAfterAPunch && hit.gameObject.CompareTag("Collisionable element") && !phaseThreeCollisionedObjects.Contains(hit.gameObject))
             {
@@ -179,6 +182,11 @@ public class RioTutteScript : EnemyController
             finalPosition = Vector3.zero;
             player.FlipCharacter(transform.position - player.transform.position);
             GrabPlayer();
+        }
+
+        if (isUsingFireDash && hit.gameObject.CompareTag("Wall"))
+        {
+            StartCoroutine(FireDashBack());
         }
     }
     public void GrabPlayer()
@@ -254,26 +262,19 @@ public class RioTutteScript : EnemyController
     {
         if (!isUsingFireDash)
         {
-            Vector3 distance = lastDir;
-            finalPosition = new Vector3(distance.x, 0, distance.z).normalized;
-            isAttacking = true;
-            isUsingFireDash = true;
+            finalPosition = GetValidRandomDirection(moveSpeed * 44 / 60);
 
-            Collider[] colliders = GetComponents<Collider>();
-            controller.detectCollisions = false;
-            foreach (Collider collider in colliders)
-            {
-                if (!(collider is CharacterController))
-                {
-                    collider.isTrigger = true;
-                }
-            }
+            isUsingFireDash = true;
+            isAttacking = true;
+
+            gameObject.layer = LayerMask.NameToLayer("Invulnerable");
         }
+
         moveSpeed = 15;
         FlipCharacter(finalPosition);
         controller.Move(finalPosition * moveSpeed * Time.deltaTime);
-        float length = animator.GetCurrentAnimatorStateInfo(0).length;
-        StartCoroutine(EndFireDash(length));
+
+        StartCoroutine(EndFireDash(animator.GetCurrentAnimatorStateInfo(0).length));
     }
     IEnumerator EndFireDash(float length)
     {
@@ -281,27 +282,62 @@ public class RioTutteScript : EnemyController
 
         yield return new WaitForSeconds(length);
 
-        Collider[] colliders = GetComponents<Collider>();
-        controller.detectCollisions = false;
-        foreach (Collider collider in colliders)
-        {
-            if (!(collider is CharacterController))
-            {
-                collider.isTrigger = true;
-            }
-        }
+        gameObject.layer = layerNum;
 
         moveSpeed = 0;
         isUsingFireDash = false;
         attackTime = Random.Range(3, 6);
+
         //reset values
         isMoving = true;
         isAttacking = false;
         moveSpeed = 1.5f;
         yield return new WaitForSeconds(1);
     }
+    Vector3 GetValidRandomDirection(float distance)
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+            Vector3 dir = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)).normalized;
+
+            RaycastHit hit;
+            if (!Physics.Raycast(transform.position, dir, out hit, distance) || hit.collider.CompareTag("Wall") == false)
+            {
+                return dir;
+            }
+        }
+
+        return Vector3.zero;
+    }
+
+    //PROVISIONAL FIX:
+    public IEnumerator FireDashBack()
+    {
+        isUsingFireDash = false;
+        isAttacking = true;
+
+        Vector3 backDir = -finalPosition.normalized;
+        float dashSpeed = 15f;
+        float dashTime = 0.2f; 
+
+        float t = 0f;
+        while (t < dashTime)
+        {
+            controller.Move(backDir * dashSpeed * Time.deltaTime);
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        isAttacking = false;
+        isMoving = true;
+        moveSpeed = 1.5f;
+        attackTime = Random.Range(3, 6);
+    }
     public override void DamagedBehaviour(int dmg)
     {
+        if (dmg > 0) hasBeenPushed = true;
+
         if (isUsingDashGrab)
         {
             if (canBeKnockedback)

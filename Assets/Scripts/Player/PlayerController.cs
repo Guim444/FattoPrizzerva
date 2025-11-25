@@ -599,7 +599,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
                 knockbackDirection.y = 0;
             }
             
-            if (other.CompareTag("Enemy") && !other.isTrigger)
+            if (other.CompareTag("Enemy"))
             {
                 EnemyController enemy = other.GetComponent<EnemyController>();
                 if (enemy != null)

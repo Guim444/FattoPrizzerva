@@ -13,13 +13,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Wall
   - Water
   - UI
   - Invulnerable
-  - 
-  - 
-  - 
+  - Enemy
+  - Collisionable
+  - Enemy Roadblock
   - 
   - 
   - 

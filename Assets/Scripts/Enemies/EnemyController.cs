@@ -31,7 +31,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public float HP { get; set; }
 
     //Animator controllers
-    [Header ("Animator controllers")] public bool isAttacking, isMoving, hasKnockback, damageCondition;
+    [Header ("Animator controllers")] public bool isAttacking, isMoving, hasKnockback, hasBeenPushed, damageCondition;
     public Animator animator;
 
     // Update is called once per frame
@@ -43,7 +43,6 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         {
             if (knockbackSpeed.magnitude > 0.01f)
             {
-                hasKnockback = true;
                 CollisionFlags flags = controller.Move(knockbackSpeed * Time.deltaTime);
 
                 if ((flags & CollisionFlags.Sides) != 0)
@@ -61,6 +60,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             {
                 knockbackSpeed = Vector3.zero;
                 hasKnockback = false;
+                hasBeenPushed = false;
 
                 if (!isAttacking)
                 {
@@ -89,6 +89,7 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             isMoving = false;
             isAttacking = false;
             hasKnockback = false;
+            hasBeenPushed = false;
         }
     }
 
