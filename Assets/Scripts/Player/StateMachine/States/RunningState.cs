@@ -1,3 +1,5 @@
+using TMPro;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class RunningState : IStateActions
@@ -5,7 +7,7 @@ public class RunningState : IStateActions
 
     public PlayerController player;
     public CharacterController controller;
-    public float baseSpeed = 6f, actualSpeed; // baseSpeed will be overridden by player.runningBaseSpeed
+    public float baseSpeed, actualSpeed; // baseSpeed will be overridden by player.runningBaseSpeed
     public float staminaCostPerSecond;
 
     // Thrust phases
@@ -17,6 +19,11 @@ public class RunningState : IStateActions
 
     public float turnSpeed, dt;
 
+    public float[] topSpeed = { 9, 11f, 13.5f};
+    public float[] currentAcceleration = { 0.0035f, 0.0045f, 0.006f };
+
+    public TextMeshProUGUI speedControlText;
+
     public RunningState(PlayerStaminaManager staminaManager)
     {
         stamina = staminaManager;
@@ -24,13 +31,18 @@ public class RunningState : IStateActions
 
     public void Enter()
     {
+        GameObject speedControl = GameObject.Find("Speed");
+
+        speedControlText = speedControl.GetComponent<TextMeshProUGUI>();
+
         currentThrustPhase = 1; // Reset to phase 1 on entering running state
+        CameraFollow.instance.smoothSpeed = 2;
 
         player.animator.speed = 1;
         baseSpeed = player.runningBaseSpeed; // Use player's tuning value
         actualSpeed = baseSpeed;
         phaseThreshold = player.thrustPhaseThreshold; // Use player's tuning value
-        staminaCostPerSecond = player.runningStaminaCostPhase1; // Use player's tuning value
+        staminaCostPerSecond = player.runningStaminaCost[0]; // Use player's tuning value
         stamina.SetRunning(staminaCostPerSecond);
     }
 
@@ -57,6 +69,7 @@ public class RunningState : IStateActions
         Vector3 toMove = player.ApplyInertia(input, dt, inertiaTurnSpeed);
         toMove.y = 0;
 
+
         // move controller
         if (controller.enabled && toMove != Vector3.zero)
         {
@@ -65,6 +78,7 @@ public class RunningState : IStateActions
         }
 
         // pass thrust info to player
+
     }
 
     void HandleTurn(Vector3 input)
@@ -73,31 +87,39 @@ public class RunningState : IStateActions
         bool sharpTurn = previousDir.magnitude > 0.01f && Vector3.Angle(previousDir, input) > 90f;
         if (sharpTurn)
         {
-            // Bajar thrust phase
             currentThrustPhase = 1;
             player.damageBoost = currentThrustPhase - 1;
-            player.animator.speed -= 0.5f;
             player.animator.speed = 1;
-            phaseTime = 0f;
-
-            // Forzar animaci�n de andar
+            //phaseTime = 0f;
             PlayerAnimations.instance.animator.SetBool("isRunning", false);
         }
         else
         {
-            HandleThrust(input);
+            //HandleThrust(input);
+            HandleSpeed(input);
         }
     }
 
-    void HandleSpeed()
+    void HandleSpeed(Vector3 input)
     {
-        //The speed will slowly increase. Each thrust phase will have a different acceleration instead of a different speed.
-        //Thrust phases will change when player reaches a certain speed.
-        //Formula will be the acceleration formula: v = v0 * at
-        //v = speed, v0 = initial speed, a = acceleration, t = time
+        if (actualSpeed < topSpeed[currentThrustPhase - 1])
+        {
+            actualSpeed += currentAcceleration[currentThrustPhase - 1];
+        }
+        else if (currentThrustPhase < 3)
+        {
+            currentThrustPhase++;
+            player.damageBoost = currentThrustPhase - 1;
+            staminaCostPerSecond = player.runningStaminaCost[currentThrustPhase - 1];
+            stamina.SetRunning(staminaCostPerSecond);
+
+            CameraFollow.instance.smoothSpeed++;
+            player.animator.speed += 0.5f;
+            Debug.Log(actualSpeed);
+        }
     }
 
-    void HandleThrust(Vector3 currentInput)
+    /*void HandleThrust(Vector3 currentInput)
     {
         if (currentInput != Vector3.zero)
         {
@@ -112,7 +134,7 @@ public class RunningState : IStateActions
                     case 2:
                         actualSpeed = baseSpeed * player.runningPhase2Multiplier; // Use player's tuning value
                         player.damageBoost = 1;
-                        staminaCostPerSecond = player.runningStaminaCostPhase2; // Use player's tuning value
+                        staminaCostPerSecond = player.runningStaminaCost[1]; // Use player's tuning value
                         stamina.SetRunning(staminaCostPerSecond);
                         CameraFollow.instance.smoothSpeed = 3f;
 
@@ -122,7 +144,7 @@ public class RunningState : IStateActions
                     case 3:
                         actualSpeed = baseSpeed * player.runningPhase3Multiplier; // Use player's tuning value
                         player.damageBoost = 2;
-                        staminaCostPerSecond = player.runningStaminaCostPhase3; // Use player's tuning value
+                        staminaCostPerSecond = player.runningStaminaCost[2]; // Use player's tuning value
                         stamina.SetRunning(staminaCostPerSecond);
 
                         player.animator.speed = 2;
@@ -144,21 +166,13 @@ public class RunningState : IStateActions
             currentThrustPhase = 1;
             phaseTime = 0f;
         }
-    }
-    Vector3 Sprint()
-    {
-        //only runs in X in this state
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical") / 3;
-
-        Vector3 sprintDirection = new Vector3(moveX, 0, moveZ).normalized;
-
-        return sprintDirection;
-    }
+    }*/
     public void Exit()
     {
         CameraFollow.instance.smoothSpeed = 2f;
         player.animator.speed = 1;
+
+        speedControlText.text = "0";
     }
 } 
 

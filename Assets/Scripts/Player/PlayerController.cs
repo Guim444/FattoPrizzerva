@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using TMPro;
+﻿using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 {
@@ -53,17 +53,23 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     public float punchingSpeed = 2f;
     [Tooltip("PunchRunning base speed")]
     public float punchRunningBaseSpeed = 6f;
+    [Tooltip("Current speed")]
+    public TextMeshProUGUI speedDisplay;
     
     // ============================================
     // GAME DESIGN TUNING - STAMINA COSTS
     // ============================================
     [Header("Game Design: Stamina Costs")]
-    [Tooltip("Stamina cost per second for running (phase 1)")]
+    /*[Tooltip("Stamina cost per second for running (phase 1)")]
     public float runningStaminaCostPhase1 = 10f;
     [Tooltip("Stamina cost per second for running (phase 2)")]
     public float runningStaminaCostPhase2 = 14f;
     [Tooltip("Stamina cost per second for running (phase 3)")]
-    public float runningStaminaCostPhase3 = 18f;
+    public float runningStaminaCostPhase3 = 18f;*/
+
+    [Tooltip("Stamina cost per running (all phases)")]
+    public List<float> runningStaminaCost = new List<float> { 10, 14, 18 };
+
     [Tooltip("Stamina cost for normal punch (phase 0)")]
     public float punchStaminaCostPhase0 = 2f;
     [Tooltip("Stamina cost for punch while running (phase 1)")]
@@ -293,6 +299,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         HandleStateTransitions();
         StateMachine.Update();
         UpdatePunchCooldown();
+
+        SpeedManagement();
     }
 
     void HandleKnockback()
@@ -630,6 +638,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         animator.speed = 1;
         animator.SetBool("isDead", true);
         GenericBattleManager.instance.battleIsActive = false;
+    }
+
+    void SpeedManagement()
+    {
+        speedDisplay.text = (Mathf.Round(cc.velocity.magnitude * 10) / 10).ToString("F1");
     }
 
     // ============================================
