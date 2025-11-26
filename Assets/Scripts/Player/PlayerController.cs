@@ -24,10 +24,6 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     // PLAYER PARAMETERS
     // ============================================
     [Header("Player Parameters")]
-    public float normalSpeed = 7f;
-    public float runningSpeed = 10f;
-    public float gravity = -9.81f;
-    public float jumpForce = 5f;
     public float HP { get; set; }
     public float basicPunchDamage, thrustDamage1, thrustDamage2, thrustDamage3;
     public float playerDamage; // The base damage that the player inflicts. It's used every time the player attacks.
@@ -687,7 +683,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
     // ============================================
     public void ApplyGravity(float dt)
     {
-        velocity.y += gravity * dt;
+        //
     }
 
     public void BeginCooldown(float duration)

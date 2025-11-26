@@ -12,8 +12,6 @@ public class RunningState : IStateActions
 
     // Thrust phases
     private int currentThrustPhase = 1;
-    public float phaseTime = 0f;
-    public float phaseThreshold = 1.5f; // Will be overridden by player.thrustPhaseThreshold
 
     public PlayerStaminaManager stamina;
 
@@ -22,7 +20,6 @@ public class RunningState : IStateActions
     public float[] topSpeed = { 9, 11f, 13.5f};
     public float[] currentAcceleration = { 0.0035f, 0.0045f, 0.006f };
 
-    public TextMeshProUGUI speedControlText;
 
     public RunningState(PlayerStaminaManager staminaManager)
     {
@@ -31,17 +28,12 @@ public class RunningState : IStateActions
 
     public void Enter()
     {
-        GameObject speedControl = GameObject.Find("Speed");
-
-        speedControlText = speedControl.GetComponent<TextMeshProUGUI>();
-
         currentThrustPhase = 1; // Reset to phase 1 on entering running state
         CameraFollow.instance.smoothSpeed = 2;
 
         player.animator.speed = 1;
         baseSpeed = player.runningBaseSpeed; // Use player's tuning value
         actualSpeed = baseSpeed;
-        phaseThreshold = player.thrustPhaseThreshold; // Use player's tuning value
         staminaCostPerSecond = player.runningStaminaCost[0]; // Use player's tuning value
         stamina.SetRunning(staminaCostPerSecond);
     }
@@ -90,89 +82,37 @@ public class RunningState : IStateActions
             currentThrustPhase = 1;
             player.damageBoost = currentThrustPhase - 1;
             player.animator.speed = 1;
-            //phaseTime = 0f;
             PlayerAnimations.instance.animator.SetBool("isRunning", false);
         }
         else
         {
-            //HandleThrust(input);
             HandleSpeed(input);
         }
     }
 
     void HandleSpeed(Vector3 input)
     {
-        if (actualSpeed < topSpeed[currentThrustPhase - 1])
+        if (actualSpeed < topSpeed[currentThrustPhase - 1]) //if speed isn't bigger than the top speed corresponding to each phase, it will increase.
         {
-            actualSpeed += currentAcceleration[currentThrustPhase - 1];
+            actualSpeed += currentAcceleration[currentThrustPhase - 1]; //we add acceleration each frame.
         }
         else if (currentThrustPhase < 3)
         {
-            currentThrustPhase++;
-            player.damageBoost = currentThrustPhase - 1;
-            staminaCostPerSecond = player.runningStaminaCost[currentThrustPhase - 1];
+            currentThrustPhase++; //we increase the phase
+            player.damageBoost = currentThrustPhase - 1; //this will help to management
+            staminaCostPerSecond = player.runningStaminaCost[currentThrustPhase - 1]; //we set the stamina cost
             stamina.SetRunning(staminaCostPerSecond);
 
-            CameraFollow.instance.smoothSpeed++;
-            player.animator.speed += 0.5f;
-            Debug.Log(actualSpeed);
+            CameraFollow.instance.smoothSpeed++; //the camera speed will follow the increase of player's speed
+            player.animator.speed += 0.5f; //animation speed will increase too
         }
     }
-
-    /*void HandleThrust(Vector3 currentInput)
-    {
-        if (currentInput != Vector3.zero)
-        {
-            if (!controller.enabled) return;
-            phaseTime += Time.deltaTime;
-            if (phaseTime >= phaseThreshold && currentThrustPhase < 3)
-            {
-                currentThrustPhase++;
-
-                switch (currentThrustPhase)
-                {
-                    case 2:
-                        actualSpeed = baseSpeed * player.runningPhase2Multiplier; // Use player's tuning value
-                        player.damageBoost = 1;
-                        staminaCostPerSecond = player.runningStaminaCost[1]; // Use player's tuning value
-                        stamina.SetRunning(staminaCostPerSecond);
-                        CameraFollow.instance.smoothSpeed = 3f;
-
-                        player.animator.speed = 1.5f;
-
-                        break;
-                    case 3:
-                        actualSpeed = baseSpeed * player.runningPhase3Multiplier; // Use player's tuning value
-                        player.damageBoost = 2;
-                        staminaCostPerSecond = player.runningStaminaCost[2]; // Use player's tuning value
-                        stamina.SetRunning(staminaCostPerSecond);
-
-                        player.animator.speed = 2;
-
-                        CameraFollow.instance.smoothSpeed = 4f;
-                        break;
-                    default:
-                        CameraFollow.instance.smoothSpeed = 2f;
-
-                        player.animator.speed = 1;
-
-                        break;
-                }
-                phaseTime = 0f;
-            }
-        }
-        else
-        {
-            currentThrustPhase = 1;
-            phaseTime = 0f;
-        }
-    }*/
     public void Exit()
     {
+        //we reset the values
+        staminaCostPerSecond = player.runningStaminaCost[0];
         CameraFollow.instance.smoothSpeed = 2f;
         player.animator.speed = 1;
-
-        speedControlText.text = "0";
     }
 } 
 
