@@ -291,12 +291,23 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         UpdateScaleBasedOnZ();
         isGrounded = cc.isGrounded;
 
-        HandleKnockback();
-        HandleStateTransitions();
-        StateMachine.Update();
-        UpdatePunchCooldown();
+        if (HP > 0)
+        {
+            HandleKnockback();
+            HandleStateTransitions();
+            StateMachine.Update();
+            UpdatePunchCooldown();
 
-        SpeedManagement();
+            SpeedManagement();
+        }
+
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                GenericBattleManager.instance.GetCheckpoint();
+            }
+        }
     }
 
     void HandleKnockback()
@@ -638,7 +649,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     void SpeedManagement()
     {
-        speedDisplay.text = (Mathf.Round(cc.velocity.magnitude * 10) / 10).ToString("F1");
+        if (cc.enabled) speedDisplay.text = (Mathf.Round(cc.velocity.magnitude * 10) / 10).ToString("F1");
+        else speedDisplay.text = "0,0";
     }
 
     // ============================================

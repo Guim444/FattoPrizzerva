@@ -5,18 +5,20 @@ public class RioTutteBattleManager : GenericBattleManager
 {
     public RioTutteScript rioTutte;
 
+    //CHECKPOINT DATA
+    public Vector3 checkpointRioTuttePos;
+    public float checkpointPhaseTwoHP;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         instance = this;
     }
     public override void TriggerCinematic()
     {
         if (rioTutte.enemyPhase == 3)
         {
-            Debug.Log("A");
             player.canMove = false;
-
             StartCoroutine(Phase4Cinematic());
         }
     }
@@ -49,7 +51,7 @@ public class RioTutteBattleManager : GenericBattleManager
     {
         rioTutte.animator.speed = 0.5f;
         yield return new WaitForSeconds(0.5f);
-        Vector3 dir = (player.transform.position - rioTutte.transform.position)/2;
+        Vector3 dir = (player.transform.position - rioTutte.transform.position)/1.25f;
         dir.y = 0f;
         dir = dir.normalized;
 
@@ -70,5 +72,45 @@ public class RioTutteBattleManager : GenericBattleManager
             rioTutte.animator.SetBool("isMoving", false);
             rioTutte.isMoving = false;
         }
+    }
+
+    public override void SetCheckpoint()
+    {
+        checkpointPlayerPos = player.transform.position;
+        checkpointPlayerHP = player.HP;
+
+        checkpointRioTuttePos = rioTutte.transform.position;
+        if (rioTutte.enemyPhase > 1)
+            checkpointPhaseTwoHP = 100;
+        else
+            checkpointPhaseTwoHP = 0;
+    }
+
+    public override void GetCheckpoint()
+    {
+        player.cc.enabled = false;
+        player.transform.position = checkpointPlayerPos;
+        player.cc.enabled = true;
+        player.HP = checkpointPlayerHP;
+
+        rioTutte.controller.enabled = false;
+        rioTutte.transform.position = checkpointRioTuttePos;
+        rioTutte.controller.enabled = true;
+        rioTutte.phaseTwoHP = checkpointPhaseTwoHP;        
+        if (rioTutte.enemyPhase == 2)
+            rioTutte.phaseThreeCollisionedObjects.Clear();
+
+
+        player.animator.SetBool("isDead", false);
+        player.currentState = State.Idle;
+        StateMachine.SetState(player.currentState);
+
+        player.canMove = true;
+        rioTutte.isMoving = true;
+        rioTutte.isAttacking = false;
+        player.knockbackVelocity = Vector3.zero;
+        rioTutte.knockbackSpeed = Vector3.zero;
+
+        battleIsActive = true;
     }
 }

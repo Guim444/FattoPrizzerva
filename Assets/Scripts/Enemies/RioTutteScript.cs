@@ -5,6 +5,7 @@ using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class RioTutteScript : EnemyController
@@ -12,14 +13,16 @@ public class RioTutteScript : EnemyController
     public float moveSpeed;
 
     public bool isUsingDashGrab = false, isGrabbing = false, isUsingFireDash = false;
-    public Vector3 finalPosition = Vector3.zero; //used to dash
+    public Vector3 finalPosition = Vector3.zero, startPosition = Vector3.zero; //used to dash
 
     public float phaseTwoHP;
     public List<GameObject> phaseThreeCollisionedObjects = new List<GameObject>();
+    public int objectCountGoal; //max amount of phase three collisioned objects until it changes the phase
     public bool hasHitAnObjectAfterAPunch = false;
 
     public List<UnityAction> attackList = new List<UnityAction>();
     int randomAttackSlot = 0; //this is used to choose randomly one of the attacks
+    GameObject lastObjectHit;
 
     public float groundedTimer = 0;
     public bool fallDirection; //true = front, false = back
@@ -152,6 +155,7 @@ public class RioTutteScript : EnemyController
                 groundedTimer = 3;
                 fallDirection = hit.transform.parent.CompareTag("Front fall");
                 canHitPlayer = false;
+                lastObjectHit = hit.gameObject;
 
                 StartCoroutine(FallBackDuringAnimation(animator.GetCurrentAnimatorStateInfo(0).length, 2f));
 
@@ -169,8 +173,7 @@ public class RioTutteScript : EnemyController
             }
             finalPosition = Vector3.zero;
 
-            Debug.Log(phaseThreeCollisionedObjects.Count);
-            if (phaseThreeCollisionedObjects.Count >= 3)
+            if (phaseThreeCollisionedObjects.Count >= objectCountGoal)
             {
                 StartCoroutine(ChangeBossPhase()); 
             }
@@ -182,11 +185,6 @@ public class RioTutteScript : EnemyController
             finalPosition = Vector3.zero;
             player.FlipCharacter(transform.position - player.transform.position);
             GrabPlayer();
-        }
-
-        if (isUsingFireDash && hit.gameObject.CompareTag("Wall"))
-        {
-            StartCoroutine(FireDashBack());
         }
     }
     public void GrabPlayer()
@@ -236,9 +234,14 @@ public class RioTutteScript : EnemyController
         {
             if (!attackChosen)
             {
-                randomAttackSlot = Random.Range(0, attackList.Count);
+                if (Mathf.Abs(Vector3.Distance(transform.position, player.transform.position)) > 5f) //we only want fire dash chance if RioTutte is close to the character
+                {
+                    Debug.DrawLine(transform.position, transform.position + (player.transform.position - transform.position).normalized * 10, Color.blue, 1f);
+                    randomAttackSlot = 0; //Too far to do fire dash
+                    Debug.Log("Too far");
+                }
+                else randomAttackSlot = Random.Range(0, attackList.Count);
                 attackChosen = true;
-                Debug.Log(randomAttackSlot);
             }
             attackList[randomAttackSlot].Invoke();
         }
@@ -260,59 +263,99 @@ public class RioTutteScript : EnemyController
 
     public void FireDash()
     {
+        // Ejecutar solo la inicialización UNA VEZ
         if (!isUsingFireDash)
         {
-            finalPosition = GetValidRandomDirection(moveSpeed * 44 / 60);
-
+            startPosition = transform.position;
             isUsingFireDash = true;
             isAttacking = true;
 
+            float dashDistance = moveSpeed * (44f / 60f);
+
+            Vector3 desiredDirection = -lastDir.normalized;
+
+            bool foundDirection = TryGetValidDirection(desiredDirection, dashDistance, out finalPosition);
+
+            int attempts = 0;
+            while (!foundDirection && attempts < 20)
+            {
+                Vector3 rnd = RandomDirection();
+                foundDirection = TryGetValidDirection(rnd, dashDistance, out finalPosition);
+                attempts++;
+            }
+
+            if (!foundDirection)
+            {
+                isUsingFireDash = false;
+                isAttacking = false;
+                return;
+            }
+
             gameObject.layer = LayerMask.NameToLayer("Invulnerable");
+            dashCoroutineRunning = false;
         }
 
-        moveSpeed = 15;
-        FlipCharacter(finalPosition);
-        controller.Move(finalPosition * moveSpeed * Time.deltaTime);
+        moveSpeed = 15f;
 
-        StartCoroutine(EndFireDash(animator.GetCurrentAnimatorStateInfo(0).length));
+        Vector3 dashDir = (finalPosition - startPosition).normalized;
+        FlipCharacter(dashDir);
+
+        controller.Move(dashDir * moveSpeed * Time.deltaTime);
+
+        if (!dashCoroutineRunning)
+        {
+            dashCoroutineRunning = true;
+            StartCoroutine(EndFireDash(animator.GetCurrentAnimatorStateInfo(0).length));
+        }
     }
-    IEnumerator EndFireDash(float length)
-    {
-        Vector3 startPosition = transform.position;
 
-        yield return new WaitForSeconds(length);
+    bool dashCoroutineRunning = false;
+    IEnumerator EndFireDash(float animLength)
+    {
+        yield return new WaitForSeconds(animLength);
 
         gameObject.layer = layerNum;
 
-        moveSpeed = 0;
         isUsingFireDash = false;
+        isAttacking = false;
+        isMoving = true;
+
+        moveSpeed = 1.5f;
         attackTime = Random.Range(3, 6);
 
-        //reset values
-        isMoving = true;
-        isAttacking = false;
-        moveSpeed = 1.5f;
-        yield return new WaitForSeconds(1);
-    }
-    Vector3 GetValidRandomDirection(float distance)
-    {
-        for (int i = 0; i < 20; i++)
-        {
-            float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-            Vector3 dir = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)).normalized;
+        yield return null;
 
-            RaycastHit hit;
-            if (!Physics.Raycast(transform.position, dir, out hit, distance) || hit.collider.CompareTag("Wall") == false)
-            {
-                return dir;
-            }
+        dashCoroutineRunning = false;
+    }
+    private Vector3 RandomDirection()
+    {
+        float angle = Random.Range(0, 360) * Mathf.Deg2Rad;
+        return new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)).normalized;
+    }
+
+    bool TryGetValidDirection(Vector3 dir, float dist, out Vector3 result)
+    {
+        float dashDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+        float realDashDistance = 15f * dashDuration;
+
+        Debug.DrawRay(transform.position, dir.normalized * realDashDistance, Color.blue, 1f);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, dir.normalized, out hit, realDashDistance, LayerMask.GetMask("Wall")))
+        {
+            Debug.Log("Wall: " + hit.collider.name);
+            result = Vector3.zero;
+            return false;
         }
 
-        return Vector3.zero;
+        Debug.Log("No roadblock");
+        result = transform.position + dir.normalized * dist;
+        return true;
     }
 
     //PROVISIONAL FIX:
-    public IEnumerator FireDashBack()
+    /*public IEnumerator FireDashBack()
     {
         isUsingFireDash = false;
         isAttacking = true;
@@ -333,7 +376,7 @@ public class RioTutteScript : EnemyController
         isMoving = true;
         moveSpeed = 1.5f;
         attackTime = Random.Range(3, 6);
-    }
+    }*/
     public override void DamagedBehaviour(int dmg)
     {
         if (dmg > 0) hasBeenPushed = true;
@@ -357,7 +400,6 @@ public class RioTutteScript : EnemyController
                 SpriteRenderer sr = GetComponent<SpriteRenderer>();
                 StartCoroutine(StopDamageAnim(sr));
                 phaseTwoHP = Mathf.Max(phaseTwoHP - dmg, 0);
-                Debug.Log(phaseTwoHP);
 
                 if (phaseTwoHP <= 0)
                 {
@@ -370,6 +412,15 @@ public class RioTutteScript : EnemyController
 
             hasHitAnObjectAfterAPunch = true; //We set it true so it can enter the collision controller if mandatory
             StartCoroutine(AutomaticDeactivationOfHitAfterPunch());
+
+            //MUST FIX:
+            /*if (groundedTimer <= 0)
+            {
+                phaseThreeCollisionedObjects.Add(lastObjectHit);
+                SpriteRenderer sr = GetComponent<SpriteRenderer>();
+                StartCoroutine(StopDamageAnim(sr));
+                Debug.Log("Added object to the 'ban list'");
+            }*/
         }
     }
     IEnumerator StopDamageAnim(SpriteRenderer sr)

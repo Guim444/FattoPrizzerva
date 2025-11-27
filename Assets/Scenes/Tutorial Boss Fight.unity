@@ -699,7 +699,7 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  enemyPhase: 0
+  enemyPhase: 2
   attackTime: 0
   attackChosen: 0
   canBeKnockedback: 1
@@ -715,8 +715,10 @@ MonoBehaviour:
   isGrabbing: 0
   isUsingFireDash: 0
   finalPosition: {x: 0, y: 0, z: 0}
+  startPosition: {x: 0, y: 0, z: 0}
   phaseTwoHP: 100
   phaseThreeCollisionedObjects: []
+  objectCountGoal: 1
   hasHitAnObjectAfterAPunch: 0
   groundedTimer: 0
   fallDirection: 0
@@ -1347,7 +1349,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &344889073
 Transform:
   m_ObjectHideFlags: 0
@@ -3153,10 +3155,6 @@ MonoBehaviour:
     m_Bits: 0
   myCamera: {fileID: 330585545}
   staminaManager: {fileID: 0}
-  normalSpeed: 7
-  runningSpeed: 10
-  gravity: -9.81
-  jumpForce: 5
   basicPunchDamage: 10
   thrustDamage1: 20
   thrustDamage2: 30
@@ -4554,8 +4552,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RioTutteBattleManager
   player: {fileID: 1304852959}
+  checkpointPlayerPos: {x: 0, y: 0, z: 0}
+  checkpointPlayerHP: 0
   battleIsActive: 1
   rioTutte: {fileID: 182187404}
+  checkpointRioTuttePos: {x: 0, y: 0, z: 0}
+  checkpointPhaseTwoHP: 0
 --- !u!1 &1911560837
 GameObject:
   m_ObjectHideFlags: 0
