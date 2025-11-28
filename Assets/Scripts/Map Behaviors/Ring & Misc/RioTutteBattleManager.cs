@@ -16,11 +16,27 @@ public class RioTutteBattleManager : GenericBattleManager
     }
     public override void TriggerCinematic()
     {
+        if (rioTutte.enemyPhase == 2)
+        {
+            rioTutte.enemyPhase = 1; //We avoid issues
+            player.canMove = false;
+            StartCoroutine(Phase3Cinematic());
+        }
         if (rioTutte.enemyPhase == 3)
         {
             player.canMove = false;
             StartCoroutine(Phase4Cinematic());
         }
+    }
+
+    IEnumerator Phase3Cinematic()
+    {
+        battleIsActive = false;
+        float lenght = rioTutte.animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(lenght + 0.5f);
+        player.canMove = true;
+        battleIsActive = true;
+        rioTutte.enemyPhase = 2;
     }
     IEnumerator Phase4Cinematic()
     {
@@ -80,7 +96,7 @@ public class RioTutteBattleManager : GenericBattleManager
         checkpointPlayerHP = player.HP;
 
         checkpointRioTuttePos = rioTutte.transform.position;
-        if (rioTutte.enemyPhase > 1)
+        if (rioTutte.enemyPhase == 1)
             checkpointPhaseTwoHP = 100;
         else
             checkpointPhaseTwoHP = 0;

@@ -72,6 +72,8 @@ public class RioTutteScript : EnemyController
     public override IEnumerator ChangeBossPhase()
     {
         enemyPhase++;
+        RioTutteBattleManager.instance.SetCheckpoint();
+
         if (enemyPhase == 1)
         {
             if (!attackList.Contains(DashGrab)) attackList.Add(DashGrab);
@@ -81,15 +83,8 @@ public class RioTutteScript : EnemyController
             if (!attackList.Contains(FireDash)) attackList.Add(FireDash);
             player.canMove = false;
 
-            yield return new WaitForSeconds(0.5f);
-            yield return new WaitUntil(() => !hasKnockback);
+            RioTutteBattleManager.instance.TriggerCinematic();
 
-            RioTutteBattleManager.instance.battleIsActive = false;
-
-            //A little pause between phases
-            yield return new WaitForSeconds(1);
-            player.canMove = true;
-            RioTutteBattleManager.instance.battleIsActive = true;
             endurance++;
         }
         else if (enemyPhase == 3)

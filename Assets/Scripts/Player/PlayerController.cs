@@ -305,6 +305,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                GenericBattleManager.instance.ShowDeathMessage(false);
                 GenericBattleManager.instance.GetCheckpoint();
             }
         }
@@ -645,6 +646,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         animator.speed = 1;
         animator.SetBool("isDead", true);
         GenericBattleManager.instance.battleIsActive = false;
+        GenericBattleManager.instance.ShowDeathMessage(true);
     }
 
     void SpeedManagement()
