@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TreeEditor;
+using Unity.AppUI.Core;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -44,10 +45,10 @@ public class RioTutteScript : EnemyController
     {
         base.Update();
 
-        if (groundedTimer > 0)
+        /*if (groundedTimer > 0)
         {
             groundedTimer -= Time.deltaTime;
-        }
+        }*/
 
         if (enemyPhase == 2 && hasHitAnObjectAfterAPunch && knockbackSpeed.magnitude <= 0.01f)
         {
@@ -152,7 +153,7 @@ public class RioTutteScript : EnemyController
                 canHitPlayer = false;
                 lastObjectHit = hit.gameObject;
 
-                StartCoroutine(FallBackDuringAnimation(animator.GetCurrentAnimatorStateInfo(0).length, 2f));
+                StartCoroutine(FallBackDuringAnimation(animator.GetCurrentAnimatorStateInfo(0).length, 1.5f));
 
                 /*phaseThreeCollisionedObjects.Add(hit.gameObject);
                 SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -408,23 +409,36 @@ public class RioTutteScript : EnemyController
             hasHitAnObjectAfterAPunch = true; //We set it true so it can enter the collision controller if mandatory
             StartCoroutine(AutomaticDeactivationOfHitAfterPunch());
 
-            //MUST FIX:
-            /*if (groundedTimer <= 0)
+            if (groundedTimer >  0 && lastObjectHit != null)
             {
-                phaseThreeCollisionedObjects.Add(lastObjectHit);
-                SpriteRenderer sr = GetComponent<SpriteRenderer>();
-                StartCoroutine(StopDamageAnim(sr));
-                Debug.Log("Added object to the 'ban list'");
-            }*/
+                if (!phaseThreeCollisionedObjects.Contains(lastObjectHit))
+                {
+                    controller.Move(-Vector3.back * 1.5f);
+                    groundedTimer = 0;
+                    phaseThreeCollisionedObjects.Add(lastObjectHit);
+                    lastObjectHit = null;
+                    SpriteRenderer sr = GetComponent<SpriteRenderer>();
+                    damageCondition = true;
+                    canBeKnockedback = false;
+                    StartCoroutine(StopDamageAnim(sr));
+                    Debug.Log("Added object to the 'ban list'");
+                }
+            }
         }
     }
     IEnumerator StopDamageAnim(SpriteRenderer sr)
     {
         yield return null;
         sr.color = Color.red;
-        while (hasKnockback)
+        while (hasKnockback || damageCondition) //if it has knockback or a damage condition, it will be red
         {
             yield return null;
+
+            if (damageCondition)
+            {
+                yield return new WaitForSeconds(0.75f);
+                damageCondition = false;
+            }
         }
         sr.color = Color.white;
     }
@@ -439,37 +453,53 @@ public class RioTutteScript : EnemyController
         yield return null;
         PushForce(dir, endurance + 1, obj);
     }
-
-    /*void FallingLogic()
+    IEnumerator FallBackDuringAnimation(float animationLength, float fallDistance) //Script that makes the enemy fall down to the floor
     {
-        float step = fallSpeed * Time.deltaTime;
+        RaycastHit hit;
+        float fallDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+        float realFallDistance = 1.5f * fallDuration;
 
-        fallen += step;
-        controller.Move(new Vector3(0, 0, -step));
+        Debug.DrawRay(transform.position, Vector3.back * realFallDistance, Color.green, 1f);
 
-        if (fallen >= fallDistance)
+        if (Physics.Raycast(transform.position, Vector3.back, out hit, realFallDistance, LayerMask.GetMask("Wall")))
         {
-            isFalling = false;
-            fallen = 0f;
+            fallDistance /= 2;
         }
-    }*/
-    IEnumerator FallBackDuringAnimation(float animationLength, float fallDistance)
-    {
+
         string clipName = fallDirection ? "RioTutteFallFront" : "RioTutteFallBack";
+        AnimatorClipInfo[] clips;
+        do
+        {
+            clips = animator.GetCurrentAnimatorClipInfo(0);
+            yield return null;
+        } while (clips.Length == 0 || clips[0].clip.name != clipName);
 
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName(clipName));
+        float startFrame = fallDirection ? 70 : 40;
+        float waitTime = startFrame / 60;
 
-        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(waitTime);
+
         float startZ = transform.position.z;
         float targetZ = startZ - fallDistance;
 
-        while (state.normalizedTime < 1f)
+        float remainingTime = Mathf.Max(animationLength - waitTime, 0.1f);
+        float elapsed = 0f;
+
+        while (elapsed < remainingTime)
         {
-            state = animator.GetCurrentAnimatorStateInfo(0);
-            float t = state.normalizedTime;
+            float t = elapsed / remainingTime;
+
             float newZ = Mathf.Lerp(startZ, targetZ, t);
-            controller.Move(new Vector3(0, 0, newZ - transform.position.z));
+            float deltaZ = newZ - transform.position.z;
+
+            controller.Move(new Vector3(0, 0, deltaZ));
+
+            elapsed += Time.deltaTime;
             yield return null;
         }
+
+        float finalDeltaZ = targetZ - transform.position.z;
+        if (Mathf.Abs(finalDeltaZ) > 0.001f)
+            controller.Move(new Vector3(0, 0, finalDeltaZ));
     }
 }

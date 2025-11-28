@@ -699,7 +699,7 @@ MonoBehaviour:
   hitTimer: 0
   maxHitTimer: 1
   knockbackSpeed: {x: 0, y: 0, z: 0}
-  enemyPhase: 2
+  enemyPhase: 1
   attackTime: 0
   attackChosen: 0
   canBeKnockedback: 1

@@ -16,5 +16,7 @@ public class RioTutteAnimations : EnemyAnimationController
 
         animator.SetBool("frontFall", rioTutte.groundedTimer > 0 && rioTutte.fallDirection);
         animator.SetBool("backFall", rioTutte.groundedTimer > 0 && !rioTutte.fallDirection);
+
+        animator.SetBool("damageCondition", rioTutte.damageCondition);
     }
 }
