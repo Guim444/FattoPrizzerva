@@ -7,10 +7,13 @@ public class PunchRunningState : IStateActions
     public PlayerController player;
     public CharacterController controller;
     public PlayerStaminaManager stamina;
-    public float staminaCost = 5f;
-    public float baseSpeed = 6, actualSpeed;
+    public float staminaCost = 5f; // Will be overridden by player's tuning values
+    public float baseSpeed = 6, actualSpeed; // baseSpeed will be overridden by player.punchRunningBaseSpeed
 
     public BoxCollider punchCollider;
+    public int tempEndurance = 0;
+
+    bool punchExecuted = false;
 
     public PunchRunningState(PlayerStaminaManager staminaManager)
     {
@@ -18,14 +21,20 @@ public class PunchRunningState : IStateActions
     }
     public void Enter()
     {
+        if (punchExecuted) return;
+        punchExecuted = true;
+
+
+        tempEndurance = player.endurance;
         player.animator.speed = 1;
-        Debug.Log("Entered PunchingState State");
+        
+        baseSpeed = player.punchRunningBaseSpeed; // Use player's tuning value
 
         switch (player.damageBoost)
         {
-            case 0: staminaCost = 2; break;
-            case 1: staminaCost = 4; break;
-            case 2: staminaCost = 6; break;
+            case 0: staminaCost = player.punchRunningStaminaCostPhase1; player.endurance += 1; break;
+            case 1: staminaCost = player.punchRunningStaminaCostPhase2; player.endurance += 2; break;
+            case 2: staminaCost = player.punchRunningStaminaCostPhase3; player.endurance += 3; break;
         }
 
         if (player.staminaManager.currentStamina - staminaCost >= 0)
@@ -42,7 +51,7 @@ public class PunchRunningState : IStateActions
     {
         //will keep moving in X direction while punching, but you can modify Y direction with input.
         Vector3 input = player.lastDirection;
-        Vector3 toMove = player.ApplyInertia(input, Time.deltaTime, 4f);
+        Vector3 toMove = player.ApplyInertia(input, Time.deltaTime, player.punchRunningTurnSpeed);
         toMove.y = 0; // Keep Y movement zero to maintain horizontal movement only
 
         if (player.damageBoost == 2)
@@ -60,9 +69,15 @@ public class PunchRunningState : IStateActions
     {
         switch (player.damageBoost)
         {
+            case 0:
+                actualSpeed = baseSpeed * 1.2f;
+                CameraFollow.instance.smoothSpeed = 2f;
+                player.playerDamage = player.thrustDamage1;
+                break;
             case 1:
                 actualSpeed = baseSpeed * 1.4f;
                 CameraFollow.instance.smoothSpeed = 3f;
+                player.playerDamage = player.thrustDamage2;
                 break;
             case 2:
                 actualSpeed = baseSpeed * 1.8f;
@@ -70,25 +85,28 @@ public class PunchRunningState : IStateActions
 
                 punchCollider.size = new Vector3 (0.85f, punchCollider.size.y, punchCollider.size.z);
                 punchCollider.center = new Vector3 (0.6f, punchCollider.center.y, punchCollider.center.z);
+                player.playerDamage = player.thrustDamage3;
 
                 break;
             default:
                 CameraFollow.instance.smoothSpeed = 2f;
+                player.playerDamage = player.thrustDamage1;
                 break;
         }
     }
 
     IEnumerator Punch(float duration)
     {
-        Debug.Log("Landed run punch in phase " + (player.damageBoost + 1));
         yield return new WaitForSeconds(20 * duration / 30); // enable collider after 2/3 of the punch animation for better timing
-        punchCollider.enabled = true;
 
-        player.endurance += player.damageBoost + 1;
+        if (player.canAttack)
+        {
+            punchCollider.enabled = true;
 
-        yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
-        punchCollider.enabled = false;
-        player.endurance -= (player.damageBoost + 1);
+            yield return new WaitForSeconds(24 * duration / 30); // disable collider after 3/4 of the punch animation, for better timing
+            punchCollider.enabled = false;
+
+        }
     }
 
     Vector3 Sprint()
@@ -107,6 +125,8 @@ public class PunchRunningState : IStateActions
         punchCollider.size = new Vector3 (0.7f, punchCollider.size.y, punchCollider.size.z);
         punchCollider.center = new Vector3 (0.5f, punchCollider.center.y, punchCollider.center.z);
 
-        Debug.Log("Exited PunchRunning State");
+        player.playerDamage = 0;
+        player.endurance = tempEndurance; //we reset the endurance
+        punchExecuted = false;
     }
 }

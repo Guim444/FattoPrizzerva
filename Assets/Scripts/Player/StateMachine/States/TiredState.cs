@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TiredState : IStateActions
@@ -5,7 +6,8 @@ public class TiredState : IStateActions
     public PlayerController player;
     public CharacterController controller;
     public PlayerStaminaManager stamina;
-    public float speed = 1f;
+    public float speed = 1f; // Will be overridden by player.tiredSpeed
+    float temp;
 
     public TiredState(PlayerStaminaManager staminaManager)
     {
@@ -13,27 +15,44 @@ public class TiredState : IStateActions
     }
     public void Enter()
     {
-        stamina.SetTired();
-        player.animator.SetFloat("Speed", 1f);
+        temp = player.endurance;
+        player.endurance = -2; //We force player to be pushed as much as it can by temporary reducing its endurance
+
+        stamina.StopAllRegenDrain();
+        float length = player.animator.GetCurrentAnimatorStateInfo(0).length;
+        player.StartCoroutine(StartStaminaDrop(length));
     }
 
     public void Exit()
     {
+        player.endurance = (int)temp;
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+        // Phase 2: Don't handle movement if on slope (GlidingState handles it)
+        // if (player.isOnSlope)
+        // {
+        //     return;
+        // }
+
         Vector3 toMove = player.GetDirectionalInput();  //Variable that stores the final direction and speed of the character (calculated based on input and camera)
-        toMove = player.ApplyInertia(toMove, Time.deltaTime, 10f); //Apply inertia to the movement for smoother transitions
+        toMove = player.ApplyInertia(toMove, Time.deltaTime, player.tiredTurnSpeed); //Apply inertia to the movement for smoother transitions
 
         if (toMove != Vector3.zero && controller.enabled == true)
         {
-            controller.Move(toMove * speed * Time.deltaTime); //Move the character based on the final calculated movement
+            controller.Move(toMove * player.tiredSpeed * Time.deltaTime); //Move the character based on the final calculated movement
         }
     }
 
+    IEnumerator StartStaminaDrop(float length)
+    {
+        yield return new WaitForSeconds(length * 2);
+        stamina.SetTired();
+    }
     void IStateActions.Update()
     {
         Update();

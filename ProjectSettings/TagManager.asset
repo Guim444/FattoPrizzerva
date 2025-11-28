@@ -7,17 +7,19 @@ TagManager:
   - Collisionable element
   - Enemy
   - Wall
+  - Back fall
+  - Front fall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Wall
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Invulnerable
+  - Enemy
+  - Collisionable
+  - Enemy Roadblock
   - 
   - 
   - 

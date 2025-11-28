@@ -1,139 +1,331 @@
-﻿using System.Collections;
-using TMPro;
+﻿using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
-/*
-[RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(IEstaminable))]
-[RequireComponent(typeof(IAdrenalinable))] */
-  
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
-    {
-       
-        Vector3 velocity; //3D vector to store the current movement speed and direction of the character.
+{
+    // ============================================
+    // COMPONENT REFERENCES
+    // ============================================
+    [Header("Component References")]
+    public CharacterController cc;
+    public Animator animator;
+    public LayerMask interactMask;
+    public Camera myCamera;
+    public PlayerStaminaManager staminaManager;
+    
+    private IEstaminable stamina;
+    private IAdrenalinable adrenaline;
+
+    // ============================================
+    // PLAYER PARAMETERS
+    // ============================================
     [Header("Player Parameters")]
-    public float normalSpeed = 7f, runningSpeed = 10f, gravity = -9.81f, jumpForce = 5f;
     public float HP { get; set; }
+    public float basicPunchDamage, thrustDamage1, thrustDamage2, thrustDamage3;
+    public float playerDamage; // The base damage that the player inflicts. It's used every time the player attacks.
 
-    [Header ("Z Boundaries")] public float minZ = 0f, maxZ = 100f, minScale = 0.3f, maxScale = 1f; //Declared Floats
-    public bool isGrounded, isPunching, isInRun;
-    bool flip; //To know if the player is facing left or right. Left is true, right is false.
-    public CharacterController cc;  //Built-in component called for handling character movements & collisions withour Rigidbody physics
-        public Animator animator; //Built-in component called for playing animations from code
-        public LayerMask interactMask;   //A filter that will tell the raycast which layers of objects it should detect when the player tries to interact to avoid hitting everything
-        public Camera myCamera;
-        
-        IEstaminable stamina;  //Interface representing everything related to Stamina usage (CurrentStamina, Consume(), Recover(), etc.)
-        IAdrenalinable adrenaline;   //Same with adrenaline
-    /*public UnityEvent OnEnterPlantZone, OnExitPlantZone; // Event to assign inside the Unity Editor for when the player gets inside a plant */
+    // ============================================
+    // GAME DESIGN TUNING - MOVEMENT SPEEDS
+    // ============================================
 
-    // StateMachine<State> sm; //A custom state machine object where <State> will be one of the different enums stated below 
-    internal State currentState = State.Idle; //A variable that stores the current state
+    [Header("Game Design: Movement Speeds")]
+    [Tooltip("Walking speed (MovingState)")]
+    public float walkingSpeed = 3f;
+    [Tooltip("Running base speed (RunningState)")]
+    public float runningBaseSpeed = 6f;
+    [Tooltip("Running speed multiplier for phase 2")]
+    public float runningPhase2Multiplier = 1.4f;
+    [Tooltip("Running speed multiplier for phase 3")]
+    public float runningPhase3Multiplier = 1.8f;
+    [Tooltip("Tired state movement speed")]
+    public float tiredSpeed = 1f;
+    [Tooltip("Gliding state movement speed")]
+    public float glidingSpeed = 3f;
+    [Tooltip("Punching while moving speed")]
+    public float punchingSpeed = 2f;
+    [Tooltip("PunchRunning base speed")]
+    public float punchRunningBaseSpeed = 6f;
+    [Tooltip("Current speed")]
+    public TextMeshProUGUI speedDisplay;
+    
+    // ============================================
+    // GAME DESIGN TUNING - STAMINA COSTS
+    // ============================================
+    [Header("Game Design: Stamina Costs")]
+    /*[Tooltip("Stamina cost per second for running (phase 1)")]
+    public float runningStaminaCostPhase1 = 10f;
+    [Tooltip("Stamina cost per second for running (phase 2)")]
+    public float runningStaminaCostPhase2 = 14f;
+    [Tooltip("Stamina cost per second for running (phase 3)")]
+    public float runningStaminaCostPhase3 = 18f;*/
 
-    public PlayerStaminaManager staminaManager; // Reference to the PlayerStaminaManager component
+    [Tooltip("Stamina cost per running (all phases)")]
+    public List<float> runningStaminaCost = new List<float> { 10, 14, 18 };
 
-    public Vector3 currentSpeed, lastDirection = Vector3.zero; // currentSpeed is the normalized direction of movement, lastDirection is used for saving the last movement direction for inertia calculations or animations.
-    public KeyCode lastVerticalKey = KeyCode.None, lastHorizontalKey = KeyCode.None; // These fields are used to save information of the input and avoid issues.
+    [Tooltip("Stamina cost for normal punch (phase 0)")]
+    public float punchStaminaCostPhase0 = 2f;
+    [Tooltip("Stamina cost for punch while running (phase 1)")]
+    public float punchRunningStaminaCostPhase1 = 2f;
+    [Tooltip("Stamina cost for punch while running (phase 2)")]
+    public float punchRunningStaminaCostPhase2 = 4f;
+    [Tooltip("Stamina cost for punch while running (phase 3)")]
+    public float punchRunningStaminaCostPhase3 = 6f;
+    
+    // ============================================
+    // GAME DESIGN TUNING - RUNNING THRUST SYSTEM
+    // ============================================
+    [Header("Game Design: Running Thrust System")]
+    [Tooltip("Time required to reach next thrust phase (seconds)")]
+    public float thrustPhaseThreshold = 1.5f;
+    [Tooltip("Turn speed for inertia in phase 1-2")]
+    public float runningTurnSpeedNormal = 4f;
+    [Tooltip("Turn speed for inertia in phase 3 (less control)")]
+    public float runningTurnSpeedPhase3 = 2f;
+    [Tooltip("Turn speed for inertia when walking")]
+    public float walkingTurnSpeed = 5f;
+    [Tooltip("Turn speed for inertia when tired")]
+    public float tiredTurnSpeed = 10f;
+    [Tooltip("Turn speed for inertia when gliding")]
+    public float glidingTurnSpeed = 5f;
+    [Tooltip("Turn speed for inertia when punch-running")]
+    public float punchRunningTurnSpeed = 4f;
 
-    public bool isInsideRing = false; // To check if the player is inside the ring area
+    [Header("Z Boundaries")]
+    public float minZ = 0f;
+    public float maxZ = 100f;
+    public float minScale = 0.3f;
+    public float maxScale = 1f;
 
+    // ============================================
+    // STATE MANAGEMENT
+    // ============================================
+    internal State currentState = State.Idle;
+    public bool canMove = true;
+    public bool isGrounded;
+    public bool isPunching;
+    public bool isInRun;
+    public bool canAttack = true;
+
+    // ============================================
+    // MOVEMENT & INPUT
+    // ============================================
+    [Header("Movement")]
+    public Vector3 currentSpeed;
+    public Vector3 lastDirection = Vector3.zero;
+    public KeyCode lastVerticalKey = KeyCode.None;
+    public KeyCode lastHorizontalKey = KeyCode.None;
+    private Vector3 velocity;
+
+    // ============================================
+    // RING SYSTEM
+    // ============================================
+    [Header("Ring System")]
+    public bool isInsideRing = false;
+    [HideInInspector] public RingSlopeHandler ringSlopeHandler; // Reference to RingSlopeHandler component
+    
+    // Expose ring slope handler properties for compatibility
+    public bool isOnSlope 
+    { 
+        get 
+        { 
+            if (ringSlopeHandler == null)
+            {
+                ringSlopeHandler = GetComponent<RingSlopeHandler>();
+                if (ringSlopeHandler == null)
+                {
+                    ringSlopeHandler = gameObject.AddComponent<RingSlopeHandler>();
+                }
+            }
+            return ringSlopeHandler.isOnSlope; 
+        } 
+    }
+    
+    public Transform ringCenter 
+    { 
+        get 
+        { 
+            if (ringSlopeHandler == null)
+            {
+                ringSlopeHandler = GetComponent<RingSlopeHandler>();
+                if (ringSlopeHandler == null)
+                {
+                    ringSlopeHandler = gameObject.AddComponent<RingSlopeHandler>();
+                }
+            }
+            return ringSlopeHandler != null ? ringSlopeHandler.ringCenter : null; 
+        } 
+    }
+
+    // ============================================
+    // COMBAT & DAMAGE
+    // ============================================
+    [Header("Combat")]
+    public float normalPunchTimer = 0;
+    public float normalPunchCooldown = 0.5f;
+    public int damageBoost = 0;
+    public int endurance = 0;
+    public TypeOfDamage enduranceDistance = 0;
+    
+    // ============================================
+    // GAME DESIGN TUNING - KNOCKBACK/PUSH FORCES
+    // ============================================
+    [Header("Game Design: Knockback Forces")]
+    [Tooltip("Push force multiplier when player is pushed (PushOnlySelf)")]
+    public float pushForceSelf = 10f;
+    [Tooltip("Push force multiplier when mostly self (PushMostlySelf)")]
+    public float pushForceMostlySelf = 5f;
+    [Tooltip("Push force multiplier when both are pushed (PushBoth)")]
+    public float pushForceBoth = 3.5f;
+    [Tooltip("Push force multiplier when mostly other (PushMostlyOther)")]
+    public float pushForceMostlyOther = 3f;
+    [Tooltip("Push force multiplier when only other is pushed (PushOnlyOther)")]
+    public float pushForceOnlyOther = 0f;
+    [Tooltip("Push force multiplier for hardest push (PushOnlyOtherPlus)")]
+    public float pushForceOtherPlus = 15f;
+    [Tooltip("Minimum push force when sprint-punching (damageBoost >= 2)")]
+    public float sprintPunchMinPush = 3f;
+    [Tooltip("Base push multiplier applied to all push forces")]
+    public float pushForceBaseMultiplier = 2f;
+
+    // ============================================
+    // KNOCKBACK
+    // ============================================
+    [Header("Knockback")]
     public bool hasKnockback = false;
-    public Vector3 knockbackVelocity; // Velocity applied during knockback
+    public Vector3 knockbackVelocity;
+    [Tooltip("Knockback decay speed (higher = faster decay)")]
+    public float knockbackDecaySpeed = 5f;
+    [Tooltip("Minimum knockback velocity before stopping")]
+    public float knockbackMinVelocity = 1f;
 
-    public float normalPunchTimer = 0; // Timer to control when the punch can deal damage again
-    public float normalPunchCooldown = 0.5f; // Cooldown duration between punches
-
-    public int damageBoost = 0; // This value is used to increase the damage dealt by the player when is punching while running. Zero by default.
-    public int endurance = 0; // Player's endurance level, affects knockback resistance
-
-    public TypeOfDamage enduranceDistance = 0; // Variable to hold the type of damage based on endurance
-
-    public bool canMove = true; //This bool is used when the player shouldn't be moving, like when it's being attacked
-
+    // ============================================
+    // INITIALIZATION
+    // ============================================
     void Awake()
     {
+        if (GenericBattleManager.instance != null)
+        {
+            GenericBattleManager.instance.battleIsActive = true;
+        }
+
         HP = 2;
+        
+        // Get component references
+        stamina = GetComponent<IEstaminable>();
+        adrenaline = GetComponent<IAdrenalinable>();
+        cc = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+        staminaManager = GetComponent<PlayerStaminaManager>();
+        ringSlopeHandler = GetComponent<RingSlopeHandler>();
+        
+        // If RingSlopeHandler doesn't exist, add it
+        if (ringSlopeHandler == null)
+        {
+            ringSlopeHandler = gameObject.AddComponent<RingSlopeHandler>();
+        }
 
-            stamina = GetComponent<IEstaminable>();
-            adrenaline = GetComponent<IAdrenalinable>();
-            cc = GetComponent<CharacterController>();
-            animator = GetComponent<Animator>();
-            staminaManager = GetComponent<PlayerStaminaManager>();
+        InitializeStateMachine();
+    }
 
+    void InitializeStateMachine()
+    {
         var idle = new IdleState(staminaManager);
         idle.player = this;
-        idle.controller = GetComponent<CharacterController>();
+        idle.controller = cc;
 
         var moving = new MovingState(staminaManager);
         moving.player = this;
-        moving.controller = GetComponent<CharacterController>();
+        moving.controller = cc;
 
         var running = new RunningState(staminaManager);
         running.player = this;
-        running.controller = GetComponent<CharacterController>();
+        running.controller = cc;
 
         var tired = new TiredState(staminaManager);
         tired.player = this;
-        tired.controller = GetComponent<CharacterController>();
+        tired.controller = cc;
 
         var punching = new PunchingState(staminaManager);
         punching.player = this;
-        punching.controller = GetComponent<CharacterController>();
+        punching.controller = cc;
         punching.punchCollider = GetComponent<SphereCollider>();
 
         var punchRunning = new PunchRunningState(staminaManager);
         punchRunning.player = this;
-        punchRunning.controller = GetComponent<CharacterController>();
+        punchRunning.controller = cc;
         punchRunning.punchCollider = GetComponent<BoxCollider>();
 
         var knockedback = new KnockedbackState();
         knockedback.player = this;
-        knockedback.controller = GetComponent<CharacterController>();
+        knockedback.controller = cc;
 
+        var gliding = new GlidingState(staminaManager);
+        gliding.player = this;
+        gliding.controller = cc;
 
         StateMachine.AddState(State.Idle, idle);
-            StateMachine.AddState(State.Moving, moving);
-            //global: :State means: “Use the enum called State that exists in the global namespace (outside of any class/namespace), not something else that also happens to be called State.”
-            StateMachine.AddState(State.Running, running);
-            StateMachine.AddState(State.Tired, tired);
-            StateMachine.AddState(State.Punching, punching);
-            StateMachine.AddState(State.PunchRunning, punchRunning);
-            StateMachine.AddState(State.Jumping, new JumpingState());
-            StateMachine.AddState(State.Falling, new FallingState());
-            StateMachine.AddState(State.PunchFalling, new PunchFallingState());
-            StateMachine.AddState(State.Gliding, new GlidingState());
-            StateMachine.AddState(State.Knockedback, new KnockedbackState());
-            StateMachine.AddState(State.Interacting, new InteractingState());
+        StateMachine.AddState(State.Moving, moving);
+        StateMachine.AddState(State.Running, running);
+        StateMachine.AddState(State.Tired, tired);
+        StateMachine.AddState(State.Punching, punching);
+        StateMachine.AddState(State.PunchRunning, punchRunning);
+        StateMachine.AddState(State.Jumping, new JumpingState());
+        StateMachine.AddState(State.Falling, new FallingState());
+        StateMachine.AddState(State.PunchFalling, new PunchFallingState());
+        StateMachine.AddState(State.Gliding, gliding);
+        StateMachine.AddState(State.Knockedback, knockedback);
+        StateMachine.AddState(State.Interacting, new InteractingState());
 
         StateMachine.SetState(State.Idle);
+    }
+
+    // ============================================
+    // UPDATE LOOP
+    // ============================================
+    void Update()
+    {
+        UpdateScaleBasedOnZ();
+        isGrounded = cc.isGrounded;
+
+        if (HP > 0)
+        {
+            HandleKnockback();
+            HandleStateTransitions();
+            StateMachine.Update();
+            UpdatePunchCooldown();
+
+            SpeedManagement();
         }
 
-        void Update()
+        else
         {
-            UpdateScaleBasedOnZ();
-            isGrounded = cc.isGrounded; //Uses the character controller's built-in ground detection
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                GenericBattleManager.instance.ShowDeathMessage(false);
+                GenericBattleManager.instance.GetCheckpoint();
+            }
+        }
+    }
 
-        // Debug.Log(transform.position.z);
-
-
+    void HandleKnockback()
+    {
         if (hasKnockback)
         {
             if (cc.enabled)
             {
                 cc.Move(knockbackVelocity * Time.deltaTime);
-                knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 5f * Time.deltaTime);
+                knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecaySpeed * Time.deltaTime);
 
-                //we reset inertia
+                // Reset inertia
                 lastDirection = Vector3.zero;
                 currentSpeed = Vector3.zero;
-
             }
 
-            if (knockbackVelocity.magnitude < 1f) // when the lerp is almost done, we stop the knockback for more fluidity
+            if (knockbackVelocity.magnitude < knockbackMinVelocity)
             {
                 hasKnockback = false;
                 currentState = State.Knockedback;
@@ -144,112 +336,89 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         else
         {
             // Apply knockback movement
-            if (cc.enabled == true) cc.Move(knockbackVelocity * Time.deltaTime); knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, 5f * Time.deltaTime);
-            //when lerp ends, we stop the knockback
+            if (cc.enabled == true)
+            {
+                cc.Move(knockbackVelocity * Time.deltaTime);
+            }
+            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecaySpeed * Time.deltaTime);
+            
             if (knockbackVelocity.magnitude < 0.1f)
             {
-                //end knockback
                 hasKnockback = false;
             }
         }
-            State newState;
+    }
 
-
-        if (normalPunchTimer > 0) // During attacks, we don't change state until the punch timer ends
+    void HandleStateTransitions()
+    {
+        if (normalPunchTimer > 0)
         {
             normalPunchTimer -= Time.deltaTime;
+            return; // Don't change state during punch
         }
-        else//this will avoid player movement when it's not wanted to do it
+
+        if (!canMove)
         {
-            if (canMove)
+            currentState = State.Idle;
+            StateMachine.SetState(currentState);
+            return;
+        }
+
+        // Use PlayerStateHelper to determine new state
+        State newState = PlayerStateHelper.DetermineState(staminaManager, isOnSlope, currentState);
+
+        // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+        // Change state only if different and not in GlidingState (unless exiting slope)
+        // if (newState != currentState && !(isOnSlope && currentState == State.Gliding))
+        if (newState != currentState)
+        {
+            currentState = newState;
+            StateMachine.SetState(currentState);
+
+            if (!(currentState == State.Running || currentState == State.PunchRunning))
             {
-                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) // Movement input detected
-                {
-                    if (staminaManager.isTired)
-                    {
-                        newState = State.Tired;
-                    }
-                    else if (Input.GetKey(KeyCode.LeftShift) && staminaManager.currentStamina > 0) // Running input detected and enough stamina
-                    {
-                        newState = State.Running;
-                        if (Input.GetMouseButton(0))
-                        {
-                            newState = State.PunchRunning; // Punching while running
-                        }
-                    }
-                    else
-                    {
-                        newState = State.Moving;
-                        if (Input.GetMouseButtonDown(0))
-                        {
-                            newState = State.Punching; // Punching while moving
-                        }
-                    }
-                }
-                else
-                {
-                    if (staminaManager.isTired)
-                    {
-                        newState = State.Tired;
-                    }
-                    else
-                    {
-                        newState = State.Idle;
-                        if (Input.GetMouseButton(0))
-                        {
-                            newState = State.Punching; // Punching while idle
-                        }
-                    }
-                }
-
-                // Change state only if different
-                if (newState != currentState)
-                {
-                    currentState = newState;
-                    StateMachine.SetState(currentState);
-
-                    if (!(currentState == State.Running || currentState == State.PunchRunning))
-                    {
-                        damageBoost = 0;
-                    }
-                }
+                damageBoost = 0;
             }
-            else currentState = State.Idle; //When it can't move, player is always idle.
-        }
-        // Let the state run its own Update logic
-        StateMachine.Update();
-
-        if (normalPunchCooldown > 0)
-        {
-            normalPunchCooldown -= Time.deltaTime; // Reduces the cooldown timer each frame
         }
     }
 
+    void UpdatePunchCooldown()
+    {
+        if (normalPunchCooldown > 0)
+        {
+            normalPunchCooldown -= Time.deltaTime;
+        }
+    }
+
+    // ============================================
+    // INPUT HANDLING
+    // ============================================
     public Vector3 GetDirectionalInput()
     {
         Vector3 move = Vector3.zero;
-
-        //This method will ensure we don't overlap inputs
         CalcMovePriority();
 
-        if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S)))
+        if ((Input.GetKey(KeyCode.W)) || Input.GetKey(KeyCode.S))
         {
             if (lastVerticalKey == KeyCode.W) move += Vector3.forward;
             else if (lastVerticalKey == KeyCode.S) move += Vector3.back;
         }
 
-        if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.D)))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             if (lastHorizontalKey == KeyCode.D) move += Vector3.right;
             else if (lastHorizontalKey == KeyCode.A) move += Vector3.left;
         }
 
-
         if (move.magnitude > 0)
         {
-            currentSpeed = move.normalized; // Update lastDirection only when there's movement input
+            currentSpeed = move.normalized;
         }
-        currentSpeed = move.normalized;
+        else
+        {
+            currentSpeed = move.normalized;
+        }
+        
         if (!hasKnockback)
         {
             FlipCharacter(lastDirection);
@@ -260,7 +429,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
 
     void CalcMovePriority()
     {
-        //Calculate horizontal priority
+        // Calculate horizontal priority
         if (Input.GetKeyDown(KeyCode.A)) lastHorizontalKey = KeyCode.A;
         if (Input.GetKeyDown(KeyCode.D)) lastHorizontalKey = KeyCode.D;
         if (Input.GetKeyUp(KeyCode.A) && lastHorizontalKey == KeyCode.A)
@@ -268,8 +437,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         if (Input.GetKeyUp(KeyCode.D) && lastHorizontalKey == KeyCode.D)
             lastHorizontalKey = Input.GetKey(KeyCode.A) ? KeyCode.A : KeyCode.None;
 
-
-        //Calc vertical priority
+        // Calculate vertical priority
         if (Input.GetKeyDown(KeyCode.W)) lastVerticalKey = KeyCode.W;
         if (Input.GetKeyDown(KeyCode.S)) lastVerticalKey = KeyCode.S;
         if (Input.GetKeyUp(KeyCode.W) && lastVerticalKey == KeyCode.W)
@@ -278,97 +446,13 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             lastVerticalKey = Input.GetKey(KeyCode.W) ? KeyCode.W : KeyCode.None;
     }
 
-    public void FlipCharacter(Vector3 lastDir)
-    {
-        if (Mathf.Abs(lastDir.x) < 0.01f) return; // if there's no horizontal input, do nothing
-
-        // Check the current facing direction and compare with desired direction
-        float currentSign = Mathf.Sign(transform.localScale.x);
-        float desiredSign = Mathf.Sign(lastDir.x);
-
-        // If they differ, flip the character by inverting the x scale
-        if (currentSign != desiredSign)
-            transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
-    }
-
-    // Formula for scaling based on Z
-    public void UpdateScaleBasedOnZ()
-    {
-        float z = transform.position.z;
-
-        // Convert z into a 0–1 range between minZ and maxZ
-        float t = Mathf.InverseLerp(minZ, maxZ, z);
-        t = Mathf.Clamp01(t);
-
-        // Lerp between maxScale (near) and minScale (far)
-        float scaleFactor = Mathf.Lerp(maxScale, minScale, t);
-
-        // Preserve the original sign of the x scale to maintain facing direction
-        float signX = Mathf.Sign(transform.localScale.x);
-        transform.localScale = new Vector3(scaleFactor * signX, scaleFactor, scaleFactor);
-    }
-
-    public void OnMove(InputAction.CallbackContext ctx)
-        {
-            Vector2 dir = ctx.ReadValue<Vector2>(); //Reads the movement joystick/ keys(Vector2).
-         // _stateMachine.SetContext("move", dir);  //Sends this direction as a “context” to the state machine so the MovingState knows how to move.
-        }
-
-        public void OnJump(InputAction.CallbackContext ctx)
-        {
-            //  if (ctx.started && isGrounded)   //If the jump button is pressed and you’re grounded → triggers the Jumping state.
-                 // _stateMachine.SetTrigger(State.Jumping);
-        }
-
-        public void OnPunch(InputAction.CallbackContext ctx) 
-        {
-            // if (ctx.started && !onCooldown)    //If you press punch and you’re not on cooldown → triggers Punching state.
-            //     sm.SetTrigger(State.Punching);
-        }
-
-        public void OnRun(InputAction.CallbackContext ctx)
-        {
-            isInRun = ctx.ReadValue<float>() > 0.5f; //Reads an analog value (trigger or shift key).
-          //  sm.ShowContext("run", isInRun); //Updates a boolean context “run” so the state machine can decide between walking and running.
-        }
-
-        public void OnAction(InputAction.CallbackContext ctx)
-        {
-            if (ctx.started)
-                TryInteract();
-        }
-
-        void TryInteract()
-        {
-            if (Physics.Raycast(transform.position + Vector3.up * 1.5f, transform.forward, out var hit, 3f, interactMask)) // Shoots a ray 1.5m above your feet, 3m forward only hitting objects in the interactMask
-            {
-                /*     - If it hits an object on the interactMask, checks if it’s a PlantaCatapulta.      If yes: Enters the “InsidePlant” state - Calls the plant’s EnterPlant() method with this player.
-            
-                var plant = hit.collider.GetComponent<PlantaCatapulta>();
-                     if (plant != null)
-                     {
-                         sm.SetTrigger(State.InsidePlant);
-                         plant.EnterPlant(this);
-                     } */
-            }
-        }
-
-        public void ApplyGravity(float dt)
-        {
-            velocity.y += gravity * dt; //Adds gravity to the Y velocity each frame.
-        }
-
-        public void BeginCooldown(float duration)  // When a punch starts, BeginCooldown() is called with a duration.
-        {
-          //  StartCoroutine(CooldownRoutine(duration));
-        }
-
+    // ============================================
+    // MOVEMENT UTILITIES
+    // ============================================
     public Vector3 ApplyInertia(Vector3 inputDir, float deltaTime, float turnSpeed)
     {
         if (inputDir.magnitude > 0.01f)
             inputDir.Normalize();
-        //turnSpeed varies depending on the player's speed.
-
 
         lastDirection = Vector3.MoveTowards(lastDirection, inputDir, turnSpeed * deltaTime);
 
@@ -378,83 +462,175 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
         return lastDirection;
     }
 
+    public void FlipCharacter(Vector3 lastDir)
+    {
+        if (Mathf.Abs(lastDir.x) < 0.01f) return;
+
+        float currentSign = Mathf.Sign(transform.localScale.x);
+        float desiredSign = Mathf.Sign(lastDir.x);
+
+        if (currentSign != desiredSign)
+            transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
+    }
+
+    public void UpdateScaleBasedOnZ()
+    {
+        float z = transform.position.z;
+        float t = Mathf.InverseLerp(minZ, maxZ, z);
+        t = Mathf.Clamp01(t);
+        float scaleFactor = Mathf.Lerp(maxScale, minScale, t);
+        float signX = Mathf.Sign(transform.localScale.x);
+        transform.localScale = new Vector3(scaleFactor * signX, scaleFactor, scaleFactor);
+    }
+
+    // ============================================
+    // RING SLOPE SYSTEM (Delegates to RingSlopeHandler)
+    // ============================================
+    public void EnterSlopeZone(Transform center)
+    {
+        // Ensure RingSlopeHandler exists
+        if (ringSlopeHandler == null)
+        {
+            ringSlopeHandler = GetComponent<RingSlopeHandler>();
+            if (ringSlopeHandler == null)
+            {
+                ringSlopeHandler = gameObject.AddComponent<RingSlopeHandler>();
+            }
+        }
+        
+        if (ringSlopeHandler != null)
+        {
+            ringSlopeHandler.EnterSlopeZone(center);
+            
+            // Transition to GlidingState when entering slope
+            if (currentState != State.Gliding && canMove)
+            {
+                currentState = State.Gliding;
+                StateMachine.SetState(State.Gliding);
+            }
+        }
+    }
+
+    public void ExitSlopeZone()
+    {
+        // Ensure RingSlopeHandler exists
+        if (ringSlopeHandler == null)
+        {
+            ringSlopeHandler = GetComponent<RingSlopeHandler>();
+            if (ringSlopeHandler == null)
+            {
+                ringSlopeHandler = gameObject.AddComponent<RingSlopeHandler>();
+            }
+        }
+        
+        if (ringSlopeHandler != null)
+        {
+            ringSlopeHandler.ExitSlopeZone();
+            
+            // Exit GlidingState and return to appropriate state
+            if (currentState == State.Gliding && canMove)
+            {
+                State newState = PlayerStateHelper.DetermineStateFromInput(staminaManager);
+                currentState = newState;
+                StateMachine.SetState(newState);
+            }
+        }
+    }
+
+    public Vector3 RestrictToSlopeDirection(Vector3 inputDirection)
+    {
+        // Ensure RingSlopeHandler exists
+        if (ringSlopeHandler == null)
+        {
+            ringSlopeHandler = GetComponent<RingSlopeHandler>();
+            if (ringSlopeHandler == null)
+            {
+                ringSlopeHandler = gameObject.AddComponent<RingSlopeHandler>();
+            }
+        }
+        
+        if (ringSlopeHandler != null)
+        {
+            return ringSlopeHandler.RestrictToSlopeDirection(inputDirection);
+        }
+        return inputDirection;
+    }
+
+    // ============================================
+    // COMBAT
+    // ============================================
     public void PushForce(Vector3 direction, int enemyEndurance)
     {
-        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2); //we add 2 to avoid negative numbers here
+        enduranceDistance = (TypeOfDamage)(endurance - enemyEndurance + 2);
 
-        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushOnlyOtherPlus; //any endurance distance less than 0 will be interpreted as the hardest push possible
+        if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushOnlyOtherPlus;
         else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
 
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
             case TypeOfDamage.PushOnlySelf:
-                //push the player at the knockback direction
-                pushMultiplier = 10f;
+                pushMultiplier = pushForceSelf;
                 break;
             case TypeOfDamage.PushMostlySelf:
-                //75% push player, 25% push enemy
-                pushMultiplier = 5f;
+                pushMultiplier = pushForceMostlySelf;
                 break;
             case TypeOfDamage.PushBoth:
-                //50% push player, 50% push enemy
-                pushMultiplier = 3.5f;
+                pushMultiplier = pushForceBoth;
                 break;
             case TypeOfDamage.PushMostlyOther:
-                //25% push player, 75% push enemy
-                pushMultiplier = 3f;
+                pushMultiplier = pushForceMostlyOther;
                 break;
             case TypeOfDamage.PushOnlyOther:
-                //do not push player
-                pushMultiplier = 0f;
+                pushMultiplier = pushForceOnlyOther;
                 break;
             case TypeOfDamage.PushOnlyOtherPlus:
-                pushMultiplier = 15f;
+                pushMultiplier = pushForceOtherPlus;
                 break;
         }
 
         if (damageBoost >= 2)
         {
-            pushMultiplier = Mathf.Max(pushMultiplier, 3); //this ensures that the player will be knocked back when sprint-punching
+            pushMultiplier = Mathf.Max(pushMultiplier, sprintPunchMinPush);
         }
 
-        damageBoost = 0; // Reset damage boost after being used
+        damageBoost = 0;
 
         if (pushMultiplier > 0)
         {
-            //do a little knockback
-            knockbackVelocity = direction.normalized * pushMultiplier * 2f;
+            knockbackVelocity = direction.normalized * pushMultiplier * pushForceBaseMultiplier;
             hasKnockback = true;
         }
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        if (normalPunchCooldown <= 0 && normalPunchTimer > 0) //only during punch and if not on cooldown
+        if (normalPunchCooldown <= 0 && normalPunchTimer > 0)
         {
             Vector3 knockbackDirection = GetDirectionalInput().normalized;
-            //if there's no input, we set a default knockback direction
             if (knockbackDirection == Vector3.zero)
             {
                 knockbackDirection = Vector3.right;
-                knockbackDirection.x = Mathf.Sign(transform.localScale.x); //we use the character's facing direction
+                knockbackDirection.x = Mathf.Sign(transform.localScale.x);
                 knockbackDirection.y = 0;
             }
-            //we check if the collider belongs to an object with tag "Enemy"
-            if (other.CompareTag("Enemy") && !other.isTrigger)
+            
+            if (other.CompareTag("Enemy"))
             {
-                Debug.Log("Hit an enemy: " + other.name);
-                //we try to get the EnemyController component from the hit object
                 EnemyController enemy = other.GetComponent<EnemyController>();
                 if (enemy != null)
                 {
-                    enemy.PushForce(knockbackDirection, endurance);
+                    enemy.PushForce(knockbackDirection, endurance, gameObject);
                     PushForce(-knockbackDirection, enemy.endurance);
                     normalPunchTimer = 0;
                 }
             }
         }
     }
+
+    // ============================================
+    // DAMAGE & DEATH
+    // ============================================
     public void TakeDamage(int dmg)
     {
         HP = Mathf.Max(0, HP - dmg);
@@ -463,11 +639,69 @@ public class PlayerController : MonoBehaviour, IDamageable, IKnockbackable
             Die();
         }
     }
+
     public void Die()
     {
         canMove = false;
         animator.speed = 1;
         animator.SetBool("isDead", true);
+        GenericBattleManager.instance.battleIsActive = false;
+        GenericBattleManager.instance.ShowDeathMessage(true);
+    }
+
+    void SpeedManagement()
+    {
+        if (cc.enabled) speedDisplay.text = (Mathf.Round(cc.velocity.magnitude * 10) / 10).ToString("F1");
+        else speedDisplay.text = "0,0";
+    }
+
+    // ============================================
+    // INPUT SYSTEM CALLBACKS
+    // ============================================
+    public void OnMove(InputAction.CallbackContext ctx)
+    {
+        Vector2 dir = ctx.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        // TO DO: Implement jump
+    }
+
+    public void OnPunch(InputAction.CallbackContext ctx)
+    {
+        // TO DO: Implement punch input
+    }
+
+    public void OnRun(InputAction.CallbackContext ctx)
+    {
+        isInRun = ctx.ReadValue<float>() > 0.5f;
+    }
+
+    public void OnAction(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+            TryInteract();
+    }
+
+    void TryInteract()
+    {
+        if (Physics.Raycast(transform.position + Vector3.up * 1.5f, transform.forward, out var hit, 3f, interactMask))
+        {
+            // TO DO: Implement interaction logic
+        }
+    }
+
+    // ============================================
+    // UTILITY METHODS
+    // ============================================
+    public void ApplyGravity(float dt)
+    {
+        //
+    }
+
+    public void BeginCooldown(float duration)
+    {
+        // TO DO: Implement cooldown system
     }
 }
-

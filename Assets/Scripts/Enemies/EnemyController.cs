@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,17 +18,20 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     public PlayerController player; // Reference to the player
 
     public CapsuleCollider hitCollider; // Collider to damage the player on contact
+    public bool canHitPlayer;
     public float hitTimer = 0, maxHitTimer; // Time between hits to the player
 
     public Vector3 knockbackSpeed;
 
     public int enemyPhase = 0;
     public float attackTime; //Used to know when the enemy is ready to attack.
+    public bool attackChosen; //Used to know if the enemy has already picked one attack randomly.
 
+    public bool canBeKnockedback, canAttack;
     public float HP { get; set; }
 
     //Animator controllers
-    public bool isAttacking, isMoving;
+    [Header ("Animator controllers")] public bool isAttacking, isMoving, hasKnockback, hasBeenPushed, damageCondition;
     public Animator animator;
 
     // Update is called once per frame
@@ -35,36 +39,57 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
     {
         UpdateScaleBasedOnZ();
 
-        if (knockbackSpeed.magnitude > 0.1f)
+        if (GenericBattleManager.instance.battleIsActive)
         {
-            controller.Move(knockbackSpeed * Time.deltaTime);
-            // Gradually reduce knockback speed over time
-            knockbackSpeed = Vector3.Lerp(knockbackSpeed, Vector3.zero, 5f * Time.deltaTime);
-        }
-        else
-        {
-            knockbackSpeed = Vector3.zero;
-
-            if (!isAttacking)
+            if (knockbackSpeed.magnitude > 0.01f)
             {
-                isMoving = true;
-                Vector3 input = player.transform.position - transform.position;
-                lastDir = new Vector3(input.x, 0, input.z).normalized;
+                CollisionFlags flags = controller.Move(knockbackSpeed * Time.deltaTime);
 
-                FlipCharacter(lastDir);
-                FollowPlayerLogic();
+                if ((flags & CollisionFlags.Sides) != 0)
+                {
+                    knockbackSpeed = Vector3.Reflect(knockbackSpeed, Vector3.right) * 0.5f;
+                }
+                else
+                {
+                    knockbackSpeed = Vector3.Lerp(knockbackSpeed, Vector3.zero, 5f * Time.deltaTime);
+                }
+
+                hasKnockback = knockbackSpeed.magnitude > 0.01f;
+            }
+            else
+            {
+                knockbackSpeed = Vector3.zero;
+                hasKnockback = false;
+                hasBeenPushed = false;
+
+                if (!isAttacking)
+                {
+                    isMoving = true;
+                    Vector3 input = player.transform.position - transform.position;
+                    lastDir = new Vector3(input.x, 0, input.z).normalized;
+
+                    FlipCharacter(lastDir);
+                    FollowPlayerLogic();
+                }
+            }
+
+            if (canAttack) UpdateAttackTimer();
+
+            if (hitTimer > 0)
+            {
+                hitTimer -= Time.deltaTime;
+            }
+            else
+            {
+                canHitPlayer = true;
             }
         }
-
-        UpdateAttackTimer();
-
-        if (hitTimer > 0)
-        {
-            hitTimer -= Time.deltaTime;
-        }
         else
         {
-            hitCollider.enabled = true;
+            isMoving = false;
+            isAttacking = false;
+            hasKnockback = false;
+            hasBeenPushed = false;
         }
     }
 
@@ -96,14 +121,13 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
             transform.localScale = new Vector3(-transform.localScale.x, 0, transform.localScale.z);
     }
     public abstract void FollowPlayerLogic(); // Implement specific player following logic in derived classes
-    public void PushForce(Vector3 direction, int playerEndurance)
+    public void PushForce(Vector3 direction, int playerEndurance, GameObject attacker)
     {
         enduranceDistance = (TypeOfDamage)(endurance - playerEndurance + 2);
 
         if (enduranceDistance < 0) enduranceDistance = TypeOfDamage.PushOnlyOtherPlus;
         else if ((int)enduranceDistance > 4) enduranceDistance = (TypeOfDamage)4;
 
-            Debug.Log(enduranceDistance);
         float pushMultiplier = 0;
         switch (enduranceDistance)
         {
@@ -131,9 +155,31 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
                 pushMultiplier = 15f;
                 break;
         }
-        knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+        //knockbackSpeed = direction.normalized * pushMultiplier * 2f;
+
+        Vector3 newKnockback = direction.normalized * pushMultiplier * 2f;
+
+        if (Vector3.Dot(knockbackSpeed, newKnockback) > 0)
+        {
+            knockbackSpeed += newKnockback;
+        }
+        else
+        {
+            float inertiaFactor = 0.5f;
+            knockbackSpeed = knockbackSpeed * inertiaFactor + newKnockback;
+        }
+
+        if ((int)enduranceDistance <= 2)
+        {
+            attackTime = Random.Range(3, 6);
+        }
+
+        if (attacker.CompareTag("Player"))
+        {
+            TakeDamage((int)player.playerDamage);
+        }
     }
-    public abstract void ChangeBossPhase();
+    public abstract IEnumerator ChangeBossPhase();
     void UpdateAttackTimer()
     {
         if (attackTime <= 0)
@@ -143,15 +189,19 @@ public abstract class EnemyController : MonoBehaviour, IDamageable
         }
         else
         {
+            attackChosen = false;
             attackTime -= Time.deltaTime;
         }
     }
-    public abstract void Attack();
     public void Die()
     {
     }
 
     public void TakeDamage(int dmg)
     {
+        //Here will be coded the common behaviours between enemies when damaged.
+        DamagedBehaviour(dmg);
     }
+    public abstract void Attack();
+    public abstract void DamagedBehaviour(int dmg); //Specific enemy damage calcs
 }

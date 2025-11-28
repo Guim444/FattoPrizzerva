@@ -2,5 +2,21 @@ using UnityEngine;
 
 public class RioTutteAnimations : EnemyAnimationController
 {
-    //It does not implement anything extra, but the generic controller is an abstract class.
+    RioTutteScript rioTutte;
+    protected override void Awake()
+    {
+        base.Awake();
+        rioTutte = enemy as RioTutteScript;
+    }
+    protected override void Update()
+    {
+        base.Update();
+        animator.SetBool("dashGrab", rioTutte.isUsingDashGrab);
+        animator.SetBool("fireDash", rioTutte.isUsingFireDash);
+
+        animator.SetBool("frontFall", rioTutte.groundedTimer > 0 && rioTutte.fallDirection);
+        animator.SetBool("backFall", rioTutte.groundedTimer > 0 && !rioTutte.fallDirection);
+
+        animator.SetBool("damageCondition", rioTutte.damageCondition);
+    }
 }

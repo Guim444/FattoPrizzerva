@@ -23,6 +23,14 @@ public class RingSlopeZone : MonoBehaviour
         // ✅ only react if player side matches zone side
         if (pc.isInsideRing != isInsideZone) return;
 
+        // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+        // Phase 2: Notify PlayerController that we're entering a slope zone
+        // PlayerController delegates to RingSlopeHandler
+        // if (ringCenter != null)
+        // {
+        //     pc.EnterSlopeZone(ringCenter);
+        // }
+
         if (verbose) Debug.Log($"ENTER {name}");
     }
 
@@ -33,8 +41,25 @@ public class RingSlopeZone : MonoBehaviour
         PlayerController pc = other.GetComponent<PlayerController>();
         if (pc == null) return;
 
-        // ✅ ignore if wrong side
-        if (pc.isInsideRing != isInsideZone) return;
+        // ✅ Check if player side matches zone side
+        if (pc.isInsideRing != isInsideZone)
+        {
+            // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+            // Side mismatch: if player was on this slope, exit it
+            // if (pc.isOnSlope && pc.ringCenter == ringCenter)
+            // {
+            //     pc.ExitSlopeZone();
+            // }
+            return;
+        }
+
+        // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+        // Phase 2: Ensure slope zone is active (in case player entered from another zone)
+        // PlayerController delegates to RingSlopeHandler
+        // if (!pc.isOnSlope && ringCenter != null)
+        // {
+        //     pc.EnterSlopeZone(ringCenter);
+        // }
 
         timer += Time.deltaTime;
         if (timer < CHECK_RATE) return;
@@ -57,6 +82,19 @@ public class RingSlopeZone : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag("Player")) return;
+
+        PlayerController pc = other.GetComponent<PlayerController>();
+        if (pc == null) return;
+
+        // GLIDING SYSTEM (COMMENTED OUT - TO BE ENABLED AFTER TELEPORTATION TESTING)
+        // Phase 2: Notify PlayerController that we're exiting a slope zone
+        // PlayerController delegates to RingSlopeHandler
+        // Only exit if this was the active zone (check if ringCenter matches)
+        // if (pc.isOnSlope && pc.ringCenter == ringCenter)
+        // {
+        //     pc.ExitSlopeZone();
+        // }
+
         if (verbose) Debug.Log($"EXIT {name}");
     }
 }

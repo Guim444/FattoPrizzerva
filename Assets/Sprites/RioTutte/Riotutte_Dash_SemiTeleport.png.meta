@@ -95,12 +95,210 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 16
+        width: 28
+        height: 85
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7763ed8bc5ccd949a606eed81d64a77
+      internalID: -196749057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_1
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 16
+        width: 27
+        height: 83
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b702914b722b89b4187035f083f51635
+      internalID: 206890845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_2
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 16
+        width: 31
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50fc066cabaae4842a8ce13ef6b37c8a
+      internalID: 1629778326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_3
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 19
+        width: 64
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 876802ff26843e2439f3f501fa01408a
+      internalID: -1681308926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_4
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 15
+        width: 74
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 619aeadc77ac473468a8e4e552ae7f89
+      internalID: -293447790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_5
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 15
+        width: 75
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1310d45ba04c8c64790e4f542ca09a25
+      internalID: -187364818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_6
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 15
+        width: 75
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69959257173721c43bba716139356759
+      internalID: -1327948733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_7
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 15
+        width: 74
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8469669aa072fa41b58d6fc16293289
+      internalID: 406232324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Riotutte_Dash_SemiTeleport_8
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 15
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af266be54b0770f4bb9bf99b044438bb
+      internalID: 1943752369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: f9984ba3e78afdb4b8456e951c29d33a
     internalID: 0
     vertices: []
     indices: 
@@ -108,8 +306,19 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Riotutte_Dash_SemiTeleport_0: -196749057
+      Riotutte_Dash_SemiTeleport_1: 206890845
+      Riotutte_Dash_SemiTeleport_2: 1629778326
+      Riotutte_Dash_SemiTeleport_3: -1681308926
+      Riotutte_Dash_SemiTeleport_4: -293447790
+      Riotutte_Dash_SemiTeleport_5: -187364818
+      Riotutte_Dash_SemiTeleport_6: -1327948733
+      Riotutte_Dash_SemiTeleport_7: 406232324
+      Riotutte_Dash_SemiTeleport_8: 1943752369
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
