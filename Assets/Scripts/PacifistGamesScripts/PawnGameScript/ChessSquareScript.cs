@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChessSquareScript : MonoBehaviour
 {
@@ -12,19 +14,8 @@ public class ChessSquareScript : MonoBehaviour
 
     void Awake()
     {
-        pawnPosition = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        SquareRow = GetRow();
-        name = SquareColumn.ToString() + SquareRow.ToString();
-
-        BoardManager.instance.RegisterSquare(this);
-
-        if (BoardManager.instance.squares.Count == 80)
-        {
-            Debug.Log("Finished");
-            BoardManager.instance.SpawnPawns(8);
-        }
+        //StartCoroutine(RegisterSquare());
     }
-
     int GetRow()
     {
         if (transform.parent == null)
@@ -43,4 +34,31 @@ public class ChessSquareScript : MonoBehaviour
 
         return -1;
     }
+    public void CreateSquare()
+    {
+        pawnPosition = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
+        SquareRow = GetRow();
+        name = SquareColumn.ToString() + SquareRow.ToString();
+
+        if (BoardManager.instance != null)
+        {
+            BoardManager.instance.RegisterSquare(this);
+        }
+    }
+    public void ToggleGlow(bool glow)
+    {
+        Renderer rend = GetComponent<Renderer>();
+        if (glow)
+        {
+            Color glowColor = new Color(0, 1, 1);
+            float intensity = 0.3f;
+            rend.material.EnableKeyword("_EMISSION");
+            rend.material.SetColor("_EmissionColor", glowColor * intensity);
+        }
+        else
+        {
+            rend.material.SetColor("_EmissionColor", Color.black);
+        }
+    }
+
 }
