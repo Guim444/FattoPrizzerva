@@ -4,9 +4,13 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager instance;
-    public GameObject pawnPrefab;
+    public GameObject whitePawnPrefab, blackPawnPrefab;
     public GameObject whiteSquarePrefab, blackSquarePrefab, boardPrefab;
     public List<GameObject> rowCount = new List<GameObject>();
+
+    public List<PawnBehavior> whitePawns = new List<PawnBehavior>();
+    public List<PawnBehavior> blackPawns = new List<PawnBehavior>();
+
     public float height, width;
 
     public Dictionary<string, ChessSquareScript> squares = new Dictionary<string, ChessSquareScript>();
@@ -69,6 +73,7 @@ public class BoardManager : MonoBehaviour
                 css.CreateSquare();
             }
         }
+        GenerateGraveyard();
     }
     public void RegisterSquare(ChessSquareScript square)
     {
@@ -76,8 +81,6 @@ public class BoardManager : MonoBehaviour
         {
             squares.Add(square.name, square);
         }
-        else
-            Debug.LogWarning("Duplicate square: " + square.name);
 
         if (squares.Count == height * width)
         {
@@ -103,19 +106,60 @@ public class BoardManager : MonoBehaviour
 
             if (square != null && square.empty)
             {
-                GameObject pawnObj = Instantiate(pawnPrefab, square.pawnPosition, Quaternion.identity);
+                GameObject pawnObj = Instantiate(whitePawnPrefab, square.pawnPosition, Quaternion.identity);
 
                 PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
                 if (pawnScript != null)
                     pawnScript.currentSquare = square;
 
                 square.empty = false;
+                square.pawn = pawnScript;
+
+                whitePawns.Add(pawnScript);
 
                 spawned++;
             }
         }
 
-        if (spawned < quantity)
-            Debug.LogWarning("No se pudieron instanciar todos los pawns: faltaron " + (quantity - spawned));
+        row = (int)height;
+        spawned = 0;
+
+        for (char col = (char)(quantity - 1); spawned < quantity; col --)
+        {
+            string squareName = col.ToString() + row.ToString();
+            ChessSquareScript square = GetSquare(squareName);
+
+            if (square != null && square.empty)
+            {
+                GameObject pawnObj = Instantiate(blackPawnPrefab, square.pawnPosition, Quaternion.identity);
+
+                PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
+                if (pawnScript != null)
+                    pawnScript.currentSquare = square;
+
+                square.empty = false;
+                square.pawn = pawnScript;
+
+                blackPawns.Add(pawnScript);
+
+                spawned++;
+            }
+        }
+    }
+    public void GenerateGraveyard()
+    {
+        GameObject graveyard = Instantiate(boardPrefab, transform.position, Quaternion.identity);
+        graveyard.name = "Graveyard";
+        graveyard.transform.parent = transform;
+
+        int totalPawns = (int)width * 2;
+        int graveyardRows = Mathf.CeilToInt(height / 2);
+
+        int graveyardWidth = totalPawns / graveyardRows;
+
+        graveyard.transform.localScale = new Vector3(height + 0.5f, 1, graveyardWidth + 0.5f);
+
+        float zOffset = width / 2f + graveyardWidth / 2f + 0.25f;
+        graveyard.transform.position = new Vector3(0, 0, zOffset);
     }
 }

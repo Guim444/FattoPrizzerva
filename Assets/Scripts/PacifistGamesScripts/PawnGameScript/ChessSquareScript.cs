@@ -11,10 +11,23 @@ public class ChessSquareScript : MonoBehaviour
     public int SquareRow;
     public bool empty = true; //default = true
     public Vector3 pawnPosition;
+    public bool selectableSquare = false;
+
+    public PawnBehavior pawn;
 
     void Awake()
     {
         //StartCoroutine(RegisterSquare());
+    }
+    private void OnMouseDown()
+    {
+        if (ClickManager.instance.selectedPawn != null && selectableSquare)
+        {
+            PawnBehavior thisPawn = ClickManager.instance.selectedPawn;
+            StartCoroutine(thisPawn.MoveForward(this));
+            thisPawn.Deselect();
+            thisPawn = null;
+        }
     }
     int GetRow()
     {

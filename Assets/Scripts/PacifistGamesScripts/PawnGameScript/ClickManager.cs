@@ -9,6 +9,8 @@ public class ClickManager : MonoBehaviour
 
     bool clickPerformed = false;
 
+    public bool isSelectingMovement = false;
+
     private void Awake()
     {
         instance = this;
@@ -19,7 +21,13 @@ public class ClickManager : MonoBehaviour
         if (value.isPressed && !clickPerformed)
         {
             clickPerformed = true;
-            Debug.Log("Click");
+
+            if (ClickHitsSelectableSquare())
+            {
+                isSelectingMovement = true;
+                return;
+            }
+
             if (selectedPawn != null)
             {
                 selectedPawn.Deselect();
@@ -29,6 +37,29 @@ public class ClickManager : MonoBehaviour
         else if (!value.isPressed)
         {
             clickPerformed = false;
+            isSelectingMovement = false;
         }
+    }
+
+    bool ClickHitsSelectableSquare()
+    {
+        if (Camera.main != null && Mouse.current != null)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                ChessSquareScript square = hit.collider.GetComponent<ChessSquareScript>();
+                if (square != null && square.selectableSquare)
+                {
+                    selectedSquare = square;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        return false;
     }
 }
