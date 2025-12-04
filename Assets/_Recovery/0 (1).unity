@@ -3219,10 +3219,6 @@ MonoBehaviour:
   whiteSquarePrefab: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
   blackSquarePrefab: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
   boardPrefab: {fileID: 1957572251758858398, guid: 921048f574d139842adbb69718edfeb2, type: 3}
-  waitingZonePrefab1: {fileID: 0}
-  waitingZonePrefab2: {fileID: 0}
-  graveyardPrefab: {fileID: 0}
-  graveyardPrefab2: {fileID: 0}
   rowCount: []
   whitePawns: []
   blackPawns: []
@@ -3415,7 +3411,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60
-    OrthographicSize: 8
+    OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -4569,7 +4565,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60
-    OrthographicSize: 8
+    OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -8251,7 +8247,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -10583,10 +10579,6 @@ MonoBehaviour:
   whiteSquarePrefab: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
   blackSquarePrefab: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
   boardPrefab: {fileID: 1957572251758858398, guid: 921048f574d139842adbb69718edfeb2, type: 3}
-  waitingZonePrefab1: {fileID: 3550559019205365274, guid: d6699610bf3cab94aa63370bdea357e7, type: 3}
-  waitingZonePrefab2: {fileID: 3550559019205365274, guid: 078e5175846e05847acee8469a6945f6, type: 3}
-  graveyardPrefab: {fileID: 4055689276631825297, guid: f2e3cc9f9de814d4eb9accc67fb88a05, type: 3}
-  graveyardPrefab2: {fileID: 4055689276631825297, guid: 98e02b7d33dd47649bde4e57994b65b2, type: 3}
   rowCount: []
   whitePawns: []
   blackPawns: []

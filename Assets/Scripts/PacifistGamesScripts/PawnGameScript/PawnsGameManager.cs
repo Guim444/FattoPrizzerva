@@ -8,6 +8,9 @@ public class PawnsGameManager : MonoBehaviour
     public List<GameObject> cameras = new List<GameObject>();
     public int activePlayer = 1; // 1 = Player 1, -1 = Player 2
 
+    public List<int> playerTier = new List<int>() { 1, 1 };
+    public List<int> playerPoints = new List<int>() { 0, 0 };
+
     private void Awake()
     {
         instance = this;
@@ -49,5 +52,28 @@ public class PawnsGameManager : MonoBehaviour
 
         cameras[0].SetActive(active);
         cameras[1].SetActive(!active);
+    }
+    public void AddPoints(int player, int points)
+    {
+        playerPoints[player - 1] += points;
+
+        switch (playerTier[player - 1])
+        {
+            case 1:
+                if (playerPoints[player - 1] >= 5)
+                {
+                    playerTier[player - 1] = 2;
+                    playerPoints[player - 1] -= 5;
+                }
+                break;
+            case 2:
+                if (playerPoints[player - 1] >= 8)
+                {
+                    playerTier[player - 1] = 3;
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -17,7 +17,6 @@ public class ChessSquareScript : MonoBehaviour
 
     void Awake()
     {
-        //StartCoroutine(RegisterSquare());
     }
     private void OnMouseDown()
     {

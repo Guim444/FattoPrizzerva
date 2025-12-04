@@ -1,0 +1,209 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4055689276631825297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6475329056590856960}
+  m_Layer: 0
+  m_Name: GraveyardSquare 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6475329056590856960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4055689276631825297}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2995927931897831039}
+  - {fileID: 4191230262365295272}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1001 &2239129989176888029
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6475329056590856960}
+    m_Modifications:
+    - target: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_Name
+      value: WhiteSquare
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -8712907611855691978, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 2848344518650662536}
+  m_SourcePrefab: {fileID: 100100000, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+--- !u!1 &304077963575401027 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+  m_PrefabInstance: {fileID: 2239129989176888029}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2848344518650662536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304077963575401027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed572d9519cb73c47a2af0bbc6db322b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GraveyardSquare
+  player: 2
+  empty: 1
+  tier: 3
+  pawnPosition: {x: 0, y: 0, z: 0}
+--- !u!4 &4191230262365295272 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+  m_PrefabInstance: {fileID: 2239129989176888029}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3711447897973935777
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6475329056590856960}
+    m_Modifications:
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_Name
+      value: BlackSquare
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -6596558347124331647, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5687786861241879005}
+  m_SourcePrefab: {fileID: 100100000, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+--- !u!1 &1827015045271594089 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+  m_PrefabInstance: {fileID: 3711447897973935777}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5687786861241879005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827015045271594089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed572d9519cb73c47a2af0bbc6db322b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GraveyardSquare
+  player: 2
+  empty: 1
+  tier: 2
+  pawnPosition: {x: 0, y: 0, z: 0}
+--- !u!4 &2995927931897831039 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+  m_PrefabInstance: {fileID: 3711447897973935777}
+  m_PrefabAsset: {fileID: 0}

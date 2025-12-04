@@ -3226,6 +3226,10 @@ MonoBehaviour:
   rowCount: []
   whitePawns: []
   blackPawns: []
+  whiteGraveyardSquaresToTier2: []
+  whiteGraveyardSquaresToTier3: []
+  blackGraveyardSquaresToTier2: []
+  blackGraveyardSquaresToTier3: []
   height: 8
   width: 8
 --- !u!1 &433509880
@@ -10144,6 +10148,8 @@ MonoBehaviour:
   - {fileID: 437198226}
   - {fileID: 718132479}
   activePlayer: 1
+  playerTier: 0100000001000000
+  playerPoints: 0000000000000000
 --- !u!1 &1833041846
 GameObject:
   m_ObjectHideFlags: 0
@@ -10590,6 +10596,10 @@ MonoBehaviour:
   rowCount: []
   whitePawns: []
   blackPawns: []
+  whiteGraveyardSquaresToTier2: []
+  whiteGraveyardSquaresToTier3: []
+  blackGraveyardSquaresToTier2: []
+  blackGraveyardSquaresToTier3: []
   height: 8
   width: 8
 --- !u!1 &1951936558

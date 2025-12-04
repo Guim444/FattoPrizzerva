@@ -12,10 +12,18 @@ public class PawnBehavior : MonoBehaviour
     public ChessSquareScript currentSquare;
     bool isMoving = false; //We avoid strange movements
     List<ChessSquareScript> possiblePaths = new List<ChessSquareScript>();
-    public int[] possibleMovements;
+
+    public List<int> possibleMovements, killRange;
+    public List<int> tier1Movements, tier2Movements, tier3Movements;
+    public List<int> tier1KillRange, tier2KillRange, tier3KillRange;
+
     public bool canBeEaten = false;
 
     public int player;
+
+    public bool startingPawn = true;
+
+    public int pawnTier;
 
     void Awake()
     {
@@ -63,6 +71,18 @@ public class PawnBehavior : MonoBehaviour
                 possiblePaths.Add(square);
             }
             else return; //If it finds an occupied square, it won't continue.
+        }
+
+        if (startingPawn && !possibleMovements.Contains(2))
+        {
+            ChessSquareScript square = FindNextSquare(2);
+
+            if (square.empty)
+            {
+                square.ToggleGlow(true);
+                square.selectableSquare = true;
+                possiblePaths.Add(square);
+            }
         }
     }
     public void TrackDiagonals()
@@ -124,6 +144,7 @@ public class PawnBehavior : MonoBehaviour
     }
     public IEnumerator MoveForward(ChessSquareScript nextSquare)
     {
+        startingPawn = false;
         isMoving = true;
         currentSquare.empty = true;
         currentSquare.pawn = null;
@@ -131,7 +152,7 @@ public class PawnBehavior : MonoBehaviour
 
         if (!nextSquare.empty)
         {
-            nextSquare.pawn.gameObject.SetActive(false);
+            nextSquare.pawn.TeleportPawnToGraveyard(player, 1);
         }
 
         nextSquare.empty = false;
@@ -152,6 +173,17 @@ public class PawnBehavior : MonoBehaviour
 
         isMoving = false;
 
+        if (player == 1 && currentSquare.SquareRow == BoardManager.instance.height)
+        {
+            TeleportPawnToGraveyard(player, 2);
+            yield return new WaitForSeconds(0.75f);
+        }
+        else if (player == 2 && currentSquare.SquareRow == 1)
+        {
+            TeleportPawnToGraveyard(player, 2);
+            yield return new WaitForSeconds(0.75f);
+        }
+
         PawnsGameManager.instance.NextPlayerTurn();
     }
 
@@ -168,6 +200,57 @@ public class PawnBehavior : MonoBehaviour
         else
         {
             rend.material.SetColor("_EmissionColor", Color.black);
+        }
+    }
+    public void TeleportPawnToGraveyard(int activePlayer, int points) //used when a pawn is captured or promoted
+    {
+        Vector3 graveyardPos = BoardManager.instance.GetGraveyardPosition(activePlayer, PawnsGameManager.instance.playerTier[activePlayer - 1]);
+        transform.position = graveyardPos;
+        currentSquare.empty = true;
+        currentSquare.pawn = null;
+        GetComponent<BoxCollider>().enabled = false;
+
+        PawnsGameManager.instance.AddPoints(activePlayer, points);
+    }
+
+    public void SetPawnTier()
+    {
+        switch (pawnTier)
+        {
+            case 1:
+                foreach (int move in tier1Movements)
+                {
+                    possibleMovements.Add(move);
+                }
+                foreach (int kill in tier1KillRange)
+                {
+                    killRange.Add(kill);
+                }
+                break;
+            case 2:
+                foreach (int move in tier2Movements)
+                {
+                    possibleMovements.Add(move);
+                }
+                foreach (int kill in tier2KillRange)
+                {
+                    killRange.Add(kill);
+                }
+                break;
+            case 3:
+                foreach (int move in tier3Movements)
+                {
+                    possibleMovements.Add(move);
+                }
+                foreach (int kill in tier3KillRange)
+                {
+                    killRange.Add(kill);
+                }
+                break;
+            default:
+                possibleMovements = new List<int>(tier1Movements);
+                killRange = new List<int>(tier1KillRange);
+                break;
         }
     }
 }
