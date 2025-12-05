@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class PawnsGameManager : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class PawnsGameManager : MonoBehaviour
 
     public List<int> playerTier = new List<int>() { 1, 1 };
     public List<int> playerPoints = new List<int>() { 0, 0 };
+    public List<bool> waitingRowIsReady = new List<bool>() { false, false };
+
+    public List<int > pointsToNextTier = new List<int>() { 5, 8 };
+
+    public TextMeshProUGUI playerTurn;
 
     private void Awake()
     {
@@ -20,31 +26,39 @@ public class PawnsGameManager : MonoBehaviour
 
     public void NextPlayerTurn()
     {
-        if (activePlayer == 1)
+        activePlayer = activePlayer == 1 ? 2 : 1;
+        playerTurn.text = "Player " + activePlayer + " Turn";
+        if (waitingRowIsReady[activePlayer - 1])
         {
-            foreach (PawnBehavior pawn in BoardManager.instance.whitePawns)
-            {
-                pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
-            }
-            foreach (PawnBehavior pawn in BoardManager.instance.blackPawns)
-            {
-                pawn.gameObject.GetComponent<BoxCollider>().enabled = true;
-            }
-            activePlayer = 2;
+            StartCoroutine(BoardManager.instance.PushWaitingRowToBoard(activePlayer));
+            waitingRowIsReady[activePlayer - 1] = false;
         }
         else
         {
-            foreach (PawnBehavior pawn in BoardManager.instance.whitePawns)
+            if (activePlayer == 2)
             {
-                pawn.gameObject.GetComponent<BoxCollider>().enabled = true;
+                foreach (PawnBehavior pawn in BoardManager.instance.whitePawns)
+                {
+                    pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
+                }
+                foreach (PawnBehavior pawn in BoardManager.instance.blackPawns)
+                {
+                    pawn.gameObject.GetComponent<BoxCollider>().enabled = true;
+                }
             }
-            foreach (PawnBehavior pawn in BoardManager.instance.blackPawns)
+            else
             {
-                pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
+                foreach (PawnBehavior pawn in BoardManager.instance.whitePawns)
+                {
+                    pawn.gameObject.GetComponent<BoxCollider>().enabled = true;
+                }
+                foreach (PawnBehavior pawn in BoardManager.instance.blackPawns)
+                {
+                    pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
+                }
             }
-            activePlayer = 1;
+            ChangeCamera();
         }
-        ChangeCamera();
     }
     public void ChangeCamera()
     {
@@ -60,16 +74,21 @@ public class PawnsGameManager : MonoBehaviour
         switch (playerTier[player - 1])
         {
             case 1:
-                if (playerPoints[player - 1] >= 5)
+                if (playerPoints[player - 1] >= 1)
                 {
                     playerTier[player - 1] = 2;
-                    playerPoints[player - 1] -= 5;
+                    playerPoints[player - 1] -= pointsToNextTier[0];
+                    StartCoroutine(BoardManager.instance.PushBenchedPawns(player));
+                    waitingRowIsReady[player - 1] = true;
                 }
                 break;
             case 2:
                 if (playerPoints[player - 1] >= 8)
                 {
                     playerTier[player - 1] = 3;
+                    playerPoints[player - 1] -= pointsToNextTier[1];
+                    StartCoroutine(BoardManager.instance.PushBenchedPawns(player));
+                    waitingRowIsReady[player - 1] = true;
                 }
                 break;
             default:

@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines.ExtrusionShapes;
@@ -15,8 +16,9 @@ public class BoardManager : MonoBehaviour
     public List<PawnBehavior> whitePawns = new List<PawnBehavior>();
     public List<PawnBehavior> blackPawns = new List<PawnBehavior>();
 
-    public List<GameObject> whiteWaitingZone = new List<GameObject>();
-    public List<GameObject> blackWaitingZone = new List<GameObject>();
+    public List<BenchSquare> whiteWaitingZone1, whiteWaitingZone2, whiteWaitingZone3;
+    public List<BenchSquare> blackWaitingZone1, blackWaitingZone2, blackWaitingZone3;
+
 
     public List<GraveyardSquare> whiteGraveyardSquaresToTier2 = new List<GraveyardSquare>();
     public List<GraveyardSquare> whiteGraveyardSquaresToTier3 = new List<GraveyardSquare>();
@@ -112,6 +114,7 @@ public class BoardManager : MonoBehaviour
         int row = 1;
         int spawned = 0;
 
+
         for (char col = 'A'; spawned < quantity; col++)
         {
             string squareName = col.ToString() + row.ToString();
@@ -151,6 +154,10 @@ public class BoardManager : MonoBehaviour
                 GameObject pawnObj = Instantiate(blackPawnPrefab, square.pawnPosition, Quaternion.identity);
 
                 PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
+
+                pawnScript.pawnTier = tier;
+                pawnScript.SetPawnTier();
+
                 if (pawnScript != null)
                     pawnScript.currentSquare = square;
 
@@ -177,6 +184,7 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < width; i++)
         {
             GameObject bench = Instantiate((i % 2 == 0) ? waitingZonePrefab1 : waitingZonePrefab2);
+            bench.name = "Bench" + (i + 1);
             bench.transform.parent = waitingZone.transform;
             float zOffset = -(width / 2f) + 0.5f + i;
             if (previousBench == null)
@@ -188,6 +196,7 @@ public class BoardManager : MonoBehaviour
                 Vector3 prevPos = previousBench.transform.position;
                 bench.transform.position = new Vector3(prevPos.x, prevPos.y, prevPos.z + 1f);
             }
+
             previousBench = bench;
         }
         //Now copy the waiting zone to the other side. Ensure it's facing the right way (-180 degrees on Y axis)
@@ -197,6 +206,204 @@ public class BoardManager : MonoBehaviour
         waitingZone2.transform.parent = transform;
         waitingZone2.transform.position = new Vector3((height / 2f) + 2.25f, 0, 0);
         waitingZone2.transform.rotation = Quaternion.Euler(0, 180, 0);
+
+        char column;
+
+        column = 'A';
+        foreach (Transform benchZone in waitingZone.transform)
+        {
+            foreach (Transform bench in benchZone)
+            {
+                BenchSquare bs = bench.GetComponent<BenchSquare>();
+                bs.pawnPosition = bench.transform.position + Vector3.up * 0.75f;
+                bs.player = 2;
+
+                switch (bs.tier)
+                {
+                    case 2:
+                        blackWaitingZone2.Add(bs);
+                        GenerateBenchedPawn(bs);
+                        break;
+                    case 3:
+                        blackWaitingZone3.Add(bs);
+                        GenerateBenchedPawn(bs);
+                        break;
+                    default:
+                        bs.column = column;
+                        blackWaitingZone1.Add(bs);
+                        break;
+                }
+            }
+            column++;
+        }
+        column = (char)('A' + width - 1);
+        foreach (Transform benchZone in waitingZone2.transform)
+        {
+            foreach (Transform bench in benchZone)
+            {
+                BenchSquare bs = bench.GetComponent<BenchSquare>();
+                if (bs != null)
+                {
+                    bs.pawnPosition = bench.transform.position + Vector3.up * 0.75f;
+                    bs.player = 1;
+
+                    switch (bs.tier)
+                    {
+                        case 2:
+                            whiteWaitingZone2.Add(bs);
+                            GenerateBenchedPawn(bs);
+                            break;
+                        case 3:
+                            whiteWaitingZone3.Add(bs);
+                            GenerateBenchedPawn(bs);
+                            break;
+                        default:
+                            bs.column = column;
+                            whiteWaitingZone1.Add(bs);
+                            break;
+                    }
+                }
+            }
+            column--;
+        }
+    }
+
+    public void GenerateBenchedPawn(BenchSquare bs)
+    {
+        GameObject pawnObj = Instantiate((bs.player == 1) ? whitePawnPrefab : blackPawnPrefab);
+        PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
+        pawnScript.pawnTier = bs.tier;
+        pawnScript.SetPawnTier();
+        pawnObj.GetComponent<Transform>().position = bs.pawnPosition;
+        pawnObj.transform.position = bs.pawnPosition;
+        bs.empty = false;
+        bs.storedPawn = pawnScript;
+        pawnObj.GetComponent<BoxCollider>().enabled = false;
+    }
+    public IEnumerator PushBenchedPawns(int player)
+    {
+        List<PawnBehavior> pawnsTier3 = new List<PawnBehavior>();
+        List<PawnBehavior> pawnsTier2 = new List<PawnBehavior>();
+
+        if (player == 1)
+        {
+            foreach (BenchSquare bs in whiteWaitingZone3)
+            {
+                if (!bs.empty)
+                {
+                    bs.empty = true;
+                    pawnsTier3.Add(bs.storedPawn);
+                    bs.storedPawn = null;
+                }
+            }
+            foreach (BenchSquare bs in whiteWaitingZone2)
+            {
+                if (!bs.empty)
+                {
+                    bs.empty = true;
+                    pawnsTier2.Add(bs.storedPawn);
+                    bs.storedPawn = null;
+                }
+            }
+
+            yield return new WaitForSeconds(0.5f);
+
+            foreach (PawnBehavior pb in pawnsTier2)
+            {
+                foreach (BenchSquare bs in whiteWaitingZone1)
+                {
+                    if (bs.empty)
+                    {
+                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
+                        bs.storedPawn = pb;
+                        bs.empty = false;
+                        break;
+                    }
+                }
+            }
+            foreach (PawnBehavior pb in pawnsTier3)
+            {
+                foreach (BenchSquare bs in whiteWaitingZone2)
+                {
+                    if (bs.empty)
+                    {
+                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
+                        bs.storedPawn = pb;
+                        bs.empty = false;
+                        break;
+                    }
+                }
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
+        else if (player == 2)
+        {
+            foreach (BenchSquare bs in blackWaitingZone3)
+            {
+                if (!bs.empty)
+                {
+                    bs.empty = true;
+                    pawnsTier3.Add(bs.storedPawn);
+                    bs.storedPawn = null;
+                }
+            }
+            foreach (BenchSquare bs in blackWaitingZone2)
+            {
+                if (!bs.empty)
+                {
+                    bs.empty = true;
+                    pawnsTier2.Add(bs.storedPawn);
+                    bs.storedPawn = null;
+                }
+            }
+            yield return new WaitForSeconds(0.5f);
+            foreach (PawnBehavior pb in pawnsTier2)
+            {
+                foreach (BenchSquare bs in blackWaitingZone1)
+                {
+                    if (bs.empty)
+                    {
+                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
+                        bs.storedPawn = pb;
+                        bs.empty = false;
+                        break;
+                    }
+                }
+            }
+            foreach (PawnBehavior pb in pawnsTier3)
+            {
+                foreach (BenchSquare bs in blackWaitingZone2)
+                {
+                    if (bs.empty)
+                    {
+                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
+                        bs.storedPawn = pb;
+                        bs.empty = false;
+                        break;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    public IEnumerator PushWaitingRowToBoard(int player)
+    {
+        Debug.Log("Pushing waiting row to board for player " + player);
+        List<BenchSquare> waitingZone = (player == 1) ? whiteWaitingZone1 : blackWaitingZone1;
+        foreach (BenchSquare bs in waitingZone)
+        {
+            if (!bs.empty)
+            {
+                StartCoroutine(bs.storedPawn.MoveToBoard(player, bs));
+                bs.empty = true;
+                bs.storedPawn = null;
+            }
+        }
+        yield return new WaitForSeconds(0.1f);
+        PawnsGameManager.instance.NextPlayerTurn();
+
     }
     public void GenerateGraveyard()
     {
@@ -269,31 +476,6 @@ public class BoardManager : MonoBehaviour
         {
             if (playerTier == 1)
             {
-                foreach (GraveyardSquare gqs in whiteGraveyardSquaresToTier2)
-                {
-                    if (gqs.empty)
-                    {
-                        gqs.empty = false;
-                        return gqs.pawnPosition;
-                    }
-                }
-            }
-            else if (playerTier == 2)
-            {
-                foreach (GraveyardSquare gqs in whiteGraveyardSquaresToTier3)
-                {
-                    if (gqs.empty)
-                    {
-                        gqs.empty = false;
-                        return gqs.pawnPosition;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (playerTier == 1)
-            {
                 foreach (GraveyardSquare gqs in blackGraveyardSquaresToTier2)
                 {
                     if (gqs.empty)
@@ -315,6 +497,60 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            if (playerTier == 1)
+            {
+                foreach (GraveyardSquare gqs in whiteGraveyardSquaresToTier2)
+                {
+                    if (gqs.empty)
+                    {
+                        gqs.empty = false;
+                        return gqs.pawnPosition;
+                    }
+                }
+            }
+            else if (playerTier == 2)
+            {
+                foreach (GraveyardSquare gqs in whiteGraveyardSquaresToTier3)
+                {
+                    if (gqs.empty)
+                    {
+                        gqs.empty = false;
+                        return gqs.pawnPosition;
+                    }
+                }
+            }
+        }
         return Vector3.zero;
+    }
+
+    public ChessSquareScript GetBenchToBoardPosition(int player, BenchSquare bs)
+    {
+        string targetSquareName;
+        if (player == 1)
+        {
+            targetSquareName = bs.column.ToString() + "1";
+        }
+        else
+        {
+            targetSquareName = bs.column.ToString() + height.ToString();
+        }
+
+        foreach (ChessSquareScript css in squares.Values)
+        {
+            if (css.name == targetSquareName && css.empty)
+            {
+                css.empty = false;
+                return css;
+            }
+            else if (css.name == targetSquareName && !css.empty)
+            {
+                css.pawn.TeleportPawnToGraveyard(player, 0); //Just to test. In actual game, should be pushed to the upper square.
+                css.empty = false;
+                return css;
+            }
+        }
+        return null;
     }
 }

@@ -42,6 +42,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8365915620267663038}
     m_Modifications:
+    - target: {fileID: -8712907611855691978, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
       propertyPath: m_Name
       value: BenchWhiteSquare
@@ -86,11 +90,36 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -8712907611855691978, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 2570592713087841881}
   m_SourcePrefab: {fileID: 100100000, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+--- !u!1 &180133044861900747 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+  m_PrefabInstance: {fileID: 1825443957823375189}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2570592713087841881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180133044861900747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f502eeffa8134904fbd0a87f895d5577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BenchSquare
+  player: 0
+  empty: 1
+  tier: 3
+  pawnPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &4354284782461689632 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
@@ -104,6 +133,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8365915620267663038}
     m_Modifications:
+    - target: {fileID: -8712907611855691978, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
       propertyPath: m_Name
       value: WaitWhiteSquare
@@ -148,11 +181,36 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -8712907611855691978, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 3701287112254150920}
   m_SourcePrefab: {fileID: 100100000, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+--- !u!1 &62645969064580512 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1957572251758858398, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
+  m_PrefabInstance: {fileID: 2014272016836445502}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3701287112254150920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62645969064580512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f502eeffa8134904fbd0a87f895d5577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BenchSquare
+  player: 0
+  empty: 1
+  tier: 0
+  pawnPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &4525238913962171723 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2682106244125595765, guid: e56b941e13932d2458899a0ccd87df67, type: 3}
@@ -166,6 +224,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8365915620267663038}
     m_Modifications:
+    - target: {fileID: -6596558347124331647, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -210,13 +272,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: BenchBlackSquare
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6596558347124331647, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1949875417294147833}
   m_SourcePrefab: {fileID: 100100000, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
 --- !u!4 &6207127724809863797 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1878593295914602718, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
   m_PrefabInstance: {fileID: 5491646482151821995}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7416678526696339555 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3088179282458864328, guid: 7784e88d7fc42e748abb14b2eb18a2ef, type: 3}
+  m_PrefabInstance: {fileID: 5491646482151821995}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1949875417294147833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7416678526696339555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f502eeffa8134904fbd0a87f895d5577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BenchSquare
+  player: 0
+  empty: 1
+  tier: 2
+  pawnPosition: {x: 0, y: 0, z: 0}

@@ -158,18 +158,7 @@ public class PawnBehavior : MonoBehaviour
         nextSquare.empty = false;
         nextSquare.pawn = this;
 
-        float elapsed = 0;
-
-
-        while (elapsed < 1)
-        {
-            elapsed += Time.deltaTime;
-
-            transform.position = Vector3.Lerp(transform.position, nextSquare.pawnPosition, elapsed);
-            yield return null;
-        }
-
-        transform.position = nextSquare.pawnPosition;
+        yield return StartCoroutine(SmoothMove(nextSquare.pawnPosition));
 
         isMoving = false;
 
@@ -185,6 +174,21 @@ public class PawnBehavior : MonoBehaviour
         }
 
         PawnsGameManager.instance.NextPlayerTurn();
+    }
+    public IEnumerator SmoothMove(Vector3 nextPosition)
+    {
+        float elapsed = 0;
+
+
+        while (elapsed < 1)
+        {
+            elapsed += Time.deltaTime;
+
+            transform.position = Vector3.Lerp(transform.position, nextPosition, elapsed);
+            yield return null;
+        }
+
+        transform.position = nextPosition;
     }
 
     public void ToggleGlow(bool value)
@@ -208,6 +212,14 @@ public class PawnBehavior : MonoBehaviour
         transform.position = graveyardPos;
         currentSquare.empty = true;
         currentSquare.pawn = null;
+        if (player == 1)
+        {
+            BoardManager.instance.whitePawns.Remove(this);
+        }
+        else
+        {
+            BoardManager.instance.blackPawns.Remove(this);
+        }
         GetComponent<BoxCollider>().enabled = false;
 
         PawnsGameManager.instance.AddPoints(activePlayer, points);
@@ -252,5 +264,21 @@ public class PawnBehavior : MonoBehaviour
                 killRange = new List<int>(tier1KillRange);
                 break;
         }
+    }
+
+    public IEnumerator MoveToBoard(int player, BenchSquare bs)
+    {
+        ChessSquareScript boardPosition = BoardManager.instance.GetBenchToBoardPosition(player, bs);
+        currentSquare = boardPosition;
+        if (player == 1)
+        {
+            BoardManager.instance.whitePawns.Add(this);
+        }
+        else
+        {
+            BoardManager.instance.blackPawns.Add(this);
+        }
+        StartCoroutine(SmoothMove(boardPosition.pawnPosition));
+        yield return new WaitForSeconds(1);
     }
 }
