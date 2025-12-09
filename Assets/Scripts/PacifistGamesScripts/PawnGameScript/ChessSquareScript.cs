@@ -72,5 +72,4 @@ public class ChessSquareScript : MonoBehaviour
             rend.material.SetColor("_EmissionColor", Color.black);
         }
     }
-
 }

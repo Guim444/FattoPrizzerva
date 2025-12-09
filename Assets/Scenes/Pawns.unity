@@ -3238,6 +3238,8 @@ MonoBehaviour:
   blackGraveyardSquaresToTier3: []
   height: 8
   width: 8
+  whiteDeadZone: {fileID: 0}
+  blackDeadZone: {fileID: 0}
 --- !u!1 &433509880
 GameObject:
   m_ObjectHideFlags: 0
@@ -10372,7 +10374,7 @@ MonoBehaviour:
   playerTier: 0100000001000000
   playerPoints: 0000000000000000
   waitingRowIsReady: 0000
-  pointsToNextTier: 0500000008000000
+  pointsToNextTier: 0100000003000000
   playerTurn: {fileID: 1398196028}
 --- !u!1 &1833041846
 GameObject:
@@ -10832,6 +10834,8 @@ MonoBehaviour:
   blackGraveyardSquaresToTier3: []
   height: 8
   width: 8
+  whiteDeadZone: {fileID: 0}
+  blackDeadZone: {fileID: 0}
 --- !u!1 &1951936558
 GameObject:
   m_ObjectHideFlags: 0

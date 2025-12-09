@@ -29,6 +29,8 @@ public class BoardManager : MonoBehaviour
 
     public Dictionary<string, ChessSquareScript> squares = new Dictionary<string, ChessSquareScript>();
 
+    public GameObject whiteDeadZone, blackDeadZone;
+
     public void Awake()
     {
         if (instance == null)
@@ -89,6 +91,7 @@ public class BoardManager : MonoBehaviour
         }
         GenerateWaitingZone();
         GenerateGraveyard();
+        GenerateDeadZone();
     }
     public void RegisterSquare(ChessSquareScript square)
     {
@@ -386,6 +389,7 @@ public class BoardManager : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }
+        PawnsGameManager.instance.waitingRowIsReady[player - 1] = true;
     }
 
     public IEnumerator PushWaitingRowToBoard(int player)
@@ -470,6 +474,18 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    public void GenerateDeadZone()
+    {
+        //this will be a zone where captured/crowned pawns go if the graveyard is over tier 3 or if there's no space when a new tier is reached.
+        whiteDeadZone = new GameObject("White Dead Zone");
+        whiteDeadZone.transform.parent = transform;
+        whiteDeadZone.transform.position = new Vector3(height / 2, 0, -(width / 2f) - 0.5f);
+
+        blackDeadZone = new GameObject("Black Dead Zone");
+        blackDeadZone.transform.parent = transform;
+        blackDeadZone.transform.position = new Vector3(-height / 2, 0, -(width / 2f) - 0.5f);
+    }
+
     internal Vector3 GetGraveyardPosition(int player, int playerTier)
     {
         if (player == 1)
@@ -527,30 +543,53 @@ public class BoardManager : MonoBehaviour
 
     public ChessSquareScript GetBenchToBoardPosition(int player, BenchSquare bs)
     {
-        string targetSquareName;
-        if (player == 1)
-        {
-            targetSquareName = bs.column.ToString() + "1";
-        }
-        else
-        {
-            targetSquareName = bs.column.ToString() + height.ToString();
-        }
+        int direction = (player == 1) ? 1 : -1;
+        int targetRow = (player == 1) ? 1 : (int)height;
+        char column = bs.column;
 
-        foreach (ChessSquareScript css in squares.Values)
+        while (true)
         {
-            if (css.name == targetSquareName && css.empty)
+            string targetSquareName = column.ToString() + targetRow.ToString();
+            if (!squares.TryGetValue(targetSquareName, out ChessSquareScript css))
+            {
+                Debug.LogWarning("Target square not found: " + targetSquareName);
+                return null;
+            }
+
+            if (css.empty)
             {
                 css.empty = false;
                 return css;
             }
-            else if (css.name == targetSquareName && !css.empty)
+
+            int nextRow = targetRow + direction;
+
+            if (nextRow < 1 || nextRow > height)
             {
-                css.pawn.TeleportPawnToGraveyard(player, 0); //Just to test. In actual game, should be pushed to the upper square.
-                css.empty = false;
-                return css;
+                GameObject deadZone = (player == 1) ? whiteDeadZone : blackDeadZone;
+
+                Vector3 offset = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 0, UnityEngine.Random.Range(-0.5f, 0.5f));
+                css.pawn.transform.position = deadZone.transform.position + offset;
+                css.pawn.currentSquare = null;
+
+                css.empty = true;
+                return null;
             }
+
+            string nextSquareName = column.ToString() + nextRow.ToString();
+            ChessSquareScript nextSquare = squares[nextSquareName];
+
+            if (!nextSquare.empty)
+            {
+                targetRow = nextRow;
+                continue;
+            }
+
+            css.pawn.MoveToSquareImmediately(nextSquare);
+            nextSquare.empty = false;
+
+            css.empty = true;
+            return css;
         }
-        return null;
     }
 }

@@ -11,7 +11,7 @@ public class PawnBehavior : MonoBehaviour
 {
     public ChessSquareScript currentSquare;
     bool isMoving = false; //We avoid strange movements
-    List<ChessSquareScript> possiblePaths = new List<ChessSquareScript>();
+    public List<ChessSquareScript> possiblePaths = new List<ChessSquareScript>();
 
     public List<int> possibleMovements, killRange;
     public List<int> tier1Movements, tier2Movements, tier3Movements;
@@ -37,93 +37,94 @@ public class PawnBehavior : MonoBehaviour
         if (player == PawnsGameManager.instance.activePlayer)
         {
             ClickManager.instance.selectedPawn = this;
-            TrackAllPaths();
-            TrackDiagonals();
+            TrackAllPaths(true);
+            TrackDiagonals(true);
         }
     }
     public ChessSquareScript FindNextSquare(int moveAmount)
     {
         int nextRow = currentSquare.SquareRow;
 
-        if (PawnsGameManager.instance.activePlayer == 1)
-        {
+        if (player == 1)
             nextRow += moveAmount;
-        }
-        else nextRow -= moveAmount;
+        else
+            nextRow -= moveAmount;
 
-            ChessSquareScript nextSquare = BoardManager.instance.GetSquare(currentSquare.SquareColumn.ToString() + nextRow.ToString());
-        if (nextSquare != null)
-        {
-            return nextSquare;
-        }
-        return currentSquare;
+        string id = currentSquare.SquareColumn.ToString() + nextRow.ToString();
+
+        return BoardManager.instance.GetSquare(id);
     }
-    public void TrackAllPaths()
+    public void TrackAllPaths(bool glow)
     {
+        foreach (ChessSquareScript sq in possiblePaths)
+        {
+            sq.ToggleGlow(false);
+            sq.selectableSquare = false;
+        }
+        possiblePaths.Clear();
+
         foreach (int move in possibleMovements)
         {
             ChessSquareScript square = FindNextSquare(move);
+            if (square == null) break;
 
             if (square.empty)
             {
-                square.ToggleGlow(true);
-                square.selectableSquare = true;
                 possiblePaths.Add(square);
+                square.ToggleGlow(glow);
+                if (glow) square.selectableSquare = true;
             }
-            else return; //If it finds an occupied square, it won't continue.
+            else break;
         }
-
         if (startingPawn && !possibleMovements.Contains(2))
         {
             ChessSquareScript square = FindNextSquare(2);
 
-            if (square.empty)
+            if (square != null && square.empty)
             {
-                square.ToggleGlow(true);
-                square.selectableSquare = true;
                 possiblePaths.Add(square);
+                square.ToggleGlow(glow);
+                if (glow) square.selectableSquare = true;
             }
         }
     }
-    public void TrackDiagonals()
+    public void TrackDiagonals(bool glow)
     {
-        List<ChessSquareScript> diagonalSquares = new List<ChessSquareScript>();
+            List<ChessSquareScript> diagonalSquares = new List<ChessSquareScript>();
 
-        int direction = player == 1? 1 : -1;
+        int direction = (player == 1) ? 1 : -1;
 
-        int nextRow = currentSquare.SquareRow + direction;
-        char leftCol = (char)(currentSquare.SquareColumn - 1);
-        char rightCol = (char)(currentSquare.SquareColumn + 1);
-
-        if (leftCol >= 'A' && leftCol < 'A' + BoardManager.instance.width && nextRow >= 1 && nextRow <= BoardManager.instance.height)
+        foreach (int dist in killRange)
         {
-            string id = leftCol.ToString() + nextRow.ToString();
-            ChessSquareScript upLeft = BoardManager.instance.GetSquare(id);
+            int nextRow = currentSquare.SquareRow + dist * direction;
 
-            if (upLeft != null && !upLeft.empty)
+            char leftCol = (char)(currentSquare.SquareColumn - dist);
+            char rightCol = (char)(currentSquare.SquareColumn + dist);
+
+            if (leftCol >= 'A' && leftCol < 'A' + BoardManager.instance.width && nextRow >= 1 && nextRow <= BoardManager.instance.height)
             {
-                if (upLeft.pawn.player != player)
+                string id = leftCol.ToString() + nextRow.ToString();
+                ChessSquareScript upLeft = BoardManager.instance.GetSquare(id);
+
+                if (upLeft != null && !upLeft.empty && upLeft.pawn != null && upLeft.pawn.player != player)
                 {
-                    upLeft.pawn.ToggleGlow(true);
+                    upLeft.pawn.ToggleGlow(glow);
                     upLeft.pawn.canBeEaten = true;
-                    upLeft.selectableSquare = true;
+                    if (glow) upLeft.selectableSquare = true;
                     diagonalSquares.Add(upLeft);
                 }
             }
-        }
 
-        if (rightCol >= 'A' && rightCol < 'A' + BoardManager.instance.width && nextRow >= 1 && nextRow <= BoardManager.instance.height)
-        {
-            string id = rightCol.ToString() + nextRow.ToString();
-            ChessSquareScript upRight = BoardManager.instance.GetSquare(id);
-
-            if (upRight != null && !upRight.empty)
+            if (rightCol >= 'A' && rightCol < 'A' + BoardManager.instance.width && nextRow >= 1 && nextRow <= BoardManager.instance.height)
             {
-                if (upRight.pawn.player != player)
+                string id = rightCol.ToString() + nextRow.ToString();
+                ChessSquareScript upRight = BoardManager.instance.GetSquare(id);
+
+                if (upRight != null && !upRight.empty && upRight.pawn != null && upRight.pawn.player != player)
                 {
-                    upRight.pawn.ToggleGlow(true);
+                    upRight.pawn.ToggleGlow(glow);
                     upRight.pawn.canBeEaten = true;
-                    upRight.selectableSquare = true;
+                    if (glow) upRight.selectableSquare = true;
                     diagonalSquares.Add(upRight);
                 }
             }
@@ -227,41 +228,28 @@ public class PawnBehavior : MonoBehaviour
 
     public void SetPawnTier()
     {
+        possibleMovements.Clear();
+        killRange.Clear();
+
         switch (pawnTier)
         {
             case 1:
-                foreach (int move in tier1Movements)
-                {
-                    possibleMovements.Add(move);
-                }
-                foreach (int kill in tier1KillRange)
-                {
-                    killRange.Add(kill);
-                }
+                possibleMovements.AddRange(tier1Movements);
+                killRange.AddRange(tier1KillRange);
                 break;
             case 2:
-                foreach (int move in tier2Movements)
-                {
-                    possibleMovements.Add(move);
-                }
-                foreach (int kill in tier2KillRange)
-                {
-                    killRange.Add(kill);
-                }
+                possibleMovements.AddRange(tier2Movements);
+                killRange.AddRange(tier2KillRange);
                 break;
             case 3:
-                foreach (int move in tier3Movements)
-                {
-                    possibleMovements.Add(move);
-                }
-                foreach (int kill in tier3KillRange)
-                {
-                    killRange.Add(kill);
-                }
+                possibleMovements.AddRange(tier3Movements);
+                killRange.AddRange(tier3KillRange);
                 break;
             default:
-                possibleMovements = new List<int>(tier1Movements);
-                killRange = new List<int>(tier1KillRange);
+                possibleMovements.AddRange(tier1Movements);
+                killRange.AddRange(tier1KillRange);
+
+                Debug.LogWarning($"{name}: invalid pawnTier ({pawnTier}).");
                 break;
         }
     }
@@ -269,7 +257,14 @@ public class PawnBehavior : MonoBehaviour
     public IEnumerator MoveToBoard(int player, BenchSquare bs)
     {
         ChessSquareScript boardPosition = BoardManager.instance.GetBenchToBoardPosition(player, bs);
-        currentSquare = boardPosition;
+
+        if (boardPosition == null)
+        {
+            yield break;
+        }
+
+        MoveToSquareImmediately(boardPosition);
+
         if (player == 1)
         {
             BoardManager.instance.whitePawns.Add(this);
@@ -278,7 +273,22 @@ public class PawnBehavior : MonoBehaviour
         {
             BoardManager.instance.blackPawns.Add(this);
         }
-        StartCoroutine(SmoothMove(boardPosition.pawnPosition));
-        yield return new WaitForSeconds(1);
+
+        yield return StartCoroutine(SmoothMove(boardPosition.pawnPosition));
+
+        yield return new WaitForSeconds(1f);
+    }
+
+    public void MoveToSquareImmediately(ChessSquareScript targetSquare)
+    {
+        if (currentSquare != null)
+        {
+            currentSquare.empty = true;
+            currentSquare.pawn = null;
+        }
+
+        currentSquare = targetSquare;
+        targetSquare.pawn = this;
+        transform.position = Vector3.Lerp(transform.position, targetSquare.pawnPosition, 1);
     }
 }
