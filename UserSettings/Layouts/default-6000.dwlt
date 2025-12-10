@@ -118,7 +118,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 115
+  controlID: 43
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 116
+  controlID: 44
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 46
+  controlID: 45
   draggingID: 0
 --- !u!114 &8
 MonoBehaviour:
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 47
+  controlID: 46
   draggingID: 0
 --- !u!114 &9
 MonoBehaviour:
@@ -248,10 +248,10 @@ MonoBehaviour:
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
-  - {fileID: 16}
   - {fileID: 15}
+  - {fileID: 16}
   m_Selected: 0
-  m_LastSelected: 1
+  m_LastSelected: 2
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -900,9 +900,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 4.3775635, y: 3.8939266, z: -4.959923}
+    m_Target: {x: 393.72964, y: 211.31052, z: -0.3675822}
     speed: 2
-    m_Value: {x: 4.3775635, y: 3.8939266, z: -4.959923}
+    m_Value: {x: 393.72964, y: 211.31052, z: -0.3675822}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -948,13 +948,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.1212589, y: -0.06429379, z: 0.0077861785, w: 0.990606}
+    m_Target: {x: 0.11189087, y: -0.035766292, z: 0.0040319613, w: 0.9930802}
     speed: 2
-    m_Value: {x: 0.121246874, y: -0.06428741, z: 0.0077854064, w: 0.9905078}
+    m_Value: {x: 0.11188956, y: -0.035765875, z: 0.0040319143, w: 0.9930686}
   m_Size:
-    m_Target: 3.6227546
+    m_Target: 300.96085
     speed: 2
-    m_Value: 3.6227546
+    m_Value: 300.96085
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1027,9 +1027,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: b46dfcffbe6dfcffb27afcfffe7bfcffd881fcffe281fcffbacdfcffa2cefcff80d6fdffb2d7fdff0efbffff98e70000
+      m_SelectedIDs: 6ae70000
+      m_LastClickedID: 59242
+      m_ExpandedIDs: 9ce8fcff36edfcff4eeffcfff011fdff6889feff0efbffff0ce7000098e70000b6e70000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1293,7 +1293,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/PacifistGamesScripts/PawnGameScript
+    - Assets
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1303,15 +1303,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 69
   m_LastFolders:
-  - Assets/Scripts/PacifistGamesScripts/PawnGameScript
+  - Assets
   m_LastFoldersGridSize: 69
   m_LastProjectPath: C:\Users\janes\Desktop\FattoPrizzerva
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: 88ec0000
-    m_LastClickedID: 60552
+    scrollPos: {x: 0, y: 26.800018}
+    m_SelectedIDs: 06ec0000
+    m_LastClickedID: 60422
     m_ExpandedIDs: 0000000006ec000008ec00000aec00000cec00000eec000010ec000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1367,9 +1367,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: b6e70000
-    m_LastClickedInstanceID: 59318
-    m_HadKeyboardFocusLastEvent: 0
+    m_SelectedInstanceIDs: dae40000
+    m_LastClickedInstanceID: 58586
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000e0ad0000803601008cf500007cde0000bc2501009ee6000024e100004a56010068fc0000181401001a120100a6e30000cee100004e22010052f50000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1559,4 +1559,4 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 59058
+  m_LastSelectedObjectID: 59242

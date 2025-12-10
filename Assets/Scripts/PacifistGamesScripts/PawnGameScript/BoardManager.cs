@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Splines.ExtrusionShapes;
 
@@ -28,6 +29,8 @@ public class BoardManager : MonoBehaviour
     public float height, width;
 
     public Dictionary<string, ChessSquareScript> squares = new Dictionary<string, ChessSquareScript>();
+
+    private Dictionary<GameObject, List<int>> deadZoneColumns = new Dictionary<GameObject, List<int>>();
 
     public GameObject whiteDeadZone, blackDeadZone;
 
@@ -92,6 +95,7 @@ public class BoardManager : MonoBehaviour
         GenerateWaitingZone();
         GenerateGraveyard();
         GenerateDeadZone();
+        PawnsGameManager.instance.UpdateTierTexts();
     }
     public void RegisterSquare(ChessSquareScript square)
     {
@@ -423,7 +427,7 @@ public class BoardManager : MonoBehaviour
         GameObject previousGraveyardSquare = null;
         for (int i = 0; i < graveyardHeight; i++)
         {
-            GameObject graveyardSquare = Instantiate((i >= graveyardHeight/2) ? graveyardPrefab : graveyardPrefab2);
+            GameObject graveyardSquare = Instantiate((i >= graveyardHeight / 2) ? graveyardPrefab : graveyardPrefab2);
             graveyardSquare.name = "GraveyardSquare" + (i + 1);
             graveyardSquare.transform.parent = graveyard.transform;
             float xOffset = -(graveyardHeight / 2f) + 0.5f + i;
@@ -476,14 +480,13 @@ public class BoardManager : MonoBehaviour
 
     public void GenerateDeadZone()
     {
-        //this will be a zone where captured/crowned pawns go if the graveyard is over tier 3 or if there's no space when a new tier is reached.
         whiteDeadZone = new GameObject("White Dead Zone");
         whiteDeadZone.transform.parent = transform;
-        whiteDeadZone.transform.position = new Vector3(height / 2, 0, -(width / 2f) - 0.5f);
+        whiteDeadZone.transform.position = new Vector3(height / 2, 0, -(width / 2f) - 3.5f);
 
         blackDeadZone = new GameObject("Black Dead Zone");
         blackDeadZone.transform.parent = transform;
-        blackDeadZone.transform.position = new Vector3(-height / 2, 0, -(width / 2f) - 0.5f);
+        blackDeadZone.transform.position = new Vector3(-height / 2, 0, -(width / 2f) - 3.5f);
     }
 
     internal Vector3 GetGraveyardPosition(int player, int playerTier)
@@ -512,6 +515,10 @@ public class BoardManager : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                return GetSafeDeadZonePosition(whiteDeadZone);
+            }
         }
         else
         {
@@ -537,6 +544,10 @@ public class BoardManager : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                return GetSafeDeadZonePosition(blackDeadZone);
+            }
         }
         return Vector3.zero;
     }
@@ -547,49 +558,95 @@ public class BoardManager : MonoBehaviour
         int targetRow = (player == 1) ? 1 : (int)height;
         char column = bs.column;
 
+        ChessSquareScript firstSquare = null;
+        List<ChessSquareScript> chain = new List<ChessSquareScript>();
+
         while (true)
         {
-            string targetSquareName = column.ToString() + targetRow.ToString();
-            if (!squares.TryGetValue(targetSquareName, out ChessSquareScript css))
+            string name = column.ToString() + targetRow.ToString();
+            if (!squares.TryGetValue(name, out ChessSquareScript square))
             {
-                Debug.LogWarning("Target square not found: " + targetSquareName);
+                Debug.LogWarning("Square not found: " + name);
                 return null;
             }
 
-            if (css.empty)
-            {
-                css.empty = false;
-                return css;
-            }
+            if (firstSquare == null)
+                firstSquare = square;
+
+            chain.Add(square);
+
+            if (square.empty)
+                break;
 
             int nextRow = targetRow + direction;
-
             if (nextRow < 1 || nextRow > height)
             {
                 GameObject deadZone = (player == 1) ? whiteDeadZone : blackDeadZone;
-
                 Vector3 offset = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 0, UnityEngine.Random.Range(-0.5f, 0.5f));
-                css.pawn.transform.position = deadZone.transform.position + offset;
-                css.pawn.currentSquare = null;
 
-                css.empty = true;
-                return null;
+                square.pawn.transform.position = deadZone.transform.position + offset;
+                square.pawn.currentSquare = null;
+                square.pawn = null;
+                square.empty = true;
+
+                break;
             }
 
-            string nextSquareName = column.ToString() + nextRow.ToString();
-            ChessSquareScript nextSquare = squares[nextSquareName];
-
-            if (!nextSquare.empty)
-            {
-                targetRow = nextRow;
-                continue;
-            }
-
-            css.pawn.MoveToSquareImmediately(nextSquare);
-            nextSquare.empty = false;
-
-            css.empty = true;
-            return css;
+            targetRow = nextRow;
         }
+
+        for (int i = chain.Count - 1; i > 0; i--)
+        {
+            ChessSquareScript from = chain[i - 1];
+            ChessSquareScript to = chain[i];
+
+            if (from.pawn != null)
+            {
+                to.pawn = from.pawn;
+                to.empty = false;
+                from.pawn.currentSquare = to;
+                StartCoroutine(from.pawn.SmoothMove(to.pawnPosition));
+            }
+
+            from.pawn = null;
+            from.empty = true;
+        }
+
+        return firstSquare;
+    }
+    private Vector3 GetSafeDeadZonePosition(GameObject zone)
+    {
+        float columnSpacing = 1f;
+        float rowSpacing = 1f;
+        int maxPerColumn = 4;
+
+        if (!deadZoneColumns.ContainsKey(zone))
+            deadZoneColumns[zone] = new List<int>() { 0 };
+
+        List<int> columns = deadZoneColumns[zone];
+        int colIndex = 0;
+        int rowIndex = 0;
+
+        for (int i = 0; i < columns.Count; i++)
+        {
+            if (columns[i] < maxPerColumn)
+            {
+                colIndex = i;
+                rowIndex = maxPerColumn - 1 - columns[i];
+                columns[i]++;
+                break;
+            }
+            else if (i == columns.Count - 1)
+            {
+                columns.Add(0);
+                colIndex = columns.Count - 1;
+                rowIndex = maxPerColumn - 1 - columns[colIndex];
+                columns[colIndex]++;
+                break;
+            }
+        }
+
+        Vector3 pos = zone.transform.position + new Vector3(colIndex * columnSpacing, 0, rowIndex * rowSpacing);
+        return pos;
     }
 }

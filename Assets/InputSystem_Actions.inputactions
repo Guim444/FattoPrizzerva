@@ -993,13 +993,22 @@
             ]
         },
         {
-            "name": "Click",
+            "name": "PawnGame",
             "id": "7a2e615d-6edc-406d-834b-4aff67728b60",
             "actions": [
                 {
                     "name": "Click",
                     "type": "Button",
                     "id": "5bca8b35-d4f0-4b9c-96b8-87f702f5f297",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CameraToggle",
+                    "type": "Button",
+                    "id": "0a93b1f0-7a50-4863-82b5-7e4c5f9c92d2",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1017,6 +1026,89 @@
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b572ae7f-741a-4884-96dc-83aaf7bbb80d",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "FreeCamMove",
+            "id": "fcbfe9e8-ac82-4d12-b21c-276e526dd09d",
+            "actions": [
+                {
+                    "name": "FreeCamMove",
+                    "type": "Value",
+                    "id": "46dcd219-de3d-49db-ab9e-aaf334c4a7f6",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "2D Vector",
+                    "id": "19a9ba44-c719-40df-a9dc-fac2a5176abd",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeCamMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "a8668066-1fc6-4953-8e5b-54b3bae132eb",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeCamMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "99c5eed7-09c8-4d34-a422-e7e167902c12",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeCamMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "dfeca354-a7d7-4be7-a35c-0b225f5ea3cf",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeCamMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "95a83ad8-400f-4fe8-9200-de5a4fc93846",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeCamMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

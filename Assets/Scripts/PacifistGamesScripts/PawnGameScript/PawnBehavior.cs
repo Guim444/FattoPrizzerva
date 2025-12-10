@@ -139,8 +139,13 @@ public class PawnBehavior : MonoBehaviour
         {
             square.selectableSquare = false;
             square.ToggleGlow(false);
-        }
 
+            if (square.pawn != null && square.pawn.canBeEaten)
+            {
+                square.pawn.ToggleGlow(false);
+                square.pawn.canBeEaten = false;
+            }
+        }
         possiblePaths.Clear();
     }
     public IEnumerator MoveForward(ChessSquareScript nextSquare)
@@ -209,8 +214,20 @@ public class PawnBehavior : MonoBehaviour
     }
     public void TeleportPawnToGraveyard(int activePlayer, int points) //used when a pawn is captured or promoted
     {
-        Vector3 graveyardPos = BoardManager.instance.GetGraveyardPosition(activePlayer, PawnsGameManager.instance.playerTier[activePlayer - 1]);
-        transform.position = graveyardPos;
+        PawnsGameManager.instance.UpdateTierTexts();
+        ToggleGlow(false);
+        canBeEaten = false;
+
+        Vector3 graveyardPos;
+        if (PawnsGameManager.instance.playerTier[activePlayer - 1] < 3)
+        {
+            graveyardPos = BoardManager.instance.GetGraveyardPosition(activePlayer, PawnsGameManager.instance.playerTier[activePlayer - 1]);
+        }
+        else
+        {
+            graveyardPos = BoardManager.instance.GetGraveyardPosition(activePlayer, 3);
+        }
+            transform.position = graveyardPos;
         currentSquare.empty = true;
         currentSquare.pawn = null;
         if (player == 1)
@@ -281,14 +298,16 @@ public class PawnBehavior : MonoBehaviour
 
     public void MoveToSquareImmediately(ChessSquareScript targetSquare)
     {
+        if (targetSquare == null) return;
+
         if (currentSquare != null)
         {
-            currentSquare.empty = true;
             currentSquare.pawn = null;
+            currentSquare.empty = true;
         }
 
         currentSquare = targetSquare;
         targetSquare.pawn = this;
-        transform.position = Vector3.Lerp(transform.position, targetSquare.pawnPosition, 1);
+        targetSquare.empty = false;
     }
 }

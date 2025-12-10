@@ -2,6 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class PawnsGameManager : MonoBehaviour
 {
@@ -17,11 +18,16 @@ public class PawnsGameManager : MonoBehaviour
 
     public TextMeshProUGUI playerTurn;
 
+    public List<GameObject> playerInfo;
+
+    public bool freeCamActive = false;
+
     private void Awake()
     {
         instance = this;
         cameras[0].SetActive(true);
         cameras[1].SetActive(false);
+        cameras[2].SetActive(false);
     }
 
     public void NextPlayerTurn()
@@ -36,7 +42,7 @@ public class PawnsGameManager : MonoBehaviour
                 StartCoroutine(BoardManager.instance.PushWaitingRowToBoard(activePlayer));
                 waitingRowIsReady[activePlayer - 1] = false;
             }
-            else
+            else if (!freeCamActive)
             {
                 if (activePlayer == 2)
                 {
@@ -68,12 +74,37 @@ public class PawnsGameManager : MonoBehaviour
             playerTurn.text = "Player " + (activePlayer == 1 ? 2 : 1) + " Wins!";
         }
     }
+    public void UpdateTierTexts()
+    {
+        foreach (GameObject info in playerInfo)
+        {
+            info.GetComponent<TextMeshProUGUI>().text = "PLAYER " + (playerInfo.IndexOf(info)+1) + "\nNext tier: " + (playerTier[playerInfo.IndexOf(info)] + 1) + "\nPoints: " + playerPoints[playerInfo.IndexOf(info)] + "/" + pointsToNextTier[playerTier[playerInfo.IndexOf(info)] - 1];
+        }
+    }
     public void ChangeCamera()
     {
         bool active = activePlayer == 1;
 
         cameras[0].SetActive(active);
         cameras[1].SetActive(!active);
+    }
+    public void OnCameraToggle(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            freeCamActive = !freeCamActive;
+            if (freeCamActive)
+            {
+                cameras[2].SetActive(true);
+                cameras[0].SetActive(false);
+                cameras[1].SetActive(false);
+            }
+            else
+            {
+                ChangeCamera();
+                cameras[2].SetActive(false);
+            }
+        }
     }
     public void AddPoints(int player, int points)
     {

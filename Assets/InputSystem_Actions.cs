@@ -1079,13 +1079,22 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""ChessClickManager"",
-            ""id"": ""9ce8e5c8-01b7-4a9e-a5ac-e7bdd6da0d69"",
+            ""name"": ""PawnGame"",
+            ""id"": ""7a2e615d-6edc-406d-834b-4aff67728b60"",
             ""actions"": [
                 {
                     ""name"": ""Click"",
                     ""type"": ""Button"",
-                    ""id"": ""e29f9903-8064-477b-a9c0-f4f6b1b01327"",
+                    ""id"": ""5bca8b35-d4f0-4b9c-96b8-87f702f5f297"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a93b1f0-7a50-4863-82b5-7e4c5f9c92d2"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1095,7 +1104,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""90754f3f-2005-49d1-8803-7cd39e932b36"",
+                    ""id"": ""319bcf1d-36d8-453d-afbc-d8cac0c5d952"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -1103,6 +1112,89 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b572ae7f-741a-4884-96dc-83aaf7bbb80d"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""FreeCamMove"",
+            ""id"": ""fcbfe9e8-ac82-4d12-b21c-276e526dd09d"",
+            ""actions"": [
+                {
+                    ""name"": ""FreeCamMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""46dcd219-de3d-49db-ab9e-aaf334c4a7f6"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""19a9ba44-c719-40df-a9dc-fac2a5176abd"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeCamMove"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""a8668066-1fc6-4953-8e5b-54b3bae132eb"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeCamMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""99c5eed7-09c8-4d34-a422-e7e167902c12"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeCamMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""dfeca354-a7d7-4be7-a35c-0b225f5ea3cf"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeCamMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""95a83ad8-400f-4fe8-9200-de5a4fc93846"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeCamMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -1193,16 +1285,21 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
-        // ChessClickManager
-        m_ChessClickManager = asset.FindActionMap("ChessClickManager", throwIfNotFound: true);
-        m_ChessClickManager_Click = m_ChessClickManager.FindAction("Click", throwIfNotFound: true);
+        // PawnGame
+        m_PawnGame = asset.FindActionMap("PawnGame", throwIfNotFound: true);
+        m_PawnGame_Click = m_PawnGame.FindAction("Click", throwIfNotFound: true);
+        m_PawnGame_CameraToggle = m_PawnGame.FindAction("CameraToggle", throwIfNotFound: true);
+        // FreeCamMove
+        m_FreeCamMove = asset.FindActionMap("FreeCamMove", throwIfNotFound: true);
+        m_FreeCamMove_FreeCamMove = m_FreeCamMove.FindAction("FreeCamMove", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_ChessClickManager.enabled, "This will cause a leak and performance issues, InputSystem_Actions.ChessClickManager.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PawnGame.enabled, "This will cause a leak and performance issues, InputSystem_Actions.PawnGame.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_FreeCamMove.enabled, "This will cause a leak and performance issues, InputSystem_Actions.FreeCamMove.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1654,29 +1751,34 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// </summary>
     public UIActions @UI => new UIActions(this);
 
-    // ChessClickManager
-    private readonly InputActionMap m_ChessClickManager;
-    private List<IChessClickManagerActions> m_ChessClickManagerActionsCallbackInterfaces = new List<IChessClickManagerActions>();
-    private readonly InputAction m_ChessClickManager_Click;
+    // PawnGame
+    private readonly InputActionMap m_PawnGame;
+    private List<IPawnGameActions> m_PawnGameActionsCallbackInterfaces = new List<IPawnGameActions>();
+    private readonly InputAction m_PawnGame_Click;
+    private readonly InputAction m_PawnGame_CameraToggle;
     /// <summary>
-    /// Provides access to input actions defined in input action map "ChessClickManager".
+    /// Provides access to input actions defined in input action map "PawnGame".
     /// </summary>
-    public struct ChessClickManagerActions
+    public struct PawnGameActions
     {
         private @InputSystem_Actions m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public ChessClickManagerActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        public PawnGameActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "ChessClickManager/Click".
+        /// Provides access to the underlying input action "PawnGame/Click".
         /// </summary>
-        public InputAction @Click => m_Wrapper.m_ChessClickManager_Click;
+        public InputAction @Click => m_Wrapper.m_PawnGame_Click;
+        /// <summary>
+        /// Provides access to the underlying input action "PawnGame/CameraToggle".
+        /// </summary>
+        public InputAction @CameraToggle => m_Wrapper.m_PawnGame_CameraToggle;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_ChessClickManager; }
+        public InputActionMap Get() { return m_Wrapper.m_PawnGame; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -1684,9 +1786,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="ChessClickManagerActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="PawnGameActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(ChessClickManagerActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(PawnGameActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -1694,14 +1796,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="ChessClickManagerActions" />
-        public void AddCallbacks(IChessClickManagerActions instance)
+        /// <seealso cref="PawnGameActions" />
+        public void AddCallbacks(IPawnGameActions instance)
         {
-            if (instance == null || m_Wrapper.m_ChessClickManagerActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_ChessClickManagerActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_PawnGameActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PawnGameActionsCallbackInterfaces.Add(instance);
             @Click.started += instance.OnClick;
             @Click.performed += instance.OnClick;
             @Click.canceled += instance.OnClick;
+            @CameraToggle.started += instance.OnCameraToggle;
+            @CameraToggle.performed += instance.OnCameraToggle;
+            @CameraToggle.canceled += instance.OnCameraToggle;
         }
 
         /// <summary>
@@ -1710,21 +1815,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="ChessClickManagerActions" />
-        private void UnregisterCallbacks(IChessClickManagerActions instance)
+        /// <seealso cref="PawnGameActions" />
+        private void UnregisterCallbacks(IPawnGameActions instance)
         {
             @Click.started -= instance.OnClick;
             @Click.performed -= instance.OnClick;
             @Click.canceled -= instance.OnClick;
+            @CameraToggle.started -= instance.OnCameraToggle;
+            @CameraToggle.performed -= instance.OnCameraToggle;
+            @CameraToggle.canceled -= instance.OnCameraToggle;
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ChessClickManagerActions.UnregisterCallbacks(IChessClickManagerActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PawnGameActions.UnregisterCallbacks(IPawnGameActions)" />.
         /// </summary>
-        /// <seealso cref="ChessClickManagerActions.UnregisterCallbacks(IChessClickManagerActions)" />
-        public void RemoveCallbacks(IChessClickManagerActions instance)
+        /// <seealso cref="PawnGameActions.UnregisterCallbacks(IPawnGameActions)" />
+        public void RemoveCallbacks(IPawnGameActions instance)
         {
-            if (m_Wrapper.m_ChessClickManagerActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_PawnGameActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -1734,21 +1842,117 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="ChessClickManagerActions.AddCallbacks(IChessClickManagerActions)" />
-        /// <seealso cref="ChessClickManagerActions.RemoveCallbacks(IChessClickManagerActions)" />
-        /// <seealso cref="ChessClickManagerActions.UnregisterCallbacks(IChessClickManagerActions)" />
-        public void SetCallbacks(IChessClickManagerActions instance)
+        /// <seealso cref="PawnGameActions.AddCallbacks(IPawnGameActions)" />
+        /// <seealso cref="PawnGameActions.RemoveCallbacks(IPawnGameActions)" />
+        /// <seealso cref="PawnGameActions.UnregisterCallbacks(IPawnGameActions)" />
+        public void SetCallbacks(IPawnGameActions instance)
         {
-            foreach (var item in m_Wrapper.m_ChessClickManagerActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_PawnGameActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_ChessClickManagerActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_PawnGameActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="ChessClickManagerActions" /> instance referencing this action map.
+    /// Provides a new <see cref="PawnGameActions" /> instance referencing this action map.
     /// </summary>
-    public ChessClickManagerActions @ChessClickManager => new ChessClickManagerActions(this);
+    public PawnGameActions @PawnGame => new PawnGameActions(this);
+
+    // FreeCamMove
+    private readonly InputActionMap m_FreeCamMove;
+    private List<IFreeCamMoveActions> m_FreeCamMoveActionsCallbackInterfaces = new List<IFreeCamMoveActions>();
+    private readonly InputAction m_FreeCamMove_FreeCamMove;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "FreeCamMove".
+    /// </summary>
+    public struct FreeCamMoveActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public FreeCamMoveActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "FreeCamMove/FreeCamMove".
+        /// </summary>
+        public InputAction @FreeCamMove => m_Wrapper.m_FreeCamMove_FreeCamMove;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_FreeCamMove; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="FreeCamMoveActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(FreeCamMoveActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="FreeCamMoveActions" />
+        public void AddCallbacks(IFreeCamMoveActions instance)
+        {
+            if (instance == null || m_Wrapper.m_FreeCamMoveActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_FreeCamMoveActionsCallbackInterfaces.Add(instance);
+            @FreeCamMove.started += instance.OnFreeCamMove;
+            @FreeCamMove.performed += instance.OnFreeCamMove;
+            @FreeCamMove.canceled += instance.OnFreeCamMove;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="FreeCamMoveActions" />
+        private void UnregisterCallbacks(IFreeCamMoveActions instance)
+        {
+            @FreeCamMove.started -= instance.OnFreeCamMove;
+            @FreeCamMove.performed -= instance.OnFreeCamMove;
+            @FreeCamMove.canceled -= instance.OnFreeCamMove;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="FreeCamMoveActions.UnregisterCallbacks(IFreeCamMoveActions)" />.
+        /// </summary>
+        /// <seealso cref="FreeCamMoveActions.UnregisterCallbacks(IFreeCamMoveActions)" />
+        public void RemoveCallbacks(IFreeCamMoveActions instance)
+        {
+            if (m_Wrapper.m_FreeCamMoveActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="FreeCamMoveActions.AddCallbacks(IFreeCamMoveActions)" />
+        /// <seealso cref="FreeCamMoveActions.RemoveCallbacks(IFreeCamMoveActions)" />
+        /// <seealso cref="FreeCamMoveActions.UnregisterCallbacks(IFreeCamMoveActions)" />
+        public void SetCallbacks(IFreeCamMoveActions instance)
+        {
+            foreach (var item in m_Wrapper.m_FreeCamMoveActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_FreeCamMoveActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="FreeCamMoveActions" /> instance referencing this action map.
+    /// </summary>
+    public FreeCamMoveActions @FreeCamMove => new FreeCamMoveActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -1964,11 +2168,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
     }
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ChessClickManager" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PawnGame" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="ChessClickManagerActions.AddCallbacks(IChessClickManagerActions)" />
-    /// <seealso cref="ChessClickManagerActions.RemoveCallbacks(IChessClickManagerActions)" />
-    public interface IChessClickManagerActions
+    /// <seealso cref="PawnGameActions.AddCallbacks(IPawnGameActions)" />
+    /// <seealso cref="PawnGameActions.RemoveCallbacks(IPawnGameActions)" />
+    public interface IPawnGameActions
     {
         /// <summary>
         /// Method invoked when associated input action "Click" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
@@ -1977,5 +2181,27 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CameraToggle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCameraToggle(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "FreeCamMove" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="FreeCamMoveActions.AddCallbacks(IFreeCamMoveActions)" />
+    /// <seealso cref="FreeCamMoveActions.RemoveCallbacks(IFreeCamMoveActions)" />
+    public interface IFreeCamMoveActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "FreeCamMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFreeCamMove(InputAction.CallbackContext context);
     }
 }
