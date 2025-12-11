@@ -214,7 +214,6 @@ public class PawnBehavior : MonoBehaviour
     }
     public void TeleportPawnToGraveyard(int activePlayer, int points) //used when a pawn is captured or promoted
     {
-        PawnsGameManager.instance.UpdateTierTexts();
         ToggleGlow(false);
         canBeEaten = false;
 

@@ -23,6 +23,7 @@ public class ChessSquareScript : MonoBehaviour
         if (ClickManager.instance.selectedPawn != null && selectableSquare)
         {
             PawnBehavior thisPawn = ClickManager.instance.selectedPawn;
+            PawnsGameManager.instance.playerTimer[PawnsGameManager.instance.activePlayer - 1] += PawnsGameManager.instance.extraTimeAddedPerTurn;
             StartCoroutine(thisPawn.MoveForward(this));
             thisPawn.Deselect();
             thisPawn = null;

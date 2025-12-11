@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PawnsGameManager : MonoBehaviour
 {
+    public bool gameStarted = false;
     public static PawnsGameManager instance;
     public List<GameObject> cameras = new List<GameObject>();
     public int activePlayer = 1; // 1 = Player 1, -1 = Player 2
@@ -14,11 +15,21 @@ public class PawnsGameManager : MonoBehaviour
     public List<int> playerPoints = new List<int>() { 0, 0 };
     public List<bool> waitingRowIsReady = new List<bool>() { false, false };
 
+    public GameObject dataCanvas;
+    public GameObject selectionCanvas;
+
     public List<int> pointsToNextTier = new List<int>();
 
     public TextMeshProUGUI playerTurn;
+    public TextMeshProUGUI timer;
 
     public List<GameObject> playerInfo;
+
+    public List<float> playerTimer = new List<float>();
+    public int extraTimeAddedPerTurn;
+
+    public List<TextMeshProUGUI> timerSettings = new List<TextMeshProUGUI>();
+    bool timerActive;
 
     public bool freeCamActive = false;
 
@@ -29,10 +40,29 @@ public class PawnsGameManager : MonoBehaviour
         cameras[1].SetActive(false);
         cameras[2].SetActive(false);
     }
+    public void StartGame()
+    {
+        BoardManager.instance.GenerateBoard();
+        dataCanvas.SetActive(true);
+        SetPlayerTimer();
+        UpdateTierTexts();
+
+        selectionCanvas.SetActive(false);
+        gameStarted = true;
+    }
+    private void Update()
+    {
+        if (gameStarted && timerActive)
+        {
+            playerTimer[activePlayer - 1] -= Time.deltaTime;
+            UpdatePlayerTimer();
+        }
+    }
 
     public void NextPlayerTurn()
     {
         activePlayer = activePlayer == 1 ? 2 : 1;
+        if (timerActive) UpdatePlayerTimer();
 
         if (!CheckWinCondition(activePlayer))
         {
@@ -41,8 +71,9 @@ public class PawnsGameManager : MonoBehaviour
             {
                 StartCoroutine(BoardManager.instance.PushWaitingRowToBoard(activePlayer));
                 waitingRowIsReady[activePlayer - 1] = false;
+                UpdateTierTexts();
             }
-            else if (!freeCamActive)
+            else
             {
                 if (activePlayer == 2)
                 {
@@ -66,7 +97,7 @@ public class PawnsGameManager : MonoBehaviour
                         pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
                     }
                 }
-                ChangeCamera();
+                if (!freeCamActive) ChangeCamera();
             }
         }
         else
@@ -78,8 +109,54 @@ public class PawnsGameManager : MonoBehaviour
     {
         foreach (GameObject info in playerInfo)
         {
-            info.GetComponent<TextMeshProUGUI>().text = "PLAYER " + (playerInfo.IndexOf(info)+1) + "\nNext tier: " + (playerTier[playerInfo.IndexOf(info)] + 1) + "\nPoints: " + playerPoints[playerInfo.IndexOf(info)] + "/" + pointsToNextTier[playerTier[playerInfo.IndexOf(info)] - 1];
+            if (playerTier[playerInfo.IndexOf(info)] < 3)
+            {
+                info.GetComponent<TextMeshProUGUI>().text = "PLAYER " + (playerInfo.IndexOf(info) + 1) + "\nNext tier: " + (playerTier[playerInfo.IndexOf(info)] + 1) + "\nPoints: " + playerPoints[playerInfo.IndexOf(info)] + "/" + pointsToNextTier[playerTier[playerInfo.IndexOf(info)] - 1];
+            }
+            else
+            {
+                info.GetComponent<TextMeshProUGUI>().text = "Player " + (playerInfo.IndexOf(info) + 1) + "\nHas achieved\nall tiers.";
+            }
         }
+    }
+    public void SetPlayerTimer()
+    {
+        int totalTime = 0;
+        timerActive = timerSettings[0].transform.parent.transform.parent.gameObject.activeSelf;
+        Debug.Log(timerActive);
+        if (!timerActive)    
+        {
+            timer.text = "Timer disabled";
+        }
+        else
+        {
+            if (timerSettings[0] != null && int.TryParse(timerSettings[0].text, out int minutes))
+            {
+                minutes *= 60;
+                totalTime += minutes;
+            }
+            if (timerSettings[1] != null && int.TryParse(timerSettings[1].text, out int seconds))
+            {
+                totalTime += seconds;
+            }
+            if (timerSettings[2] != null && int.TryParse(timerSettings[2].text, out int extraSecs))
+            {
+                extraTimeAddedPerTurn = extraSecs;
+            }
+
+            for (int i = 0; i < playerTimer.Count; i++)
+            {
+                playerTimer[i] = totalTime;
+            }
+        }
+    }
+    public void UpdatePlayerTimer()
+    {
+        float time = playerTimer[activePlayer - 1];
+        int minutes = Mathf.FloorToInt(time / 60F);
+        int seconds = Mathf.FloorToInt(time - minutes * 60);
+        string timerText = string.Format("{0:0}:{1:00}", minutes, seconds);
+        timer.text = "Timer: \n" + timerText;
     }
     public void ChangeCamera()
     {
@@ -109,6 +186,7 @@ public class PawnsGameManager : MonoBehaviour
     public void AddPoints(int player, int points)
     {
         playerPoints[player - 1] += points;
+        UpdateTierTexts();
 
         switch (playerTier[player - 1])
         {

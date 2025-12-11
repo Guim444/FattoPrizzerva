@@ -45,8 +45,6 @@ public class BoardManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        GenerateBoard();
     }
     public void GenerateBoard()
     {
@@ -648,5 +646,14 @@ public class BoardManager : MonoBehaviour
 
         Vector3 pos = zone.transform.position + new Vector3(colIndex * columnSpacing, 0, rowIndex * rowSpacing);
         return pos;
+    }
+
+    internal void DeselectAll()
+    {
+        foreach (var square in squares.Values)
+        {
+            square.ToggleGlow(false);
+            square.selectableSquare = false;
+        }
     }
 }
