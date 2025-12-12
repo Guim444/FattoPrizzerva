@@ -17,6 +17,7 @@ public class PawnsGameManager : MonoBehaviour
 
     public GameObject dataCanvas;
     public GameObject selectionCanvas;
+    public GameObject boardGenerationCanvas;
 
     public List<int> pointsToNextTier = new List<int>();
 
@@ -29,6 +30,8 @@ public class PawnsGameManager : MonoBehaviour
     public int extraTimeAddedPerTurn;
 
     public List<TextMeshProUGUI> timerSettings = new List<TextMeshProUGUI>();
+    public List<TextMeshProUGUI> tierPointsSettings = new List<TextMeshProUGUI>();
+    public List<TextMeshProUGUI> boardSizeSettings = new List<TextMeshProUGUI>();
     bool timerActive;
 
     public bool freeCamActive = false;
@@ -40,15 +43,25 @@ public class PawnsGameManager : MonoBehaviour
         cameras[1].SetActive(false);
         cameras[2].SetActive(false);
     }
-    public void StartGame()
+    public void SetStartValues()
     {
-        BoardManager.instance.GenerateBoard();
         dataCanvas.SetActive(true);
         SetPlayerTimer();
+        SetTierPoints();
         UpdateTierTexts();
-
         selectionCanvas.SetActive(false);
+        dataCanvas.SetActive(false);
+        boardGenerationCanvas.SetActive(true);
+    }
+    public void StartGame()
+    {
+        SetSize();
+
+        boardGenerationCanvas.SetActive(false);
+        dataCanvas.SetActive(true);
         gameStarted = true;
+
+        BoardManager.instance.GenerateBoard();
     }
     private void Update()
     {
@@ -105,6 +118,18 @@ public class PawnsGameManager : MonoBehaviour
             playerTurn.text = "Player " + (activePlayer == 1 ? 2 : 1) + " Wins!";
         }
     }
+    public void SetTierPoints()
+    {
+        for (int i = 0; i < pointsToNextTier.Count; i++)
+        {
+            if (int.TryParse(tierPointsSettings[i].text, out int pts))
+            {
+                if (pts == 0)
+                    pts = 3; //3 by default
+                pointsToNextTier[i] = pts;
+            }
+        }
+    }
     public void UpdateTierTexts()
     {
         foreach (GameObject info in playerInfo)
@@ -126,7 +151,7 @@ public class PawnsGameManager : MonoBehaviour
         Debug.Log(timerActive);
         if (!timerActive)    
         {
-            timer.text = "Timer disabled";
+            timer.text = "";
         }
         else
         {
@@ -139,6 +164,12 @@ public class PawnsGameManager : MonoBehaviour
             {
                 totalTime += seconds;
             }
+
+            if (totalTime == 0)
+            {
+                totalTime += 180; //3min by default
+            }
+
             if (timerSettings[2] != null && int.TryParse(timerSettings[2].text, out int extraSecs))
             {
                 extraTimeAddedPerTurn = extraSecs;
@@ -158,12 +189,30 @@ public class PawnsGameManager : MonoBehaviour
         string timerText = string.Format("{0:0}:{1:00}", minutes, seconds);
         timer.text = "Timer: \n" + timerText;
     }
+    public void SetSize()
+    {
+        if (int.TryParse(boardSizeSettings[0].text, out int x))
+        {
+            if (x < 3 || x > 10)
+                x = 8;
+            BoardManager.instance.width = x;
+        }
+        if (int.TryParse(boardSizeSettings[1].text, out int y))
+        {
+            if (y < 3 || y > 10)
+                y = 8;
+            BoardManager.instance.height = y;
+        }
+    }
     public void ChangeCamera()
     {
-        bool active = activePlayer == 1;
+        if (gameStarted)
+        {
+            bool active = activePlayer == 1;
 
-        cameras[0].SetActive(active);
-        cameras[1].SetActive(!active);
+            cameras[0].SetActive(active);
+            cameras[1].SetActive(!active);
+        }
     }
     public void OnCameraToggle(InputValue value)
     {

@@ -157,6 +157,15 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""5fa55045-a8e8-4133-87a1-14aee6f5150f"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -225,6 +234,17 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
                     ""action"": ""CameraDrag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e070621b-42c8-41fc-b70e-32bd2070a769"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -239,6 +259,7 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
         m_FreeCamMove = asset.FindActionMap("FreeCamMove", throwIfNotFound: true);
         m_FreeCamMove_FreeCamMove = m_FreeCamMove.FindAction("FreeCamMove", throwIfNotFound: true);
         m_FreeCamMove_CameraDrag = m_FreeCamMove.FindAction("CameraDrag", throwIfNotFound: true);
+        m_FreeCamMove_Zoom = m_FreeCamMove.FindAction("Zoom", throwIfNotFound: true);
     }
 
     ~@PawnGameInput()
@@ -429,6 +450,7 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
     private List<IFreeCamMoveActions> m_FreeCamMoveActionsCallbackInterfaces = new List<IFreeCamMoveActions>();
     private readonly InputAction m_FreeCamMove_FreeCamMove;
     private readonly InputAction m_FreeCamMove_CameraDrag;
+    private readonly InputAction m_FreeCamMove_Zoom;
     /// <summary>
     /// Provides access to input actions defined in input action map "FreeCamMove".
     /// </summary>
@@ -448,6 +470,10 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "FreeCamMove/CameraDrag".
         /// </summary>
         public InputAction @CameraDrag => m_Wrapper.m_FreeCamMove_CameraDrag;
+        /// <summary>
+        /// Provides access to the underlying input action "FreeCamMove/Zoom".
+        /// </summary>
+        public InputAction @Zoom => m_Wrapper.m_FreeCamMove_Zoom;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -480,6 +506,9 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
             @CameraDrag.started += instance.OnCameraDrag;
             @CameraDrag.performed += instance.OnCameraDrag;
             @CameraDrag.canceled += instance.OnCameraDrag;
+            @Zoom.started += instance.OnZoom;
+            @Zoom.performed += instance.OnZoom;
+            @Zoom.canceled += instance.OnZoom;
         }
 
         /// <summary>
@@ -497,6 +526,9 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
             @CameraDrag.started -= instance.OnCameraDrag;
             @CameraDrag.performed -= instance.OnCameraDrag;
             @CameraDrag.canceled -= instance.OnCameraDrag;
+            @Zoom.started -= instance.OnZoom;
+            @Zoom.performed -= instance.OnZoom;
+            @Zoom.canceled -= instance.OnZoom;
         }
 
         /// <summary>
@@ -573,5 +605,12 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCameraDrag(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Zoom" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnZoom(InputAction.CallbackContext context);
     }
 }
