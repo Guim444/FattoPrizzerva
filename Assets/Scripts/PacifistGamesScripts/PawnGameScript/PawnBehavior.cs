@@ -41,6 +41,39 @@ public class PawnBehavior : MonoBehaviour
             TrackDiagonals(true);
         }
     }
+    public void SetPawnRuleset()
+    {
+        tier1Movements.Clear();
+        tier2Movements.Clear();
+        tier3Movements.Clear();
+
+        tier1KillRange.Clear();
+        tier2KillRange.Clear();
+        tier3KillRange.Clear();
+
+        var pawnRules = new Dictionary<PawnSets, (List<int> t1Moves, List<int> t2Moves, List<int> t3Moves,
+                                                   List<int> t1Kills, List<int> t2Kills, List<int> t3Kills)>
+        {
+            { PawnSets.DefaultSet,
+                (new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{2}, new List<int>{1,2,3}) },
+            { PawnSets.SSet,
+                (new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1,2}, new List<int>{2,3}, new List<int>{1,2,3}) },
+            { PawnSets.TSet,
+                (new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1, 2}, new List<int>{1,2,3})
+            }
+        };
+
+        if (pawnRules.TryGetValue(PawnsGameManager.instance.pawnRuleset, out var rules))
+        {
+            tier1Movements.AddRange(rules.t1Moves);
+            tier2Movements.AddRange(rules.t2Moves);
+            tier3Movements.AddRange(rules.t3Moves);
+
+            tier1KillRange.AddRange(rules.t1Kills);
+            tier2KillRange.AddRange(rules.t2Kills);
+            tier3KillRange.AddRange(rules.t3Kills);
+        }
+    }
     public ChessSquareScript FindNextSquare(int moveAmount)
     {
         int nextRow = currentSquare.SquareRow;

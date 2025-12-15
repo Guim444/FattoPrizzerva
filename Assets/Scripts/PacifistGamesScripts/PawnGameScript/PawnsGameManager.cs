@@ -28,10 +28,12 @@ public class PawnsGameManager : MonoBehaviour
 
     public List<float> playerTimer = new List<float>();
     public int extraTimeAddedPerTurn;
+    public PawnSets pawnRuleset;
 
     public List<TextMeshProUGUI> timerSettings = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> tierPointsSettings = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> boardSizeSettings = new List<TextMeshProUGUI>();
+    public TextMeshProUGUI pawnSettings;
     bool timerActive;
 
     public bool freeCamActive = false;
@@ -49,14 +51,14 @@ public class PawnsGameManager : MonoBehaviour
         SetPlayerTimer();
         SetTierPoints();
         UpdateTierTexts();
+        SetSize();
+        SetPawnRuleset();
         selectionCanvas.SetActive(false);
         dataCanvas.SetActive(false);
         boardGenerationCanvas.SetActive(true);
     }
     public void StartGame()
     {
-        SetSize();
-
         boardGenerationCanvas.SetActive(false);
         dataCanvas.SetActive(true);
         gameStarted = true;
@@ -203,6 +205,40 @@ public class PawnsGameManager : MonoBehaviour
                 y = 8;
             BoardManager.instance.height = y;
         }
+    }
+    public void SetPawnRuleset()
+    {
+        switch (pawnSettings.text)
+        {
+            case "Default set":
+                pawnRuleset = PawnSets.DefaultSet;
+                break;
+            case "S Set":
+                pawnRuleset = PawnSets.SSet;
+                break;
+            case "T Set":
+                pawnRuleset = PawnSets.TSet;
+                break;
+            case "U Set":
+                pawnRuleset = PawnSets.USet;
+                break;
+            case "V Set":
+                pawnRuleset = PawnSets.VSet;
+                break;
+            case "W Set":
+                pawnRuleset = PawnSets.WSet;
+                break;
+            case "X Set":
+                pawnRuleset = PawnSets.SSet;
+                break;
+            case "Y Set":
+                pawnRuleset = PawnSets.YSet;
+                break;
+            case "Z Set":
+                pawnRuleset = PawnSets.USet;
+                break;
+        }
+        Debug.Log(pawnRuleset.ToString());
     }
     public void ChangeCamera()
     {

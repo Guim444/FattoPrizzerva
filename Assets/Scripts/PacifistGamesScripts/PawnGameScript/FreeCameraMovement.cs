@@ -4,37 +4,30 @@ using UnityEngine.InputSystem;
 
 public class FreeCameraMovement : MonoBehaviour
 {
-    public float speed = 10;
-    public float inertia = 7;
+    [Header("Movement Settings")]
+    public float speed = 10f;
+    public float inertia = 7f;
 
-    public float orthoZoomSpeed = 20;
+    [Header("Look Settings")]
+    public Vector2 look;
+    public float yaw, pitch;
+    public float maxPitch = 80f;
+    public float lookSensitivity = 100f;
 
-    public Vector3 focusPoint = new Vector3(-2.5f, 0, 7);
-
-    public CinemachineCamera cam;
-
-    public Vector2 inputMove;
+    [Header("Zoom Settings")]
+    public float orthoZoomSpeed = 20f;
     public float inputZoom;
 
-    private Vector2 smoothVelocity;
-    private float smoothZoom;
+    [Header("References")]
+    public CinemachineCamera cam;
+    public GameObject camRef;
 
-    void Awake()
-    {
-        if (cam == null) cam = GetComponent<CinemachineCamera>();
-
-        transform.localPosition = new Vector3(-2.5f, 50, 7);
-        transform.localRotation = Quaternion.Euler(90, 0, 0);
-
-        smoothVelocity = Vector2.zero;
-        smoothZoom = 0f;
-    }
-
+    public Vector2 inputMove;
     public void OnFreeCamMove(InputValue value)
     {
         inputMove = value.Get<Vector2>();
-    }
 
+    }
     public void OnZoom(InputValue value)
     {
         Vector2 scroll = Mouse.current.scroll.ReadValue();
@@ -46,30 +39,29 @@ public class FreeCameraMovement : MonoBehaviour
         MoveCam();
         ZoomCam();
     }
-
     private void MoveCam()
     {
-        smoothVelocity = Vector2.Lerp(smoothVelocity, inputMove, Time.deltaTime * inertia);
+        if (inputMove == Vector2.zero) return;
 
-        if (smoothVelocity != Vector2.zero)
-        {
-            Vector3 move = new Vector3(-smoothVelocity.x, 0f, -smoothVelocity.y) * speed * Time.deltaTime;
-            transform.localPosition += move;
-        }
+        yaw -= inputMove.x * lookSensitivity * Time.deltaTime;
+        pitch += inputMove.y * lookSensitivity * Time.deltaTime;
+
+        pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
+
+        Quaternion targetRotation = Quaternion.Euler(pitch, yaw, 0f);
+        camRef.transform.rotation = Quaternion.Lerp(camRef.transform.rotation, targetRotation, inertia * Time.deltaTime);
+
     }
-
     private void ZoomCam()
     {
         if (cam == null || inputZoom == 0) return;
-
-        smoothZoom = Mathf.Lerp(smoothZoom, inputZoom, Time.deltaTime * inertia);
 
         var lens = cam.Lens;
 
         if (lens.Orthographic)
         {
-            lens.OrthographicSize -= smoothZoom * orthoZoomSpeed * Time.deltaTime;
-            lens.OrthographicSize = Mathf.Clamp(lens.OrthographicSize, 5, 50);
+            lens.OrthographicSize -= orthoZoomSpeed * Time.deltaTime * inputZoom;
+            lens.OrthographicSize = Mathf.Clamp(lens.OrthographicSize, 5f, 50f);
             cam.Lens = lens;
         }
     }

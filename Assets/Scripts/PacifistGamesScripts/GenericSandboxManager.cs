@@ -49,7 +49,6 @@ public class GenericSandboxManager : MonoBehaviour
     }
     public void ColumnElimination(int num)
     {
-        //POR AQUI ME QUEDÉ
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
         if (text != null)

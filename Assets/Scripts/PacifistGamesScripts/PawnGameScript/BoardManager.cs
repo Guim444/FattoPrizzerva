@@ -131,6 +131,8 @@ public class BoardManager : MonoBehaviour
 
                 PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
 
+                pawnScript.SetPawnRuleset();
+
                 pawnScript.pawnTier = tier;
                 pawnScript.SetPawnTier();
 
@@ -278,6 +280,7 @@ public class BoardManager : MonoBehaviour
         GameObject pawnObj = Instantiate((bs.player == 1) ? whitePawnPrefab : blackPawnPrefab);
         PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
         pawnScript.pawnTier = bs.tier;
+        pawnScript.SetPawnRuleset();
         pawnScript.SetPawnTier();
         pawnObj.GetComponent<Transform>().position = bs.pawnPosition;
         pawnObj.transform.position = bs.pawnPosition;
