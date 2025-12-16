@@ -1,8 +1,10 @@
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.InputSystem;
+using Unity.AppUI.UI;
 
 public class PawnsGameManager : MonoBehaviour
 {
@@ -30,10 +32,12 @@ public class PawnsGameManager : MonoBehaviour
     public int extraTimeAddedPerTurn;
     public PawnSets pawnRuleset;
 
+    [Header("Settings")]
     public List<TextMeshProUGUI> timerSettings = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> tierPointsSettings = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> boardSizeSettings = new List<TextMeshProUGUI>();
     public TextMeshProUGUI pawnSettings;
+    public GameObject columnErasingEnabled;
     bool timerActive;
 
     public bool freeCamActive = false;
@@ -55,7 +59,11 @@ public class PawnsGameManager : MonoBehaviour
         SetPawnRuleset();
         selectionCanvas.SetActive(false);
         dataCanvas.SetActive(false);
-        boardGenerationCanvas.SetActive(true);
+
+        if (ColumnErasingCheck()) //if it's not needed to activate that canvas, just go to the game.
+            boardGenerationCanvas.SetActive(true);
+        else
+            StartGame();
     }
     public void StartGame()
     {
@@ -229,16 +237,21 @@ public class PawnsGameManager : MonoBehaviour
                 pawnRuleset = PawnSets.WSet;
                 break;
             case "X Set":
-                pawnRuleset = PawnSets.SSet;
+                pawnRuleset = PawnSets.XSet;
                 break;
             case "Y Set":
                 pawnRuleset = PawnSets.YSet;
                 break;
             case "Z Set":
-                pawnRuleset = PawnSets.USet;
+                pawnRuleset = PawnSets.ZSet;
                 break;
         }
         Debug.Log(pawnRuleset.ToString());
+    }
+    public bool ColumnErasingCheck()
+    {
+        UnityEngine.UI.Toggle check = columnErasingEnabled.GetComponent<UnityEngine.UI.Toggle>();
+        return check.isOn;
     }
     public void ChangeCamera()
     {

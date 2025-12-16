@@ -5,7 +5,6 @@ using UnityEngine;
 
 public abstract class EnemyController : MonoBehaviour, IDamageable
 {
-
     public float minZ, maxZ; // Z boundaries for scaling
     public float minScale, maxScale; // Scale values
 

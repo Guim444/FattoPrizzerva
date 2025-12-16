@@ -10,5 +10,6 @@ public enum PawnSets
     WSet,
     XSet,
     YSet,
-    ZSet
+    ZSet,
+    CustomSet
 }

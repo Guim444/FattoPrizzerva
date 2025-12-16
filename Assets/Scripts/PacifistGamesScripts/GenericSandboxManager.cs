@@ -71,13 +71,11 @@ public class GenericSandboxManager : MonoBehaviour
     public void EnableOption(GameObject objectToEnable)
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-        TextMeshProUGUI text = sender.GetComponentInChildren<TextMeshProUGUI>();
-        bool active;
-        if (text != null)
-        {
-            active = text.text == "X";
-            objectToEnable.SetActive(!active);
-            text.text = active ? "" : "X"; //Toggle
-        }
+        UnityEngine.UI.Toggle toggle = sender.GetComponent<UnityEngine.UI.Toggle>();
+
+        bool active = toggle.isOn;
+
+        if (objectToEnable != null)
+            objectToEnable.SetActive(active);
     }
 }

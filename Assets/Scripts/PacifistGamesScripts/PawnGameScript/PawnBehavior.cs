@@ -25,6 +25,49 @@ public class PawnBehavior : MonoBehaviour
 
     public int pawnTier;
 
+    //The different pawn rulesets
+    Dictionary<PawnSets, (List<int> t1Moves, List<int> t2Moves, List<int> t3Moves,
+                                               List<int> t1Kills, List<int> t2Kills, List<int> t3Kills)>
+    PawnRules = new()
+    {
+        {
+            PawnSets.DefaultSet,
+            (new(){1}, new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2,3})
+        },
+        {
+            PawnSets.SSet,
+            (new(){1}, new(){1}, new(){1}, new(){1,2}, new(){2,3}, new(){1,2,3})
+        },
+        {
+            PawnSets.TSet,
+            (new(){1}, new(){1}, new(){1}, new(){1}, new(){1,2}, new(){1,2,3})
+        },
+        {
+        PawnSets.USet,
+            (new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2}, new(){1,2,3})
+        },
+        {
+            PawnSets.VSet,
+            (new(){1}, new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2})
+        },
+        {
+            PawnSets.WSet,
+            (new(){1}, new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new(){-3,-2,-1,1,2,3})
+        },
+        {
+            PawnSets.XSet,
+            (new(){1}, new(){1}, new(){1}, new(){2}, new(){1}, new(){2,3})
+        },
+        {
+            PawnSets.YSet,
+            (new(){1}, new(){1}, new(){1,2}, new(){1,2}, new(){1,2,3}, new(){1,2,3})
+        },
+        {
+            PawnSets.ZSet,
+            (new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new(){-3,-2,-1,1,2,3}, new(){-3,-2,-1,1,2,3})
+        }
+    };
+
     void Awake()
     {
         if (currentSquare != null)
@@ -43,28 +86,17 @@ public class PawnBehavior : MonoBehaviour
     }
     public void SetPawnRuleset()
     {
+        //First we clear all the lists. Just to avoid issues.
         tier1Movements.Clear();
         tier2Movements.Clear();
         tier3Movements.Clear();
-
         tier1KillRange.Clear();
         tier2KillRange.Clear();
         tier3KillRange.Clear();
 
-        var pawnRules = new Dictionary<PawnSets, (List<int> t1Moves, List<int> t2Moves, List<int> t3Moves,
-                                                   List<int> t1Kills, List<int> t2Kills, List<int> t3Kills)>
+        if (PawnRules.TryGetValue(PawnsGameManager.instance.pawnRuleset, out var rules))
         {
-            { PawnSets.DefaultSet,
-                (new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{2}, new List<int>{1,2,3}) },
-            { PawnSets.SSet,
-                (new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1,2}, new List<int>{2,3}, new List<int>{1,2,3}) },
-            { PawnSets.TSet,
-                (new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1}, new List<int>{1, 2}, new List<int>{1,2,3})
-            }
-        };
-
-        if (pawnRules.TryGetValue(PawnsGameManager.instance.pawnRuleset, out var rules))
-        {
+            //we add the ranges needed.
             tier1Movements.AddRange(rules.t1Moves);
             tier2Movements.AddRange(rules.t2Moves);
             tier3Movements.AddRange(rules.t3Moves);
@@ -78,12 +110,13 @@ public class PawnBehavior : MonoBehaviour
     {
         int nextRow = currentSquare.SquareRow;
 
+        //The player 1 moves forward, while the player 2 is 180º rotated so it is a "backwards move".
         if (player == 1)
             nextRow += moveAmount;
         else
             nextRow -= moveAmount;
 
-        string id = currentSquare.SquareColumn.ToString() + nextRow.ToString();
+        string id = currentSquare.SquareColumn.ToString() + nextRow.ToString(); 
 
         return BoardManager.instance.GetSquare(id);
     }
@@ -103,6 +136,7 @@ public class PawnBehavior : MonoBehaviour
 
             if (square.empty)
             {
+                //Square found!
                 possiblePaths.Add(square);
                 square.ToggleGlow(glow);
                 if (glow) square.selectableSquare = true;
@@ -115,6 +149,7 @@ public class PawnBehavior : MonoBehaviour
 
             if (square != null && square.empty)
             {
+                //Square found! But just 1st possible movement
                 possiblePaths.Add(square);
                 square.ToggleGlow(glow);
                 if (glow) square.selectableSquare = true;

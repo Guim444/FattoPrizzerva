@@ -5,8 +5,7 @@ using UnityEngine.InputSystem;
 public class FreeCameraMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float speed = 10f;
-    public float inertia = 7f;
+    public float speed = 7f;
 
     [Header("Look Settings")]
     public Vector2 look;
@@ -15,7 +14,7 @@ public class FreeCameraMovement : MonoBehaviour
     public float lookSensitivity = 100f;
 
     [Header("Zoom Settings")]
-    public float orthoZoomSpeed = 20f;
+    public float orthoZoomSpeed;
     public float inputZoom;
 
     [Header("References")]
@@ -23,10 +22,15 @@ public class FreeCameraMovement : MonoBehaviour
     public GameObject camRef;
 
     public Vector2 inputMove;
+
+    private void Awake()
+    {
+        yaw = transform.rotation.eulerAngles.y;
+        pitch = transform.rotation.eulerAngles.x;
+    }
     public void OnFreeCamMove(InputValue value)
     {
         inputMove = value.Get<Vector2>();
-
     }
     public void OnZoom(InputValue value)
     {
@@ -48,14 +52,10 @@ public class FreeCameraMovement : MonoBehaviour
 
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
 
-        Quaternion targetRotation = Quaternion.Euler(pitch, yaw, 0f);
-        camRef.transform.rotation = Quaternion.Lerp(camRef.transform.rotation, targetRotation, inertia * Time.deltaTime);
-
+        camRef.transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
     private void ZoomCam()
     {
-        if (cam == null || inputZoom == 0) return;
-
         var lens = cam.Lens;
 
         if (lens.Orthographic)

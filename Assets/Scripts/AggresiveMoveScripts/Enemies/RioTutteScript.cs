@@ -44,24 +44,10 @@ public class RioTutteScript : EnemyController
     protected override void Update()
     {
         base.Update();
-
-        /*if (groundedTimer > 0)
-        {
-            groundedTimer -= Time.deltaTime;
-        }*/
-
         if (enemyPhase == 2 && hasHitAnObjectAfterAPunch && knockbackSpeed.magnitude <= 0.01f)
         {
             hasHitAnObjectAfterAPunch = false;
         }
-
-        /*if (phaseTwoHP > 0) base.Update();
-        else
-        {
-            isMoving = false;
-            isAttacking = false;
-            isGrabbing = false;
-        }*/
     }
     public override void FollowPlayerLogic()
     {
@@ -77,11 +63,11 @@ public class RioTutteScript : EnemyController
 
         if (enemyPhase == 1)
         {
-            if (!attackList.Contains(DashGrab)) attackList.Add(DashGrab);
+            if (!attackList.Contains(DashGrab)) attackList.Add(DashGrab); //In phase 1, the only attack is Dash Grab
         }
         else if (enemyPhase == 2)
         {
-            if (!attackList.Contains(FireDash)) attackList.Add(FireDash);
+            if (!attackList.Contains(FireDash)) attackList.Add(FireDash); //In phase 2, it will use Fire Dash as well
             player.canMove = false;
 
             RioTutteBattleManager.instance.TriggerCinematic();
@@ -112,7 +98,7 @@ public class RioTutteScript : EnemyController
             Vector3 knockbackDirection = (player.transform.position - transform.position).normalized;
             knockbackDirection.y = 0;
 
-            if (isUsingDashGrab)
+            if (isUsingDashGrab) //Player is grabbed
             {
                 player.StopAllCoroutines();
 
@@ -139,6 +125,7 @@ public class RioTutteScript : EnemyController
     {
         if ((isUsingDashGrab || hasHitAnObjectAfterAPunch) && (hit.gameObject.CompareTag("Wall") || hit.gameObject.CompareTag("Collisionable element")))
         {
+            //Hit with a wall
             isAttacking = false;
             isUsingDashGrab = false;
             attackTime = Random.Range(3, 6);
@@ -146,6 +133,7 @@ public class RioTutteScript : EnemyController
 
             if (enemyPhase == 2 && hasKnockback && hasHitAnObjectAfterAPunch && hit.gameObject.CompareTag("Collisionable element") && !phaseThreeCollisionedObjects.Contains(hit.gameObject))
             {
+                //Hit with a collisionable element while phase 3
                 canAttack = false;
                 moveSpeed = 0;
                 groundedTimer = 3;
@@ -185,6 +173,7 @@ public class RioTutteScript : EnemyController
     }
     public void GrabPlayer()
     {
+        //Dash grab collision makes this happen
         if (!isGrabbing)
         {
             int extraX = player.transform.position.x > transform.position.x ? 1 : -1;
