@@ -38,6 +38,8 @@ public class PawnsGameManager : MonoBehaviour
     public List<TextMeshProUGUI> boardSizeSettings = new List<TextMeshProUGUI>();
     public TextMeshProUGUI pawnSettings;
     public GameObject columnErasingEnabled;
+    public List<GameObject> erasedColumnsPlayer1 = new List<GameObject>();
+    public List<GameObject> erasedColumnsPlayer2 = new List<GameObject>();
     bool timerActive;
 
     public bool freeCamActive = false;

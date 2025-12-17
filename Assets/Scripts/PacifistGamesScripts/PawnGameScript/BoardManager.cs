@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Splines.ExtrusionShapes;
+using System.Linq;
 
 public class BoardManager : MonoBehaviour
 {
@@ -122,28 +122,31 @@ public class BoardManager : MonoBehaviour
 
         for (char col = 'A'; spawned < quantity; col++)
         {
-            string squareName = col.ToString() + row.ToString();
-            ChessSquareScript square = GetSquare(squareName);
-
-            if (square != null && square.empty)
+            if(!PawnsGameManager.instance.erasedColumnsPlayer1.Any(gameObj => gameObj.name == col.ToString()))
             {
-                GameObject pawnObj = Instantiate(whitePawnPrefab, square.pawnPosition, Quaternion.identity);
+                string squareName = col.ToString() + row.ToString();
+                ChessSquareScript square = GetSquare(squareName);
 
-                PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
+                if (square != null && square.empty)
+                {
+                    GameObject pawnObj = Instantiate(whitePawnPrefab, square.pawnPosition, Quaternion.identity);
 
-                pawnScript.SetPawnRuleset();
+                    PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
 
-                pawnScript.pawnTier = tier;
-                pawnScript.SetPawnTier();
+                    pawnScript.SetPawnRuleset();
 
-                if (pawnScript != null)
-                    pawnScript.currentSquare = square;
+                    pawnScript.pawnTier = tier;
+                    pawnScript.SetPawnTier();
 
-                square.empty = false;
-                square.pawn = pawnScript;
+                    if (pawnScript != null)
+                        pawnScript.currentSquare = square;
 
-                whitePawns.Add(pawnScript);
+                    square.empty = false;
+                    square.pawn = pawnScript;
 
+                    whitePawns.Add(pawnScript);
+
+                }
                 spawned++;
             }
         }
@@ -151,27 +154,30 @@ public class BoardManager : MonoBehaviour
         row = (int)height;
         spawned = 0;
 
-        for (char col = (char)(quantity - 1); spawned < quantity; col --)
+        for (char col = (char)('A' + quantity - 1); spawned < quantity; col--)
         {
-            string squareName = col.ToString() + row.ToString();
-            ChessSquareScript square = GetSquare(squareName);
-
-            if (square != null && square.empty)
+            if (!PawnsGameManager.instance.erasedColumnsPlayer2.Any(gameObj => gameObj.name == col.ToString()))
             {
-                GameObject pawnObj = Instantiate(blackPawnPrefab, square.pawnPosition, Quaternion.identity);
+                string squareName = col.ToString() + row.ToString();
+                ChessSquareScript square = GetSquare(squareName);
 
-                PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
+                if (square != null && square.empty)
+                {
+                    GameObject pawnObj = Instantiate(blackPawnPrefab, square.pawnPosition, Quaternion.identity);
 
-                pawnScript.pawnTier = tier;
-                pawnScript.SetPawnTier();
+                    PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
 
-                if (pawnScript != null)
-                    pawnScript.currentSquare = square;
+                    pawnScript.pawnTier = tier;
+                    pawnScript.SetPawnTier();
 
-                square.empty = false;
-                square.pawn = pawnScript;
+                    if (pawnScript != null)
+                        pawnScript.currentSquare = square;
 
-                blackPawns.Add(pawnScript);
+                    square.empty = false;
+                    square.pawn = pawnScript;
+
+                    blackPawns.Add(pawnScript);
+                }
 
                 spawned++;
             }
@@ -219,6 +225,7 @@ public class BoardManager : MonoBehaviour
         column = 'A';
         foreach (Transform benchZone in waitingZone.transform)
         {
+            bool columnErased = PawnsGameManager.instance.erasedColumnsPlayer2.Any(gameObj => gameObj.name == column.ToString());
             foreach (Transform bench in benchZone)
             {
                 BenchSquare bs = bench.GetComponent<BenchSquare>();
@@ -228,14 +235,19 @@ public class BoardManager : MonoBehaviour
                 switch (bs.tier)
                 {
                     case 2:
+                        bs.column = column;
                         blackWaitingZone2.Add(bs);
-                        GenerateBenchedPawn(bs);
+                        if (!columnErased)
+                            GenerateBenchedPawn(bs);
                         break;
                     case 3:
+                        bs.column = column;
                         blackWaitingZone3.Add(bs);
-                        GenerateBenchedPawn(bs);
+                        if (!columnErased)
+                            GenerateBenchedPawn(bs);
                         break;
                     default:
+                        bs.column = column;
                         bs.column = column;
                         blackWaitingZone1.Add(bs);
                         break;
@@ -246,6 +258,7 @@ public class BoardManager : MonoBehaviour
         column = (char)('A' + width - 1);
         foreach (Transform benchZone in waitingZone2.transform)
         {
+            bool columnErased = PawnsGameManager.instance.erasedColumnsPlayer1.Any(gameObj => gameObj.name == column.ToString());
             foreach (Transform bench in benchZone)
             {
                 BenchSquare bs = bench.GetComponent<BenchSquare>();
@@ -253,16 +266,19 @@ public class BoardManager : MonoBehaviour
                 {
                     bs.pawnPosition = bench.transform.position + Vector3.up * 0.75f;
                     bs.player = 1;
-
                     switch (bs.tier)
                     {
                         case 2:
+                            bs.column = column;
                             whiteWaitingZone2.Add(bs);
-                            GenerateBenchedPawn(bs);
+                            if (!columnErased)
+                                GenerateBenchedPawn(bs);
                             break;
                         case 3:
+                            bs.column = column;
                             whiteWaitingZone3.Add(bs);
-                            GenerateBenchedPawn(bs);
+                            if (!columnErased)
+                                GenerateBenchedPawn(bs);
                             break;
                         default:
                             bs.column = column;
@@ -280,6 +296,7 @@ public class BoardManager : MonoBehaviour
         GameObject pawnObj = Instantiate((bs.player == 1) ? whitePawnPrefab : blackPawnPrefab);
         PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
         pawnScript.pawnTier = bs.tier;
+        pawnScript.originalBenchColumn = bs.column;
         pawnScript.SetPawnRuleset();
         pawnScript.SetPawnTier();
         pawnObj.GetComponent<Transform>().position = bs.pawnPosition;
@@ -293,110 +310,81 @@ public class BoardManager : MonoBehaviour
         List<PawnBehavior> pawnsTier3 = new List<PawnBehavior>();
         List<PawnBehavior> pawnsTier2 = new List<PawnBehavior>();
 
+        List<BenchSquare> waitingZone1;
+        List<BenchSquare> waitingZone2;
+        List<BenchSquare> waitingZone3;
+
         if (player == 1)
         {
-            foreach (BenchSquare bs in whiteWaitingZone3)
-            {
-                if (!bs.empty)
-                {
-                    bs.empty = true;
-                    pawnsTier3.Add(bs.storedPawn);
-                    bs.storedPawn = null;
-                }
-            }
-            foreach (BenchSquare bs in whiteWaitingZone2)
-            {
-                if (!bs.empty)
-                {
-                    bs.empty = true;
-                    pawnsTier2.Add(bs.storedPawn);
-                    bs.storedPawn = null;
-                }
-            }
-
-            yield return new WaitForSeconds(0.5f);
-
-            foreach (PawnBehavior pb in pawnsTier2)
-            {
-                foreach (BenchSquare bs in whiteWaitingZone1)
-                {
-                    if (bs.empty)
-                    {
-                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
-                        bs.storedPawn = pb;
-                        bs.empty = false;
-                        break;
-                    }
-                }
-            }
-            foreach (PawnBehavior pb in pawnsTier3)
-            {
-                foreach (BenchSquare bs in whiteWaitingZone2)
-                {
-                    if (bs.empty)
-                    {
-                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
-                        bs.storedPawn = pb;
-                        bs.empty = false;
-                        break;
-                    }
-                }
-            }
-
-            yield return new WaitForSeconds(0.5f);
+            waitingZone1 = whiteWaitingZone1;
+            waitingZone2 = whiteWaitingZone2;
+            waitingZone3 = whiteWaitingZone3;
         }
-        else if (player == 2)
+        else
         {
-            foreach (BenchSquare bs in blackWaitingZone3)
-            {
-                if (!bs.empty)
-                {
-                    bs.empty = true;
-                    pawnsTier3.Add(bs.storedPawn);
-                    bs.storedPawn = null;
-                }
-            }
-            foreach (BenchSquare bs in blackWaitingZone2)
-            {
-                if (!bs.empty)
-                {
-                    bs.empty = true;
-                    pawnsTier2.Add(bs.storedPawn);
-                    bs.storedPawn = null;
-                }
-            }
-            yield return new WaitForSeconds(0.5f);
-            foreach (PawnBehavior pb in pawnsTier2)
-            {
-                foreach (BenchSquare bs in blackWaitingZone1)
-                {
-                    if (bs.empty)
-                    {
-                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
-                        bs.storedPawn = pb;
-                        bs.empty = false;
-                        break;
-                    }
-                }
-            }
-            foreach (PawnBehavior pb in pawnsTier3)
-            {
-                foreach (BenchSquare bs in blackWaitingZone2)
-                {
-                    if (bs.empty)
-                    {
-                        StartCoroutine(pb.SmoothMove(bs.pawnPosition));
-                        bs.storedPawn = pb;
-                        bs.empty = false;
-                        break;
-                    }
-                }
-            }
-            yield return new WaitForSeconds(0.5f);
+            waitingZone1 = blackWaitingZone1;
+            waitingZone2 = blackWaitingZone2;
+            waitingZone3 = blackWaitingZone3;
         }
+
+        // Recogemos los peones de tier3 y tier2
+        foreach (BenchSquare bs in waitingZone3)
+        {
+            if (!bs.empty && bs.storedPawn != null)
+            {
+                pawnsTier3.Add(bs.storedPawn);
+                bs.empty = true;
+                bs.storedPawn = null;
+            }
+        }
+        foreach (BenchSquare bs in waitingZone2)
+        {
+            if (!bs.empty && bs.storedPawn != null)
+            {
+                pawnsTier2.Add(bs.storedPawn);
+                bs.empty = true;
+                bs.storedPawn = null;
+            }
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Mover peones de tier2 a tier1, misma columna
+        foreach (PawnBehavior pb in pawnsTier2)
+        {
+            BenchSquare targetBench = waitingZone1.FirstOrDefault(b => b.column == pb.originalBenchColumn && b.empty);
+            if (targetBench != null)
+            {
+                StartCoroutine(pb.SmoothMove(targetBench.pawnPosition));
+                targetBench.storedPawn = pb;
+                targetBench.empty = false;
+            }
+            else
+            {
+                Debug.LogWarning($"No hay casilla libre en la columna {pb.originalBenchColumn} para un peón tier2.");
+            }
+        }
+
+        // Mover peones de tier3 a tier2, misma columna
+        foreach (PawnBehavior pb in pawnsTier3)
+        {
+            BenchSquare targetBench = waitingZone2.FirstOrDefault(b => b.column == pb.originalBenchColumn && b.empty);
+            if (targetBench != null)
+            {
+                StartCoroutine(pb.SmoothMove(targetBench.pawnPosition));
+                targetBench.storedPawn = pb;
+                targetBench.empty = false;
+            }
+            else
+            {
+                Debug.LogWarning($"No hay casilla libre en la columna {pb.originalBenchColumn} para un peón tier3.");
+            }
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
         PawnsGameManager.instance.waitingRowIsReady[player - 1] = true;
     }
-
     public IEnumerator PushWaitingRowToBoard(int player)
     {
         Debug.Log("Pushing waiting row to board for player " + player);
@@ -552,7 +540,6 @@ public class BoardManager : MonoBehaviour
         }
         return Vector3.zero;
     }
-
     public ChessSquareScript GetBenchToBoardPosition(int player, BenchSquare bs)
     {
         int direction = (player == 1) ? 1 : -1;
@@ -565,6 +552,7 @@ public class BoardManager : MonoBehaviour
         while (true)
         {
             string name = column.ToString() + targetRow.ToString();
+
             if (!squares.TryGetValue(name, out ChessSquareScript square))
             {
                 Debug.LogWarning("Square not found: " + name);
@@ -580,16 +568,20 @@ public class BoardManager : MonoBehaviour
                 break;
 
             int nextRow = targetRow + direction;
+
             if (nextRow < 1 || nextRow > height)
             {
                 GameObject deadZone = (player == 1) ? whiteDeadZone : blackDeadZone;
-                Vector3 offset = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 0, UnityEngine.Random.Range(-0.5f, 0.5f));
+                Vector3 offset = new Vector3(
+                    UnityEngine.Random.Range(-0.5f, 0.5f),
+                    0,
+                    UnityEngine.Random.Range(-0.5f, 0.5f)
+                );
 
                 square.pawn.transform.position = deadZone.transform.position + offset;
                 square.pawn.currentSquare = null;
                 square.pawn = null;
                 square.empty = true;
-
                 break;
             }
 
@@ -615,6 +607,9 @@ public class BoardManager : MonoBehaviour
 
         return firstSquare;
     }
+
+
+
     private Vector3 GetSafeDeadZonePosition(GameObject zone)
     {
         float columnSpacing = 1f;

@@ -21,6 +21,8 @@ public class PawnBehavior : MonoBehaviour
 
     public int player;
 
+    public char originalBenchColumn; //Only for benched ones
+
     public bool startingPawn = true;
 
     public int pawnTier;
@@ -362,6 +364,7 @@ public class PawnBehavior : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
     }
+
 
     public void MoveToSquareImmediately(ChessSquareScript targetSquare)
     {
