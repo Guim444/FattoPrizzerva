@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +15,14 @@ public class ColumnErasingBehaviour : MonoBehaviour
 
         for (int i = 0; i < BoardManager.instance.width; i++)
         {
+            string character = ((char)('A' + i)).ToString();
             GameObject createdSquare = Instantiate(squarePrefab, parent.transform);
-            createdSquare.name = ((char)('A' + i)).ToString();
+            createdSquare.name = character;
+            TextMeshProUGUI text = createdSquare.GetComponentInChildren<TextMeshProUGUI>();
+            if (text != null)
+            {
+                text.text = character;
+            }
         }
     }
     public void ResetSprites()

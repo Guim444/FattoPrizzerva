@@ -56,16 +56,15 @@ public class GenericSandboxManager : MonoBehaviour
         TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
         if (text != null)
         {
-            if (int.TryParse(text.text, out int currentValue) && int.TryParse(maxColumn.text, out int maxCol))
+            if (int.TryParse(text.text, out int currentValue))
             {
-                Debug.Log(maxCol);
                 currentValue += num;
-                currentValue = Mathf.Clamp(currentValue, 0, maxCol + 1);
+                currentValue = Mathf.Clamp(currentValue, -1, 10);
 
-                if (currentValue == maxCol + 1)
-                    currentValue = 1;
-                else if (currentValue == 0)
-                    currentValue = maxCol;
+                if (currentValue == 10)
+                    currentValue = 0;
+                else if (currentValue == -1)
+                    currentValue = 9;
 
                 text.text = currentValue.ToString();
             }
@@ -84,7 +83,7 @@ public class GenericSandboxManager : MonoBehaviour
 
     public void ToggleButtonForColumnErasing()
     {
-        List<GameObject> list = PawnsGameManager.instance.activePlayer == 1? PawnsGameManager.instance.erasedColumnsPlayer1 : PawnsGameManager.instance.erasedColumnsPlayer2;
+        List<GameObject> list = PawnsGameManager.instance.activePlayer == 1? PawnsGameManager.instance.erasedColumnsPlayer2 : PawnsGameManager.instance.erasedColumnsPlayer1;
 
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         bool active = list.Contains(sender);
@@ -107,13 +106,19 @@ public class GenericSandboxManager : MonoBehaviour
     }
     public void NextPlayer(GameObject startButton)
     {
-        if (PawnsGameManager.instance.erasedColumnsPlayer1.Count == 2)
+        if (PawnsGameManager.instance.erasedColumnsPlayer2.Count == 2) // You select the other's columns to erase, so this is the right way
         {
             PawnsGameManager.instance.activePlayer = PawnsGameManager.instance.activePlayer == 1 ? 2 : 1;
+            int activePlayer = PawnsGameManager.instance.activePlayer;
             startButton.SetActive(true);
             ColumnErasingBehaviour.instance.ResetSprites();
             GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
             GameObject msg = sender.transform.parent.Find("MSG").gameObject;
+
+            if (int.TryParse(PawnsGameManager.instance.columnEliminationOffset.text, out int offset))
+                PawnsGameManager.instance.offsetPlayer1 = offset;
+            PawnsGameManager.instance.columnEliminationOffset.text = "0";
+
             if (msg != null)
                 msg.GetComponent<TextMeshProUGUI>().text = "Player 2's turn to erase:\r\n\r\n\r\n\r\n\r\n\r\nPlayer 1, please turn around in order to not see the selection.";
             sender.SetActive(false);
@@ -121,10 +126,33 @@ public class GenericSandboxManager : MonoBehaviour
     }
     public void StartGame()
     {
-        if (PawnsGameManager.instance.erasedColumnsPlayer2.Count == 2)
+        if (PawnsGameManager.instance.erasedColumnsPlayer1.Count == 2)
         {
+            if (int.TryParse(PawnsGameManager.instance.columnEliminationOffset.text, out int offset))
+                PawnsGameManager.instance.offsetPlayer2 = offset;
+            ColumnErasingOffset();
             PawnsGameManager.instance.activePlayer = 1;
             PawnsGameManager.instance.StartGame();
+        }
+    }
+
+    public void ColumnErasingOffset()
+    {
+        int boardWidth = (int)BoardManager.instance.width;
+
+        for (int i = 0; i < 2; i++)
+        {
+            List<GameObject> list = i == 0 ? PawnsGameManager.instance.erasedColumnsPlayer1 : PawnsGameManager.instance.erasedColumnsPlayer2;
+            int offset = i == 0 ? PawnsGameManager.instance.offsetPlayer1 : PawnsGameManager.instance.offsetPlayer2;
+
+            for (int j = 0; j < list.Count; j++)
+            {
+                char colName = char.Parse(list[j].name);
+                int colIndex = colName - 'A' + 1;
+                colIndex = ((colIndex - 1 + offset) % boardWidth + boardWidth) % boardWidth + 1;
+                char newColName = (char)('A' + colIndex - 1);
+                list[j].name = newColName.ToString();
+            }
         }
     }
 }
