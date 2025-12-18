@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.AppUI.UI;
 using UnityEngine;
@@ -48,6 +49,7 @@ public class PawnsGameManager : MonoBehaviour
     public CustomSetSO customRuleset;
     public List<TextMeshProUGUI> customRulesetSettings = new List<TextMeshProUGUI>();
     public List<GameObject> customRulesetKillRangeSettings = new List<GameObject>();
+    public List<UnityEngine.UI.Toggle> customRulesetCanKillBackwards = new List<UnityEngine.UI.Toggle>();
 
     public bool freeCamActive = false;
 
@@ -255,6 +257,9 @@ public class PawnsGameManager : MonoBehaviour
             case "Z Set":
                 pawnRuleset = PawnSets.ZSet;
                 break;
+            case "Custom set":
+                pawnRuleset = PawnSets.CustomSet;
+                break;
         }
         Debug.Log(pawnRuleset.ToString());
     }
@@ -355,7 +360,7 @@ public class PawnsGameManager : MonoBehaviour
         }
         else
         {
-            //Will be the defaults
+            //These are the default values
             customRulesetSettings[0].text = "1";
             customRulesetSettings[1].text = "1";
             customRulesetSettings[2].text = "1";
@@ -363,6 +368,11 @@ public class PawnsGameManager : MonoBehaviour
         SetKillRangeInCanvas(customRulesetKillRangeSettings[0], customRuleset.killRangeTier1);
         SetKillRangeInCanvas(customRulesetKillRangeSettings[1], customRuleset.killRangeTier2);
         SetKillRangeInCanvas(customRulesetKillRangeSettings[2], customRuleset.killRangeTier3);
+
+        SetCanKillBackwardsInCanvas(customRulesetCanKillBackwards[0], customRuleset.killRangeTier1);
+        SetCanKillBackwardsInCanvas(customRulesetCanKillBackwards[1], customRuleset.killRangeTier2);
+        SetCanKillBackwardsInCanvas(customRulesetCanKillBackwards[2], customRuleset.killRangeTier3);
+
     }
     public void SetCustomRuleset()
     {
@@ -394,6 +404,10 @@ public class PawnsGameManager : MonoBehaviour
         SetKillRange(customRulesetKillRangeSettings[1], customRuleset.killRangeTier2);
         SetKillRange(customRulesetKillRangeSettings[2], customRuleset.killRangeTier3);
 
+        ApplyBackwardKillRanges(customRuleset.killRangeTier1, customRulesetCanKillBackwards[0]);
+        ApplyBackwardKillRanges(customRuleset.killRangeTier2, customRulesetCanKillBackwards[1]);
+        ApplyBackwardKillRanges(customRuleset.killRangeTier3, customRulesetCanKillBackwards[2]);
+
         selectionCanvas.SetActive(true);
         CheckIfCustomRulesetExists();
         pawnConfigCanvas.SetActive(false);
@@ -416,10 +430,22 @@ public class PawnsGameManager : MonoBehaviour
     }
     public void CheckIfCustomRulesetExists()
     {
+        TMP_Dropdown dropdown = pawnSettings.transform.parent.gameObject.GetComponent<TMP_Dropdown>();
+        int existingIndex = dropdown.options.FindIndex(opt => opt.text == "Custom set");
         if (customRuleset.assigned)
         {
-            TMP_Dropdown.OptionData customSet = new TMP_Dropdown.OptionData("Custom set");
-            pawnSettings.transform.parent.gameObject.GetComponent<TMP_Dropdown>().AddOptions(new List<TMP_Dropdown.OptionData> { customSet });
+            if (existingIndex == -1)
+            {
+                TMP_Dropdown.OptionData customSet = new TMP_Dropdown.OptionData("Custom set");
+                dropdown.AddOptions(new List<TMP_Dropdown.OptionData> { customSet });
+            }
+        }
+        else
+        {
+            if (existingIndex != -1)
+            {
+                dropdown.options.RemoveAt(existingIndex);
+            }
         }
     }
     private void SetKillRange(GameObject tierObject, List<int> targetList)
@@ -494,5 +520,38 @@ public class PawnsGameManager : MonoBehaviour
         {
             firstToggle.isOn = true;
         }
+    }
+    void ApplyBackwardKillRanges(List<int> killRange, UnityEngine.UI.Toggle backwardToggle)
+    {
+        if (backwardToggle == null || !backwardToggle.isOn)
+            return;
+
+        int initialCount = killRange.Count;
+
+        for (int i = 0; i < initialCount; i++)
+        {
+            int value = killRange[i];
+
+            if (value > 0)
+            {
+                killRange.Add(-value);
+            }
+        }
+        killRange.Sort();
+    }
+    void SetCanKillBackwardsInCanvas(
+    UnityEngine.UI.Toggle backwardToggle,
+    List<int> killRange)
+    {
+        if (backwardToggle == null)
+            return;
+
+        if (!customRuleset.assigned || killRange == null)
+        {
+            backwardToggle.isOn = false;
+            return;
+        }
+
+        backwardToggle.isOn = killRange.Exists(v => v < 0);
     }
 }

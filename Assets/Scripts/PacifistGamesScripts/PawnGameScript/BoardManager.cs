@@ -167,6 +167,8 @@ public class BoardManager : MonoBehaviour
 
                     PawnBehavior pawnScript = pawnObj.GetComponent<PawnBehavior>();
 
+                    pawnScript.SetPawnRuleset();
+
                     pawnScript.pawnTier = tier;
                     pawnScript.SetPawnTier();
 
@@ -212,8 +214,8 @@ public class BoardManager : MonoBehaviour
 
             previousBench = bench;
         }
-        //Now copy the waiting zone to the other side. Ensure it's facing the right way (-180 degrees on Y axis)
 
+        //Now we copy the waiting zone to the other side, ensuring that it's facing the right way (-180 degrees on Y axis)
         GameObject waitingZone2 = Instantiate(waitingZone, transform.position, Quaternion.identity);
         waitingZone2.name = "WaitingZone2";
         waitingZone2.transform.parent = transform;

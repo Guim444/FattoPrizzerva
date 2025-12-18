@@ -88,6 +88,8 @@ public class PawnBehavior : MonoBehaviour
     }
     public void SetPawnRuleset()
     {
+
+
         //First we clear all the lists. Just to avoid issues.
         tier1Movements.Clear();
         tier2Movements.Clear();
@@ -95,6 +97,10 @@ public class PawnBehavior : MonoBehaviour
         tier1KillRange.Clear();
         tier2KillRange.Clear();
         tier3KillRange.Clear();
+
+        if (PawnsGameManager.instance.pawnRuleset == PawnSets.CustomSet)
+            //It will be register if needed. If not, we just skip this.
+            RegisterCustomRuleset();
 
         if (PawnRules.TryGetValue(PawnsGameManager.instance.pawnRuleset, out var rules))
         {
@@ -379,5 +385,29 @@ public class PawnBehavior : MonoBehaviour
         currentSquare = targetSquare;
         targetSquare.pawn = this;
         targetSquare.empty = false;
+    }
+
+    public void RegisterCustomRuleset()
+    {
+        var custom = PawnsGameManager.instance.customRuleset;
+
+        if (custom == null || !custom.assigned)
+            return;
+
+        if (PawnRules.ContainsKey(PawnSets.CustomSet))
+            return;
+
+        PawnRules.Add(
+            PawnSets.CustomSet,
+            (
+                new List<int>(custom.possibleMovesTier1),
+                new List<int>(custom.possibleMovesTier2),
+                new List<int>(custom.possibleMovesTier3),
+
+                new List<int>(custom.killRangeTier1),
+                new List<int>(custom.killRangeTier2),
+                new List<int>(custom.killRangeTier3)
+            )
+        );
     }
 }
