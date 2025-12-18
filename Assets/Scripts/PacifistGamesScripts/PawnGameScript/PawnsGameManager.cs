@@ -1,10 +1,11 @@
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
-using UnityEngine.InputSystem;
 using Unity.AppUI.UI;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PawnsGameManager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PawnsGameManager : MonoBehaviour
     public GameObject dataCanvas;
     public GameObject selectionCanvas;
     public GameObject boardGenerationCanvas;
+    public GameObject pawnConfigCanvas;
 
     public List<int> pointsToNextTier = new List<int>();
 
@@ -43,6 +45,9 @@ public class PawnsGameManager : MonoBehaviour
     public TextMeshProUGUI columnEliminationOffset;
     public int offsetPlayer1, offsetPlayer2;
     bool timerActive;
+    public CustomSetSO customRuleset;
+    public List<TextMeshProUGUI> customRulesetSettings = new List<TextMeshProUGUI>();
+    public List<GameObject> customRulesetKillRangeSettings = new List<GameObject>();
 
     public bool freeCamActive = false;
 
@@ -52,6 +57,8 @@ public class PawnsGameManager : MonoBehaviour
         cameras[0].SetActive(true);
         cameras[1].SetActive(false);
         cameras[2].SetActive(false);
+
+        CheckIfCustomRulesetExists();
     }
     public void SetStartValues()
     {
@@ -71,7 +78,6 @@ public class PawnsGameManager : MonoBehaviour
     }
     public void StartGame()
     {
-        boardGenerationCanvas.SetActive(false);
         dataCanvas.SetActive(true);
         gameStarted = true;
 
@@ -329,5 +335,164 @@ public class PawnsGameManager : MonoBehaviour
                 return false;
         }
         return true;
+    }
+
+    public void GoToPawnCreation()
+    {
+        selectionCanvas.SetActive(false);
+        pawnConfigCanvas.SetActive(true);
+        SetCustomValuesInMenu();
+    }
+    public void SetCustomValuesInMenu()
+    {
+        if (customRuleset.assigned)
+        {
+            customRulesetSettings[0].text = customRuleset.possibleMovesTier1.Count.ToString();
+            customRulesetSettings[1].text = customRuleset.possibleMovesTier2.Count.ToString();
+            customRulesetSettings[2].text = customRuleset.possibleMovesTier3.Count.ToString();
+
+
+        }
+        else
+        {
+            //Will be the defaults
+            customRulesetSettings[0].text = "1";
+            customRulesetSettings[1].text = "1";
+            customRulesetSettings[2].text = "1";
+        }
+        SetKillRangeInCanvas(customRulesetKillRangeSettings[0], customRuleset.killRangeTier1);
+        SetKillRangeInCanvas(customRulesetKillRangeSettings[1], customRuleset.killRangeTier2);
+        SetKillRangeInCanvas(customRulesetKillRangeSettings[2], customRuleset.killRangeTier3);
+    }
+    public void SetCustomRuleset()
+    {
+        customRuleset.assigned = true;
+
+        customRuleset.possibleMovesTier1 = new List<int>();
+        customRuleset.possibleMovesTier2 = new List<int>();
+        customRuleset.possibleMovesTier3 = new List<int>();
+
+        customRuleset.killRangeTier1 = new List<int>();
+        customRuleset.killRangeTier2 = new List<int>();
+        customRuleset.killRangeTier3 = new List<int>();
+
+        int value;
+
+        if (int.TryParse(customRulesetSettings[0].text, out value))
+            for (int i = 0; i < value; i++)
+                customRuleset.possibleMovesTier1.Add(i + 1);
+
+        if (int.TryParse(customRulesetSettings[1].text, out value))
+            for (int i = 0; i < value; i++)
+                customRuleset.possibleMovesTier2.Add(i + 1);
+
+        if (int.TryParse(customRulesetSettings[2].text, out value))
+            for (int i = 0; i < value; i++)
+                customRuleset.possibleMovesTier3.Add(i + 1);
+
+        SetKillRange(customRulesetKillRangeSettings[0], customRuleset.killRangeTier1);
+        SetKillRange(customRulesetKillRangeSettings[1], customRuleset.killRangeTier2);
+        SetKillRange(customRulesetKillRangeSettings[2], customRuleset.killRangeTier3);
+
+        selectionCanvas.SetActive(true);
+        CheckIfCustomRulesetExists();
+        pawnConfigCanvas.SetActive(false);
+    }
+    public void ClearCustomRuleset()
+    {
+        customRuleset.assigned = false;
+
+        customRuleset.possibleMovesTier1 = null;
+        customRuleset.possibleMovesTier2 = null;
+        customRuleset.possibleMovesTier3 = null;
+
+        customRuleset.killRangeTier1 = null;
+        customRuleset.killRangeTier2 = null;
+        customRuleset.killRangeTier3 = null;
+
+        selectionCanvas.SetActive(true);
+        SetCustomValuesInMenu();
+        pawnConfigCanvas.SetActive(false);
+    }
+    public void CheckIfCustomRulesetExists()
+    {
+        if (customRuleset.assigned)
+        {
+            TMP_Dropdown.OptionData customSet = new TMP_Dropdown.OptionData("Custom set");
+            pawnSettings.transform.parent.gameObject.GetComponent<TMP_Dropdown>().AddOptions(new List<TMP_Dropdown.OptionData> { customSet });
+        }
+    }
+    private void SetKillRange(GameObject tierObject, List<int> targetList)
+    {
+        for (int i = 0; i < tierObject.transform.childCount; i++)
+        {
+            Transform child = tierObject.transform.GetChild(i);
+            UnityEngine.UI.Toggle toggle = child.GetComponent<UnityEngine.UI.Toggle>();
+
+            if (toggle == null || !toggle.isOn)
+                continue;
+
+            if (int.TryParse(child.name, out int value))
+            {
+                targetList.Add(value);
+            }
+        }
+    }
+    private void SetKillRangeInCanvas(GameObject killRange, List<int> targetList)
+    {
+        for (int i = 0; i < killRange.transform.childCount; i++)
+        {
+            Transform child = killRange.transform.GetChild(i);
+            UnityEngine.UI.Toggle toggle = child.GetComponent<UnityEngine.UI.Toggle>();
+
+            if (toggle == null)
+                continue;
+
+            if (!customRuleset.assigned)
+            {
+                toggle.isOn = (i == 0);
+                continue;
+            }
+
+            toggle.isOn = false;
+
+            if (targetList == null)
+                continue;
+
+            if (int.TryParse(child.name, out int value))
+            {
+                if (targetList.Contains(value))
+                {
+                    toggle.isOn = true;
+                }
+            }
+        }
+    }
+    public void CheckIfAtLeastOneIsSelected(GameObject killRangeContainer)
+    {
+        bool anyOn = false;
+        UnityEngine.UI.Toggle firstToggle = null;
+
+        for (int i = 0; i < killRangeContainer.transform.childCount; i++)
+        {
+            Transform child = killRangeContainer.transform.GetChild(i);
+            UnityEngine.UI.Toggle toggle = child.GetComponent<UnityEngine.UI.Toggle>();
+
+            if (toggle == null)
+                continue;
+
+            if (firstToggle == null)
+                firstToggle = toggle;
+
+            if (toggle.isOn)
+            {
+                anyOn = true;
+                break;
+            }
+        }
+        if (!anyOn && firstToggle != null)
+        {
+            firstToggle.isOn = true;
+        }
     }
 }

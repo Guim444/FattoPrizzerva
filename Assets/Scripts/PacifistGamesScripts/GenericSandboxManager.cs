@@ -70,6 +70,26 @@ public class GenericSandboxManager : MonoBehaviour
             }
         }
     }
+    public void PawnCustomMoveSelect(int num)
+    {
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
+        if (text != null)
+        {
+            if (int.TryParse(text.text, out int currentValue))
+            {
+                currentValue += num;
+                currentValue = Mathf.Clamp(currentValue, 0, 4);
+
+                if (currentValue == 4)
+                    currentValue = 1;
+                else if (currentValue == 0)
+                    currentValue = 3;
+
+                text.text = currentValue.ToString();
+            }
+        }
+    }
     public void EnableOption(GameObject objectToEnable)
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
@@ -124,7 +144,7 @@ public class GenericSandboxManager : MonoBehaviour
             sender.SetActive(false);
         }
     }
-    public void StartGame()
+    public void SetBoardData()
     {
         if (PawnsGameManager.instance.erasedColumnsPlayer1.Count == 2)
         {
@@ -133,9 +153,14 @@ public class GenericSandboxManager : MonoBehaviour
             ColumnErasingOffset();
             PawnsGameManager.instance.activePlayer = 1;
             PawnsGameManager.instance.StartGame();
+            PawnsGameManager.instance.boardGenerationCanvas.SetActive(false);
         }
     }
-
+    public void GoToCustomPawnMenu()
+    {
+        PawnsGameManager.instance.pawnConfigCanvas.SetActive(true);
+        PawnsGameManager.instance.selectionCanvas.SetActive(false);
+    }
     public void ColumnErasingOffset()
     {
         int boardWidth = (int)BoardManager.instance.width;

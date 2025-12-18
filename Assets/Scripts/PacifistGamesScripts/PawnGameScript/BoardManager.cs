@@ -471,11 +471,11 @@ public class BoardManager : MonoBehaviour
     {
         whiteDeadZone = new GameObject("White Dead Zone");
         whiteDeadZone.transform.parent = transform;
-        whiteDeadZone.transform.position = new Vector3(height / 2, 0, -(width / 2f) - 3.5f);
+        whiteDeadZone.transform.position = new Vector3(height / 2, 0, -(width / 2f) - 4f);
 
         blackDeadZone = new GameObject("Black Dead Zone");
         blackDeadZone.transform.parent = transform;
-        blackDeadZone.transform.position = new Vector3(-height / 2, 0, -(width / 2f) - 3.5f);
+        blackDeadZone.transform.position = new Vector3(-height / 2, 0, -(width / 2f) - 4f);
     }
 
     internal Vector3 GetGraveyardPosition(int player, int playerTier)
