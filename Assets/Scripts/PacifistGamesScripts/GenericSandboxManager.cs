@@ -90,6 +90,26 @@ public class GenericSandboxManager : MonoBehaviour
             }
         }
     }
+    public void PawnCustomStartingMoveSelect(int num)
+    {
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
+        if (text != null)
+        {
+            if (int.TryParse(text.text, out int currentValue))
+            {
+                currentValue += num;
+                currentValue = Mathf.Clamp(currentValue, 1, 5);
+
+                if (currentValue == 5)
+                    currentValue = 2;
+                else if (currentValue == 1)
+                    currentValue = 4;
+
+                text.text = currentValue.ToString();
+            }
+        }
+    }
     public void EnableOption(GameObject objectToEnable)
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;

@@ -50,8 +50,9 @@ public class PawnsGameManager : MonoBehaviour
     public List<TextMeshProUGUI> customRulesetSettings = new List<TextMeshProUGUI>();
     public List<GameObject> customRulesetKillRangeSettings = new List<GameObject>();
     public List<UnityEngine.UI.Toggle> customRulesetCanKillBackwards = new List<UnityEngine.UI.Toggle>();
+    public List<TextMeshProUGUI> customRulesetStartingMove = new List<TextMeshProUGUI>();
 
-    public bool freeCamActive = false;
+    public int freeCamActive = -1;
 
     private void Awake()
     {
@@ -132,7 +133,7 @@ public class PawnsGameManager : MonoBehaviour
                         pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
                     }
                 }
-                if (!freeCamActive) ChangeCamera();
+                if (freeCamActive == -1) ChangeCamera();
             }
         }
         else
@@ -278,22 +279,27 @@ public class PawnsGameManager : MonoBehaviour
             cameras[1].SetActive(!active);
         }
     }
-    public void OnCameraToggle(InputValue value)
+    public void CameraToggle(int actualCameraState)
     {
-        if (value.isPressed)
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        TextMeshProUGUI senderText = sender.GetComponentInChildren<TextMeshProUGUI>();
+
+        freeCamActive = actualCameraState;
+
+        switch (freeCamActive)
         {
-            freeCamActive = !freeCamActive;
-            if (freeCamActive)
-            {
+            case -1:
+                ChangeCamera();
+                cameras[2].SetActive(false);
+                break;
+            case 0:
                 cameras[2].SetActive(true);
                 cameras[0].SetActive(false);
                 cameras[1].SetActive(false);
-            }
-            else
-            {
-                ChangeCamera();
-                cameras[2].SetActive(false);
-            }
+                break;
+            case 1:
+                Debug.Log("Still up to do the free cam");
+                break;
         }
     }
     public void AddPoints(int player, int points)
@@ -355,8 +361,6 @@ public class PawnsGameManager : MonoBehaviour
             customRulesetSettings[0].text = customRuleset.possibleMovesTier1.Count.ToString();
             customRulesetSettings[1].text = customRuleset.possibleMovesTier2.Count.ToString();
             customRulesetSettings[2].text = customRuleset.possibleMovesTier3.Count.ToString();
-
-
         }
         else
         {
@@ -372,7 +376,7 @@ public class PawnsGameManager : MonoBehaviour
         SetCanKillBackwardsInCanvas(customRulesetCanKillBackwards[0], customRuleset.killRangeTier1);
         SetCanKillBackwardsInCanvas(customRulesetCanKillBackwards[1], customRuleset.killRangeTier2);
         SetCanKillBackwardsInCanvas(customRulesetCanKillBackwards[2], customRuleset.killRangeTier3);
-
+        SetStartingMoveInCanvas();
     }
     public void SetCustomRuleset()
     {
@@ -385,6 +389,8 @@ public class PawnsGameManager : MonoBehaviour
         customRuleset.killRangeTier1 = new List<int>();
         customRuleset.killRangeTier2 = new List<int>();
         customRuleset.killRangeTier3 = new List<int>();
+
+        customRuleset.startMovement = new List<int>();
 
         int value;
 
@@ -408,6 +414,8 @@ public class PawnsGameManager : MonoBehaviour
         ApplyBackwardKillRanges(customRuleset.killRangeTier2, customRulesetCanKillBackwards[1]);
         ApplyBackwardKillRanges(customRuleset.killRangeTier3, customRulesetCanKillBackwards[2]);
 
+        ApplyStartingMove();
+
         selectionCanvas.SetActive(true);
         CheckIfCustomRulesetExists();
         pawnConfigCanvas.SetActive(false);
@@ -424,8 +432,11 @@ public class PawnsGameManager : MonoBehaviour
         customRuleset.killRangeTier2 = null;
         customRuleset.killRangeTier3 = null;
 
+        customRuleset.startMovement = null;
+
         selectionCanvas.SetActive(true);
         SetCustomValuesInMenu();
+        CheckIfCustomRulesetExists();
         pawnConfigCanvas.SetActive(false);
     }
     public void CheckIfCustomRulesetExists()
@@ -444,9 +455,17 @@ public class PawnsGameManager : MonoBehaviour
         {
             if (existingIndex != -1)
             {
-                dropdown.options.RemoveAt(existingIndex);
+                if (existingIndex != -1)
+                {
+                    if (dropdown.value == existingIndex)
+                    {
+                        dropdown.value = 0;
+                    }
+                    dropdown.options.RemoveAt(existingIndex);
+                }
             }
         }
+        dropdown.RefreshShownValue();
     }
     private void SetKillRange(GameObject tierObject, List<int> targetList)
     {
@@ -539,9 +558,7 @@ public class PawnsGameManager : MonoBehaviour
         }
         killRange.Sort();
     }
-    void SetCanKillBackwardsInCanvas(
-    UnityEngine.UI.Toggle backwardToggle,
-    List<int> killRange)
+    void SetCanKillBackwardsInCanvas(UnityEngine.UI.Toggle backwardToggle, List<int> killRange)
     {
         if (backwardToggle == null)
             return;
@@ -553,5 +570,25 @@ public class PawnsGameManager : MonoBehaviour
         }
 
         backwardToggle.isOn = killRange.Exists(v => v < 0);
+    }
+    void ApplyStartingMove()
+    {
+        for (int i = 0; i < customRulesetStartingMove.Count; i++)
+        {
+            if (int.TryParse(customRulesetStartingMove[i].text, out int value))
+            {
+                customRuleset.startMovement.Add(value);
+            }
+        }
+    }
+    void SetStartingMoveInCanvas()
+    {
+        for (int i = 0; i < customRulesetStartingMove.Count; i++)
+        {
+            if (customRuleset.assigned)
+                customRulesetStartingMove[i].text = customRuleset.startMovement[i].ToString();
+            else
+                customRulesetStartingMove[i].text = "2";
+        }
     }
 }

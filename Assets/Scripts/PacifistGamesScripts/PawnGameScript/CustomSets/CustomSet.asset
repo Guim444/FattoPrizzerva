@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6c47623f32fe64fa23115d715e13cc, type: 3}
   m_Name: CustomSet
   m_EditorClassIdentifier: Assembly-CSharp::CustomSetSO
-  assigned: 1
-  possibleMovesTier1: 01000000
-  possibleMovesTier2: 01000000
-  possibleMovesTier3: 0100000002000000
+  id: 0
+  assigned: 0
+  possibleMovesTier1: 
+  possibleMovesTier2: 
+  possibleMovesTier3: 
   killRangeTier1: 
   killRangeTier2: 
   killRangeTier3: 
+  startMovement: 

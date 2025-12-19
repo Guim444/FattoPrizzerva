@@ -14,7 +14,6 @@ public class FreeCameraMovement : MonoBehaviour
     public float lookSensitivity = 100f;
 
     [Header("Zoom Settings")]
-    public float orthoZoomSpeed;
     public float inputZoom;
 
     [Header("References")]
@@ -56,13 +55,10 @@ public class FreeCameraMovement : MonoBehaviour
     }
     private void ZoomCam()
     {
-        var lens = cam.Lens;
+        if (inputZoom == 0) return;
 
-        if (lens.Orthographic)
-        {
-            lens.OrthographicSize -= orthoZoomSpeed * Time.deltaTime * inputZoom;
-            lens.OrthographicSize = Mathf.Clamp(lens.OrthographicSize, 5f, 50f);
-            cam.Lens = lens;
-        }
+        var thirdPerson = cam.GetComponent<CinemachineThirdPersonFollow>();
+        thirdPerson.CameraDistance = Mathf.Clamp(thirdPerson.CameraDistance - inputZoom * speed * 25 * Time.deltaTime, BoardManager.instance.height + 5, 40f);
+        inputZoom = 0;
     }
 }

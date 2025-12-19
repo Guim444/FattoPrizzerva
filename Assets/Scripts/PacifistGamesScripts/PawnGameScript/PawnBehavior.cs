@@ -16,6 +16,7 @@ public class PawnBehavior : MonoBehaviour
     public List<int> possibleMovements, killRange;
     public List<int> tier1Movements, tier2Movements, tier3Movements;
     public List<int> tier1KillRange, tier2KillRange, tier3KillRange;
+    public List<int> startingMove;
 
     public bool canBeEaten = false;
 
@@ -29,44 +30,44 @@ public class PawnBehavior : MonoBehaviour
 
     //The different pawn rulesets
     Dictionary<PawnSets, (List<int> t1Moves, List<int> t2Moves, List<int> t3Moves,
-                                               List<int> t1Kills, List<int> t2Kills, List<int> t3Kills)>
+                                               List<int> t1Kills, List<int> t2Kills, List<int> t3Kills, List<int> startMov)>
     PawnRules = new()
     {
         {
             PawnSets.DefaultSet,
-            (new(){1}, new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2,3})
+            (new(){1}, new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2,3}, new(){2,2,2})
         },
         {
             PawnSets.SSet,
-            (new(){1}, new(){1}, new(){1}, new(){1,2}, new(){2,3}, new(){1,2,3})
+            (new(){1}, new(){1}, new(){1}, new(){1,2}, new(){2,3}, new(){1,2,3}, new(){2,2,2})
         },
         {
             PawnSets.TSet,
-            (new(){1}, new(){1}, new(){1}, new(){1}, new(){1,2}, new(){1,2,3})
+            (new(){1}, new(){1}, new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new() { 2, 2, 2 })
         },
         {
         PawnSets.USet,
-            (new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2}, new(){1,2,3})
+            (new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2}, new(){1,2,3}, new() { 2, 2, 2 })
         },
         {
             PawnSets.VSet,
-            (new(){1}, new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2})
+            (new(){1}, new(){1}, new(){1}, new(){1}, new(){2}, new(){1,2}, new() { 2, 2, 2 })
         },
         {
             PawnSets.WSet,
-            (new(){1}, new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new(){-3,-2,-1,1,2,3})
+            (new(){1}, new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new(){-3,-2,-1,1,2,3}, new() { 2, 2, 2 })
         },
         {
             PawnSets.XSet,
-            (new(){1}, new(){1}, new(){1}, new(){2}, new(){1}, new(){2,3})
+            (new(){1}, new(){1}, new(){1}, new(){2}, new(){1}, new(){2,3}, new() { 2, 2, 2 })
         },
         {
             PawnSets.YSet,
-            (new(){1}, new(){1}, new(){1,2}, new(){1,2}, new(){1,2,3}, new(){1,2,3})
+            (new(){1}, new(){1}, new(){1,2}, new(){1,2}, new(){1,2,3}, new(){1,2,3}, new() { 2, 2, 2 })
         },
         {
             PawnSets.ZSet,
-            (new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new(){-3,-2,-1,1,2,3}, new(){-3,-2,-1,1,2,3})
+            (new(){1}, new(){1}, new(){1,2}, new(){1,2,3}, new(){-3,-2,-1,1,2,3}, new(){-3,-2,-1,1,2,3}, new() { 2, 2, 2 })
         }
     };
 
@@ -88,8 +89,6 @@ public class PawnBehavior : MonoBehaviour
     }
     public void SetPawnRuleset()
     {
-
-
         //First we clear all the lists. Just to avoid issues.
         tier1Movements.Clear();
         tier2Movements.Clear();
@@ -112,6 +111,8 @@ public class PawnBehavior : MonoBehaviour
             tier1KillRange.AddRange(rules.t1Kills);
             tier2KillRange.AddRange(rules.t2Kills);
             tier3KillRange.AddRange(rules.t3Kills);
+
+            startingMove.AddRange(rules.startMov);
         }
     }
     public ChessSquareScript FindNextSquare(int moveAmount)
@@ -151,10 +152,27 @@ public class PawnBehavior : MonoBehaviour
             }
             else break;
         }
-        if (startingPawn && !possibleMovements.Contains(2))
-        {
-            ChessSquareScript square = FindNextSquare(2);
 
+        int startMove;
+        switch (pawnTier)
+        {
+            case 1:
+                startMove = startingMove[0];
+                break;
+            case 2:
+                startMove = startingMove[1];
+                break;
+            case 3:
+                startMove = startingMove[2];
+                break;
+            default:
+                startMove = 2;
+                break;
+        }
+
+        if (startingPawn && !possibleMovements.Contains(startMove))
+        {
+            ChessSquareScript square = FindNextSquare(startMove);
             if (square != null && square.empty)
             {
                 //Square found! But just 1st possible movement
@@ -406,7 +424,9 @@ public class PawnBehavior : MonoBehaviour
 
                 new List<int>(custom.killRangeTier1),
                 new List<int>(custom.killRangeTier2),
-                new List<int>(custom.killRangeTier3)
+                new List<int>(custom.killRangeTier3),
+
+                new List<int>(custom.startMovement)
             )
         );
     }
