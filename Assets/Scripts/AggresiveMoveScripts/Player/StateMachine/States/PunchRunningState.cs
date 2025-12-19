@@ -30,7 +30,7 @@ public class PunchRunningState : IStateActions
         
         baseSpeed = player.punchRunningBaseSpeed; // Use player's tuning value
 
-        switch (player.damageBoost)
+        switch (player.damageBoost) //This will temporary change player's endurance for the push
         {
             case 0: staminaCost = player.punchRunningStaminaCostPhase1; player.endurance += 1; break;
             case 1: staminaCost = player.punchRunningStaminaCostPhase2; player.endurance += 2; break;
@@ -67,6 +67,7 @@ public class PunchRunningState : IStateActions
 
     void CalcSpeed()
     {
+        //Speed manager for the punch
         switch (player.damageBoost)
         {
             case 0:
