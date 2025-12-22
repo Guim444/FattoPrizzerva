@@ -5,12 +5,18 @@ using TMPro;
 using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
 
 public class PawnsGameManager : MonoBehaviour
 {
+    public List<AudioClip> musicTracks;
+    public AudioSource source;
+
     public bool gameStarted = false;
+    public bool passingTurn = false;
+
     public static PawnsGameManager instance;
     public List<GameObject> cameras = new List<GameObject>();
     public int activePlayer = 1; // 1 = Player 1, -1 = Player 2
@@ -28,6 +34,7 @@ public class PawnsGameManager : MonoBehaviour
 
     public TextMeshProUGUI playerTurn;
     public TextMeshProUGUI timer;
+    public bool timerStarted = false;
 
     public List<GameObject> playerInfo;
 
@@ -45,7 +52,7 @@ public class PawnsGameManager : MonoBehaviour
     public List<GameObject> erasedColumnsPlayer2 = new List<GameObject>();
     public TextMeshProUGUI columnEliminationOffset;
     public int offsetPlayer1, offsetPlayer2;
-    bool timerActive;
+    bool timerActive; //The toggle variable
     public CustomSetSO customRuleset;
     public List<TextMeshProUGUI> customRulesetSettings = new List<TextMeshProUGUI>();
     public List<GameObject> customRulesetKillRangeSettings = new List<GameObject>();
@@ -60,6 +67,7 @@ public class PawnsGameManager : MonoBehaviour
         cameras[0].SetActive(true);
         cameras[1].SetActive(false);
         cameras[2].SetActive(false);
+        selectionCanvas.SetActive(true);
 
         CheckIfCustomRulesetExists();
     }
@@ -83,12 +91,13 @@ public class PawnsGameManager : MonoBehaviour
     {
         dataCanvas.SetActive(true);
         gameStarted = true;
+        RandomSoundtrack();
 
         BoardManager.instance.GenerateBoard();
     }
     private void Update()
     {
-        if (gameStarted && timerActive)
+        if (gameStarted && timerActive && timerStarted)
         {
             playerTimer[activePlayer - 1] -= Time.deltaTime;
             UpdatePlayerTimer();
@@ -140,6 +149,8 @@ public class PawnsGameManager : MonoBehaviour
         {
             playerTurn.text = "Player " + (activePlayer == 1 ? 2 : 1) + " Wins!";
         }
+
+        passingTurn = false;
     }
     public void SetTierPoints()
     {
@@ -419,6 +430,14 @@ public class PawnsGameManager : MonoBehaviour
         selectionCanvas.SetActive(true);
         CheckIfCustomRulesetExists();
         pawnConfigCanvas.SetActive(false);
+
+        TMP_Dropdown dropdown = pawnSettings.transform.parent.gameObject.GetComponent<TMP_Dropdown>();
+        int existingIndex = dropdown.options.FindIndex(opt => opt.text == "Custom set");
+        if (existingIndex != -1)
+            dropdown.value = existingIndex;
+
+        dropdown.RefreshShownValue();
+
     }
     public void ClearCustomRuleset()
     {
@@ -590,5 +609,20 @@ public class PawnsGameManager : MonoBehaviour
             else
                 customRulesetStartingMove[i].text = "2";
         }
+    }
+    public void StartTimerCountdown()
+    {
+        if (timerStarted)
+            return;
+
+        timerStarted = true;
+    }
+
+    public void RandomSoundtrack()
+    {
+        AudioClip clip = musicTracks[Random.Range(0, musicTracks.Count)];
+
+        source.clip = clip;
+        source.Play();
     }
 }

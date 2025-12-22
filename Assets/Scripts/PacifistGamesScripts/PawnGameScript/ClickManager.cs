@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ClickManager : MonoBehaviour
 {
@@ -52,5 +53,17 @@ public class ClickManager : MonoBehaviour
             return false;
         }
         return false;
+    }
+    public void OnExit(InputValue value)
+    {
+        if (PawnsGameManager.instance != null)
+        {
+            if (value.isPressed && PawnsGameManager.instance.gameStarted)
+            {
+                PawnsGameManager.instance.gameStarted = false;
+                PawnsGameManager.instance.dataCanvas.SetActive(false);
+                SceneManager.LoadScene("Main menu");
+            }
+        }
     }
 }

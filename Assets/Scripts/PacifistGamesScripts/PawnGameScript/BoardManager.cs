@@ -597,6 +597,7 @@ public class BoardManager : MonoBehaviour
 
             if (from.pawn != null)
             {
+                from.pawn.startingPawn = false;
                 to.pawn = from.pawn;
                 to.empty = false;
                 from.pawn.currentSquare = to;
@@ -605,6 +606,11 @@ public class BoardManager : MonoBehaviour
 
             from.pawn = null;
             from.empty = true;
+        }
+
+        if (firstSquare != null && firstSquare.pawn != null)
+        {
+            firstSquare.pawn.startingPawn = false;
         }
 
         return firstSquare;

@@ -18,6 +18,9 @@ public class PawnBehavior : MonoBehaviour
     public List<int> tier1KillRange, tier2KillRange, tier3KillRange;
     public List<int> startingMove;
 
+    private Renderer rend;
+    private Material mat;
+
     public bool canBeEaten = false;
 
     public int player;
@@ -73,18 +76,26 @@ public class PawnBehavior : MonoBehaviour
 
     void Awake()
     {
+        rend = GetComponent<Renderer>();
+        mat = new Material(rend.material);
+        rend.material = mat;
+
         if (currentSquare != null)
         {
             transform.position = currentSquare.pawnPosition;
         }
+
+        ToggleGlow(false);
     }
     private void OnMouseDown()
     {
-        if (player == PawnsGameManager.instance.activePlayer)
+        if (player == PawnsGameManager.instance.activePlayer && !PawnsGameManager.instance.passingTurn)
         {
             ClickManager.instance.selectedPawn = this;
             TrackAllPaths(true);
             TrackDiagonals(true);
+
+            PawnsGameManager.instance.StartTimerCountdown(); //This will enable the countdown for the first time in the game.
         }
     }
     public void SetPawnRuleset()
@@ -153,32 +164,39 @@ public class PawnBehavior : MonoBehaviour
             else break;
         }
 
-        int startMove;
+        int startMoveAmount;
         switch (pawnTier)
         {
             case 1:
-                startMove = startingMove[0];
+                startMoveAmount = startingMove[0];
                 break;
             case 2:
-                startMove = startingMove[1];
+                startMoveAmount = startingMove[1];
                 break;
             case 3:
-                startMove = startingMove[2];
+                startMoveAmount = startingMove[2];
                 break;
             default:
-                startMove = 2;
+                startMoveAmount = 2;
                 break;
         }
-
-        if (startingPawn && !possibleMovements.Contains(startMove))
+        if (startingPawn)
         {
-            ChessSquareScript square = FindNextSquare(startMove);
-            if (square != null && square.empty)
+            int direction = (player == 1) ? 1 : -1;
+            int currentRow = currentSquare.SquareRow;
+            int targetRow = currentRow + startMoveAmount * direction;
+            for (int row = currentRow + direction; direction > 0 ? row <= targetRow : row >= targetRow; row += direction)
             {
-                //Square found! But just 1st possible movement
-                possiblePaths.Add(square);
-                square.ToggleGlow(glow);
-                if (glow) square.selectableSquare = true;
+                string id = currentSquare.SquareColumn.ToString() + row.ToString();
+                ChessSquareScript square = BoardManager.instance.GetSquare(id);
+
+                if (square != null && square.empty)
+                {
+                    possiblePaths.Add(square);
+                    square.ToggleGlow(glow);
+                    if (glow)
+                        square.selectableSquare = true;
+                }
             }
         }
     }
@@ -293,17 +311,21 @@ public class PawnBehavior : MonoBehaviour
 
     public void ToggleGlow(bool value)
     {
-        Renderer rend = GetComponent<Renderer>();
         if (value)
         {
-            Color glowColor = rend.material.color;
-            float intensity = 0.3f;
-            rend.material.EnableKeyword("_EMISSION");
-            rend.material.SetColor("_EmissionColor", glowColor * intensity);
+            Color glowColor = mat.color;
+            float intensity = 3f;
+
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", glowColor * intensity);
+
+            mat.globalIlluminationFlags =
+                MaterialGlobalIlluminationFlags.EmissiveIsBlack;
         }
         else
         {
-            rend.material.SetColor("_EmissionColor", Color.black);
+            mat.SetColor("_EmissionColor", Color.white);
+            mat.DisableKeyword("_EMISSION");
         }
     }
     public void TeleportPawnToGraveyard(int activePlayer, int points) //used when a pawn is captured or promoted

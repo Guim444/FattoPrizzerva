@@ -99,11 +99,11 @@ public class GenericSandboxManager : MonoBehaviour
             if (int.TryParse(text.text, out int currentValue))
             {
                 currentValue += num;
-                currentValue = Mathf.Clamp(currentValue, 1, 5);
+                currentValue = Mathf.Clamp(currentValue, 0, 5);
 
                 if (currentValue == 5)
-                    currentValue = 2;
-                else if (currentValue == 1)
+                    currentValue = 1;
+                else if (currentValue == 0)
                     currentValue = 4;
 
                 text.text = currentValue.ToString();

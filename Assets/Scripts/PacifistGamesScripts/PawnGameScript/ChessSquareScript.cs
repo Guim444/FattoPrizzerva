@@ -15,13 +15,21 @@ public class ChessSquareScript : MonoBehaviour
 
     public PawnBehavior pawn;
 
+    private Renderer rend;
+    private Material mat;
     void Awake()
     {
+        rend = GetComponent<Renderer>();
+        mat = new Material(rend.material);
+        rend.material = mat;
+
+        ToggleGlow(false);
     }
     private void OnMouseDown()
     {
         if (ClickManager.instance.selectedPawn != null && selectableSquare)
         {
+            PawnsGameManager.instance.passingTurn = true;
             PawnBehavior thisPawn = ClickManager.instance.selectedPawn;
             PawnsGameManager.instance.playerTimer[PawnsGameManager.instance.activePlayer - 1] += PawnsGameManager.instance.extraTimeAddedPerTurn;
             StartCoroutine(thisPawn.MoveForward(this));
@@ -60,17 +68,20 @@ public class ChessSquareScript : MonoBehaviour
     }
     public void ToggleGlow(bool glow)
     {
-        Renderer rend = GetComponent<Renderer>();
         if (glow)
         {
-            Color glowColor = new Color(0, 1, 1);
-            float intensity = 0.3f;
-            rend.material.EnableKeyword("_EMISSION");
-            rend.material.SetColor("_EmissionColor", glowColor * intensity);
+            Color glowColor = Color.cyan;
+            float intensity = 2f;
+
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", glowColor * intensity);
+
+            mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
         }
         else
         {
-            rend.material.SetColor("_EmissionColor", Color.black);
+            mat.SetColor("_EmissionColor", Color.white);
+            mat.DisableKeyword("_EMISSION");
         }
     }
 }
