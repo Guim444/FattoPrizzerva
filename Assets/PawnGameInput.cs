@@ -109,6 +109,15 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""d61c227c-2784-479b-8715-cd8196e26e70"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -131,6 +140,17 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CameraToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f42a4078-1968-4997-be07-871caf37d265"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -255,6 +275,7 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
         m_PawnGame = asset.FindActionMap("PawnGame", throwIfNotFound: true);
         m_PawnGame_Click = m_PawnGame.FindAction("Click", throwIfNotFound: true);
         m_PawnGame_CameraToggle = m_PawnGame.FindAction("CameraToggle", throwIfNotFound: true);
+        m_PawnGame_Exit = m_PawnGame.FindAction("Exit", throwIfNotFound: true);
         // FreeCamMove
         m_FreeCamMove = asset.FindActionMap("FreeCamMove", throwIfNotFound: true);
         m_FreeCamMove_FreeCamMove = m_FreeCamMove.FindAction("FreeCamMove", throwIfNotFound: true);
@@ -343,6 +364,7 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
     private List<IPawnGameActions> m_PawnGameActionsCallbackInterfaces = new List<IPawnGameActions>();
     private readonly InputAction m_PawnGame_Click;
     private readonly InputAction m_PawnGame_CameraToggle;
+    private readonly InputAction m_PawnGame_Exit;
     /// <summary>
     /// Provides access to input actions defined in input action map "PawnGame".
     /// </summary>
@@ -362,6 +384,10 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PawnGame/CameraToggle".
         /// </summary>
         public InputAction @CameraToggle => m_Wrapper.m_PawnGame_CameraToggle;
+        /// <summary>
+        /// Provides access to the underlying input action "PawnGame/Exit".
+        /// </summary>
+        public InputAction @Exit => m_Wrapper.m_PawnGame_Exit;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -394,6 +420,9 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
             @CameraToggle.started += instance.OnCameraToggle;
             @CameraToggle.performed += instance.OnCameraToggle;
             @CameraToggle.canceled += instance.OnCameraToggle;
+            @Exit.started += instance.OnExit;
+            @Exit.performed += instance.OnExit;
+            @Exit.canceled += instance.OnExit;
         }
 
         /// <summary>
@@ -411,6 +440,9 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
             @CameraToggle.started -= instance.OnCameraToggle;
             @CameraToggle.performed -= instance.OnCameraToggle;
             @CameraToggle.canceled -= instance.OnCameraToggle;
+            @Exit.started -= instance.OnExit;
+            @Exit.performed -= instance.OnExit;
+            @Exit.canceled -= instance.OnExit;
         }
 
         /// <summary>
@@ -583,6 +615,13 @@ public partial class @PawnGameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCameraToggle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Exit" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnExit(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "FreeCamMove" which allows adding and removing callbacks.
