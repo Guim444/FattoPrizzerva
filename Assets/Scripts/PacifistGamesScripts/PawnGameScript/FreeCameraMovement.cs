@@ -58,7 +58,7 @@ public class FreeCameraMovement : MonoBehaviour
         if (inputZoom == 0) return;
 
         var thirdPerson = cam.GetComponent<CinemachineThirdPersonFollow>();
-        thirdPerson.CameraDistance = Mathf.Clamp(thirdPerson.CameraDistance - inputZoom * speed * 25 * Time.deltaTime, BoardManager.instance.height + 5, 40f);
+        thirdPerson.CameraDistance = Mathf.Clamp(thirdPerson.CameraDistance - inputZoom * speed * 25 * Time.deltaTime, PawnBoardManager.instance.height + 5, 40f);
         inputZoom = 0;
     }
 }

@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class ClickManager : MonoBehaviour
+public class PawnClickManager : MonoBehaviour
 {
-    public static ClickManager instance;
+    public static PawnClickManager instance;
     public PawnBehavior selectedPawn;
-    public ChessSquareScript selectedSquare;
+    public PawnSquareScript selectedSquare;
 
     public bool isSelectingMovement = false;
 
@@ -42,7 +42,7 @@ public class ClickManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                ChessSquareScript square = hit.collider.GetComponent<ChessSquareScript>();
+                PawnSquareScript square = hit.collider.GetComponent<PawnSquareScript>();
                 if (square != null && square.selectableSquare)
                 {
                     selectedSquare = square;

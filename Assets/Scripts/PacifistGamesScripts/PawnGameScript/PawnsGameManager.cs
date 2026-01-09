@@ -93,7 +93,7 @@ public class PawnsGameManager : MonoBehaviour
         gameStarted = true;
         RandomSoundtrack();
 
-        BoardManager.instance.GenerateBoard();
+        PawnBoardManager.instance.GenerateBoard();
     }
     private void Update()
     {
@@ -114,7 +114,7 @@ public class PawnsGameManager : MonoBehaviour
             playerTurn.text = "Player " + activePlayer + " Turn";
             if (waitingRowIsReady[activePlayer - 1])
             {
-                StartCoroutine(BoardManager.instance.PushWaitingRowToBoard(activePlayer));
+                StartCoroutine(PawnBoardManager.instance.PushWaitingRowToBoard(activePlayer));
                 waitingRowIsReady[activePlayer - 1] = false;
                 UpdateTierTexts();
             }
@@ -122,22 +122,22 @@ public class PawnsGameManager : MonoBehaviour
             {
                 if (activePlayer == 2)
                 {
-                    foreach (PawnBehavior pawn in BoardManager.instance.whitePawns)
+                    foreach (PawnBehavior pawn in PawnBoardManager.instance.whitePawns)
                     {
                         pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
                     }
-                    foreach (PawnBehavior pawn in BoardManager.instance.blackPawns)
+                    foreach (PawnBehavior pawn in PawnBoardManager.instance.blackPawns)
                     {
                         pawn.gameObject.GetComponent<BoxCollider>().enabled = true;
                     }
                 }
                 else
                 {
-                    foreach (PawnBehavior pawn in BoardManager.instance.whitePawns)
+                    foreach (PawnBehavior pawn in PawnBoardManager.instance.whitePawns)
                     {
                         pawn.gameObject.GetComponent<BoxCollider>().enabled = true;
                     }
-                    foreach (PawnBehavior pawn in BoardManager.instance.blackPawns)
+                    foreach (PawnBehavior pawn in PawnBoardManager.instance.blackPawns)
                     {
                         pawn.gameObject.GetComponent<BoxCollider>().enabled = false;
                     }
@@ -229,13 +229,13 @@ public class PawnsGameManager : MonoBehaviour
         {
             if (x < 3 || x > 10)
                 x = 8;
-            BoardManager.instance.width = x;
+            PawnBoardManager.instance.width = x;
         }
         if (int.TryParse(boardSizeSettings[1].text, out int y))
         {
             if (y < 3 || y > 10)
                 y = 8;
-            BoardManager.instance.height = y;
+            PawnBoardManager.instance.height = y;
         }
     }
     public void SetPawnRuleset()
@@ -325,7 +325,7 @@ public class PawnsGameManager : MonoBehaviour
                 {
                     playerTier[player - 1] = 2;
                     playerPoints[player - 1] -= pointsToNextTier[0];
-                    StartCoroutine(BoardManager.instance.PushBenchedPawns(player));
+                    StartCoroutine(PawnBoardManager.instance.PushBenchedPawns(player));
                 }
                 break;
             case 2:
@@ -333,7 +333,7 @@ public class PawnsGameManager : MonoBehaviour
                 {
                     playerTier[player - 1] = 3;
                     playerPoints[player - 1] -= pointsToNextTier[1];
-                    StartCoroutine(BoardManager.instance.PushBenchedPawns(player));
+                    StartCoroutine(PawnBoardManager.instance.PushBenchedPawns(player));
                 }
                 break;
             default:
@@ -342,7 +342,7 @@ public class PawnsGameManager : MonoBehaviour
     }
     public bool CheckWinCondition(int player)
     {
-        List<PawnBehavior> pawnsToCheck = player == 1 ? BoardManager.instance.whitePawns : BoardManager.instance.blackPawns;
+        List<PawnBehavior> pawnsToCheck = player == 1 ? PawnBoardManager.instance.whitePawns : PawnBoardManager.instance.blackPawns;
 
         if (pawnsToCheck.Count == 0)
             return true;

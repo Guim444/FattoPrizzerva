@@ -6,9 +6,9 @@ using TMPro;
 using UnityEngine;
 using System.Linq;
 
-public class BoardManager : MonoBehaviour
+public class PawnBoardManager : MonoBehaviour
 {
-    public static BoardManager instance;
+    public static PawnBoardManager instance;
     public GameObject whitePawnPrefab, blackPawnPrefab;
     public GameObject whiteSquarePrefab, blackSquarePrefab, boardPrefab;
     public GameObject waitingZonePrefab1, waitingZonePrefab2, graveyardPrefab, graveyardPrefab2;
@@ -28,7 +28,7 @@ public class BoardManager : MonoBehaviour
 
     public float height, width;
 
-    public Dictionary<string, ChessSquareScript> squares = new Dictionary<string, ChessSquareScript>();
+    public Dictionary<string, PawnSquareScript> squares = new Dictionary<string, PawnSquareScript>();
 
     private Dictionary<GameObject, List<int>> deadZoneColumns = new Dictionary<GameObject, List<int>>();
 
@@ -82,12 +82,12 @@ public class BoardManager : MonoBehaviour
 
                 previousSquare = square;
 
-                ChessSquareScript css = square.GetComponent<ChessSquareScript>();
-                if (css != null)
+                PawnSquareScript pss = square.GetComponent<PawnSquareScript>();
+                if (pss != null)
                 {
-                    css.SquareColumn = (char)('A' + j);
+                    pss.SquareColumn = (char)('A' + j);
                 }
-                css.CreateSquare();
+                pss.CreateSquare();
             }
         }
         GenerateWaitingZone();
@@ -95,7 +95,7 @@ public class BoardManager : MonoBehaviour
         GenerateDeadZone();
         PawnsGameManager.instance.UpdateTierTexts();
     }
-    public void RegisterSquare(ChessSquareScript square)
+    public void RegisterSquare(PawnSquareScript square)
     {
         if (!squares.ContainsKey(square.name))
         {
@@ -108,9 +108,9 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public ChessSquareScript GetSquare(string name)
+    public PawnSquareScript GetSquare(string name)
     {
-        if (squares.TryGetValue(name, out ChessSquareScript square))
+        if (squares.TryGetValue(name, out PawnSquareScript square))
             return square;
         return null;
     }
@@ -125,7 +125,7 @@ public class BoardManager : MonoBehaviour
             if(!PawnsGameManager.instance.erasedColumnsPlayer1.Any(gameObj => gameObj.name == col.ToString()))
             {
                 string squareName = col.ToString() + row.ToString();
-                ChessSquareScript square = GetSquare(squareName);
+                PawnSquareScript square = GetSquare(squareName);
 
                 if (square != null && square.empty)
                 {
@@ -159,7 +159,7 @@ public class BoardManager : MonoBehaviour
             if (!PawnsGameManager.instance.erasedColumnsPlayer2.Any(gameObj => gameObj.name == col.ToString()))
             {
                 string squareName = col.ToString() + row.ToString();
-                ChessSquareScript square = GetSquare(squareName);
+                PawnSquareScript square = GetSquare(squareName);
 
                 if (square != null && square.empty)
                 {
@@ -542,20 +542,20 @@ public class BoardManager : MonoBehaviour
         }
         return Vector3.zero;
     }
-    public ChessSquareScript GetBenchToBoardPosition(int player, BenchSquare bs)
+    public PawnSquareScript GetBenchToBoardPosition(int player, BenchSquare bs)
     {
         int direction = (player == 1) ? 1 : -1;
         int targetRow = (player == 1) ? 1 : (int)height;
         char column = bs.column;
 
-        ChessSquareScript firstSquare = null;
-        List<ChessSquareScript> chain = new List<ChessSquareScript>();
+        PawnSquareScript firstSquare = null;
+        List<PawnSquareScript> chain = new List<PawnSquareScript>();
 
         while (true)
         {
             string name = column.ToString() + targetRow.ToString();
 
-            if (!squares.TryGetValue(name, out ChessSquareScript square))
+            if (!squares.TryGetValue(name, out PawnSquareScript square))
             {
                 Debug.LogWarning("Square not found: " + name);
                 return null;
@@ -592,8 +592,8 @@ public class BoardManager : MonoBehaviour
 
         for (int i = chain.Count - 1; i > 0; i--)
         {
-            ChessSquareScript from = chain[i - 1];
-            ChessSquareScript to = chain[i];
+            PawnSquareScript from = chain[i - 1];
+            PawnSquareScript to = chain[i];
 
             if (from.pawn != null)
             {

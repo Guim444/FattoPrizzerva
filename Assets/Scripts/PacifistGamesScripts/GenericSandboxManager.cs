@@ -183,7 +183,7 @@ public class GenericSandboxManager : MonoBehaviour
     }
     public void ColumnErasingOffset()
     {
-        int boardWidth = (int)BoardManager.instance.width;
+        int boardWidth = (int)PawnBoardManager.instance.width;
 
         for (int i = 0; i < 2; i++)
         {

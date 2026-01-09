@@ -1,9 +1,9 @@
 {
     "version": 1,
-    "name": "PawnGameInput",
+    "name": "GeneralInputsPacific",
     "maps": [
         {
-            "name": "PawnGame",
+            "name": "UI Inputs",
             "id": "094e6d4b-4068-4541-927e-144320c5f10c",
             "actions": [
                 {

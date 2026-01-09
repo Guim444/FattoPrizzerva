@@ -13,7 +13,7 @@ public class ColumnErasingBehaviour : MonoBehaviour
         if (instance == null)
             instance = this;
 
-        for (int i = 0; i < BoardManager.instance.width; i++)
+        for (int i = 0; i < PawnBoardManager.instance.width; i++)
         {
             string character = ((char)('A' + i)).ToString();
             GameObject createdSquare = Instantiate(squarePrefab, parent.transform);

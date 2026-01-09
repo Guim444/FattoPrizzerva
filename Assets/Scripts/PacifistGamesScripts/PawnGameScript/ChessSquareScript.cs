@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChessSquareScript : MonoBehaviour
+public class PawnSquareScript : MonoBehaviour
 {
     public char SquareColumn;
     public int SquareRow;
@@ -27,10 +27,10 @@ public class ChessSquareScript : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (ClickManager.instance.selectedPawn != null && selectableSquare)
+        if (PawnClickManager.instance.selectedPawn != null && selectableSquare)
         {
             PawnsGameManager.instance.passingTurn = true;
-            PawnBehavior thisPawn = ClickManager.instance.selectedPawn;
+            PawnBehavior thisPawn = PawnClickManager.instance.selectedPawn;
             PawnsGameManager.instance.playerTimer[PawnsGameManager.instance.activePlayer - 1] += PawnsGameManager.instance.extraTimeAddedPerTurn;
             StartCoroutine(thisPawn.MoveForward(this));
             thisPawn.Deselect();
@@ -61,9 +61,9 @@ public class ChessSquareScript : MonoBehaviour
         SquareRow = GetRow();
         name = SquareColumn.ToString() + SquareRow.ToString();
 
-        if (BoardManager.instance != null)
+        if (PawnBoardManager.instance != null)
         {
-            BoardManager.instance.RegisterSquare(this);
+            PawnBoardManager.instance.RegisterSquare(this);
         }
     }
     public void ToggleGlow(bool glow)
