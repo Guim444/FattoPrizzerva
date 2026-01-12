@@ -10,8 +10,11 @@ public class KnightsGameManager : MonoBehaviour
     public KnightBehavior selectedKnight;
     public KnightsSquareScript selectedSquare;
     bool isSelectingMovement = false;
+    public bool canMove;
 
-    public GameObject knightPrefab;
+    [Header("Knight Prefabs")]
+    public GameObject agileKnightPrefab;
+    public GameObject tucutuKnightPrefab;
     void Awake()
     {
         if (instance == null)

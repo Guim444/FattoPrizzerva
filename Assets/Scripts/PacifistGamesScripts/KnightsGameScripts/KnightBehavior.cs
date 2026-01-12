@@ -6,7 +6,7 @@ public abstract class KnightBehavior : MonoBehaviour
 {
     public List<KnightsSquareScript> possiblePaths = new List<KnightsSquareScript>();
     public KnightsSquareScript currentSquare;
-    protected KnightsSquareScript transitSquare;
+    public KnightsSquareScript transitSquare;
 
     protected Renderer rend;
     protected Material mat;
@@ -83,6 +83,8 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public virtual IEnumerator MoveKnight(KnightsSquareScript targetSquare)
     {
+        KnightsGameManager.instance.canMove = false;
+
         isMoving = true;
 
         KnightsSquareScript startSquare = currentSquare;
@@ -95,25 +97,22 @@ public abstract class KnightBehavior : MonoBehaviour
 
         foreach (var sq in path)
         {
-            transitSquare = sq;
+            KnightsSquareScript from = currentSquare;
 
-            OnApproach(sq);
+            currentSquare.knight = null;
+            currentSquare.empty = true;
 
             yield return StartCoroutine(SmoothMove(sq.knightPosition));
 
-            if (grounded)
-            {
-                sq.empty = false;
-                sq.knight = this;
+            transitSquare = from;
 
-                yield return null;
+            yield return StartCoroutine(OnApproachCoroutine(sq));
 
-                if (sq != targetSquare)
-                {
-                    sq.empty = true;
-                    sq.knight = null;
-                }
-            }
+            currentSquare = sq;
+            sq.knight = this;
+            sq.empty = false;
+
+            transitSquare = null;
         }
 
         currentSquare = targetSquare;
@@ -125,12 +124,25 @@ public abstract class KnightBehavior : MonoBehaviour
             targetSquare.knight = this;
         }
 
-        OnArrive(targetSquare);
+        yield return StartCoroutine(OnArriveCoroutine(targetSquare));
         isMoving = false;
     }
 
 
-    //This method will be called when the knight arrives at the target square.
+    IEnumerator OnApproachCoroutine(KnightsSquareScript square)
+    {
+        OnApproach(square);
+        while (!KnightsGameManager.instance.canMove)
+            yield return null;
+        yield return new WaitForSeconds(0.5f);
+    }
+    IEnumerator OnArriveCoroutine(KnightsSquareScript square)
+    {
+        OnArrive(square);
+        while (!KnightsGameManager.instance.canMove)
+            yield return null;
+        yield return new WaitForSeconds(0.5f);
+    }
     protected virtual void OnApproach(KnightsSquareScript square) { }
     protected virtual void OnArrive(KnightsSquareScript square) { }
 

@@ -47,7 +47,7 @@ public class KnightsBoardManager : MonoBehaviour
             if (!square.empty)
                 continue;
 
-            GameObject knightObj = Instantiate(KnightsGameManager.instance.knightPrefab);
+            GameObject knightObj = Instantiate(KnightsGameManager.instance.agileKnightPrefab);
             KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
 
             knight.player = 1;
@@ -63,77 +63,90 @@ public class KnightsBoardManager : MonoBehaviour
 
     public void SpawnKnightInMiddle()
     {
-        if (KnightsGameManager.instance.knightPrefab == null)
-        {
-            return;
-        }
-
         int midRow = (height + 1) / 2;
         int midColIndex = (width - 1) / 2;
         char midColumn = (char)('A' + midColIndex);
 
-        string squareName = midColumn.ToString() + midRow;
-        if (!squares.TryGetValue(squareName, out KnightsSquareScript targetSquare))
+        Vector2Int[][] LPaths = new Vector2Int[][]
         {
-            return;
-        }
+        new[] { new Vector2Int(0,0), new Vector2Int(1,0), new Vector2Int(2,0), new Vector2Int(2,1) },
+        new[] { new Vector2Int(0,0), new Vector2Int(1,0), new Vector2Int(2,0), new Vector2Int(2,-1) },
 
-        if (!targetSquare.empty)
+        new[] { new Vector2Int(0,0), new Vector2Int(-1,0), new Vector2Int(-2,0), new Vector2Int(-2,1) },
+        new[] { new Vector2Int(0,0), new Vector2Int(-1,0), new Vector2Int(-2,0), new Vector2Int(-2,-1) },
+
+        new[] { new Vector2Int(0,0), new Vector2Int(0,1), new Vector2Int(0,2), new Vector2Int(1,2) },
+        new[] { new Vector2Int(0,0), new Vector2Int(0,1), new Vector2Int(0,2), new Vector2Int(-1,2) },
+
+        new[] { new Vector2Int(0,0), new Vector2Int(0,-1), new Vector2Int(0,-2), new Vector2Int(1,-2) },
+        new[] { new Vector2Int(0,0), new Vector2Int(0,-1), new Vector2Int(0,-2), new Vector2Int(-1,-2) },
+        };
+
+        Vector2Int[] chosenPath = null;
+
+        foreach (var path in LPaths)
         {
-            return;
-        }
+            bool valid = true;
 
-        GameObject knightObj = Instantiate(KnightsGameManager.instance.knightPrefab);
-        KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
-
-        knight.player = 1;
-        knight.currentSquare = targetSquare;
-        knight.transform.position = targetSquare.knightPosition;
-        knight.GetComponent<MeshRenderer>().material.color = Color.cyan;
-
-        targetSquare.knight = knight;
-        targetSquare.empty = false;
-        Vector2Int[] offsets = new Vector2Int[]
+            foreach (var offset in path)
             {
-        new Vector2Int(2, 1),
-        new Vector2Int(1, 2),
-        new Vector2Int(-1, 2),
-        new Vector2Int(-2, 1),
-        new Vector2Int(-2, -1),
-        new Vector2Int(-1, -2),
-        new Vector2Int(1, -2),
-        new Vector2Int(2, -1)
-            };
+                char c = (char)(midColumn + offset.x);
+                int r = midRow + offset.y;
 
-        KnightsSquareScript square2 = null;
-        foreach (var offset in offsets)
-        {
-            char col = (char)(midColumn + offset.x);
-            int row = midRow + offset.y;
-            string name = col.ToString() + row;
+                if (!squares.TryGetValue(c.ToString() + r, out var sq) || !sq.empty)
+                {
+                    valid = false;
+                    break;
+                }
+            }
 
-            if (squares.TryGetValue(name, out KnightsSquareScript candidate) && candidate.empty)
+            if (valid)
             {
-                square2 = candidate;
+                chosenPath = path;
                 break;
             }
         }
 
-        if (square2 == null)
+        if (chosenPath == null)
         {
-            Debug.LogWarning("No hay casilla libre en L para el jugador 2 cerca del centro");
             return;
         }
 
-        GameObject knightObj2 = Instantiate(KnightsGameManager.instance.knightPrefab);
-        KnightBehavior knight2 = knightObj2.GetComponent<KnightBehavior>();
+        for (int i = 0; i < 3; i++)
+        {
+            char c = (char)(midColumn + chosenPath[i].x);
+            int r = midRow + chosenPath[i].y;
 
-        knight2.player = 2;
-        knight2.currentSquare = square2;
-        knight2.transform.position = square2.knightPosition;
-        knight2.GetComponent<MeshRenderer>().material.color = Color.red;
+            KnightsSquareScript sq = squares[c.ToString() + r];
 
-        square2.knight = knight2;
-        square2.empty = false;
+            GameObject obj = Instantiate(KnightsGameManager.instance.agileKnightPrefab);
+            KnightBehavior knight = obj.GetComponent<KnightBehavior>();
+
+            knight.player = 1;
+            knight.currentSquare = sq;
+            knight.transform.position = sq.knightPosition;
+            knight.GetComponent<MeshRenderer>().material.color = Color.cyan;
+
+            sq.knight = knight;
+            sq.empty = false;
+        }
+
+        {
+            char c = (char)(midColumn + chosenPath[3].x);
+            int r = midRow + chosenPath[3].y;
+
+            KnightsSquareScript sq = squares[c.ToString() + r];
+
+            GameObject obj = Instantiate(KnightsGameManager.instance.tucutuKnightPrefab);
+            KnightBehavior knight = obj.GetComponent<KnightBehavior>();
+
+            knight.player = 2;
+            knight.currentSquare = sq;
+            knight.transform.position = sq.knightPosition;
+            knight.GetComponent<MeshRenderer>().material.color = Color.red;
+
+            sq.knight = knight;
+            sq.empty = false;
+        }
     }
 }

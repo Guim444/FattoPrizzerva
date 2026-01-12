@@ -33,6 +33,7 @@ public class KnightsSquareScript : MonoBehaviour
             StartCoroutine(thisKnight.MoveKnight(this));
             thisKnight.Deselect();
             thisKnight = null;
+            KnightsGameManager.instance.currentPlayer = KnightsGameManager.instance.currentPlayer == 1 ? 2 : 1;
         }
     }
     IEnumerator InitializeSquare()
