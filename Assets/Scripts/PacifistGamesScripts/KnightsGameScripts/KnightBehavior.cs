@@ -15,6 +15,8 @@ public abstract class KnightBehavior : MonoBehaviour
     public bool grounded = true; // true = hits obstacles, false = ignores. Default true.
     public bool isMoving = false;
 
+    public Vector2Int slideDirection; //for ice squares.
+
     public int player;
 
     protected virtual void Awake()
@@ -78,7 +80,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
     protected virtual bool CanMoveTo(KnightsSquareScript target)
     {
-        return target.empty || (target.knight != null && target.knight.player != player);
+        return target.empty || target.knight != null;
     }
 
     public virtual IEnumerator MoveKnight(KnightsSquareScript targetSquare)
@@ -112,11 +114,18 @@ public abstract class KnightBehavior : MonoBehaviour
             sq.knight = this;
             sq.empty = false;
 
+            if (sq.isIceSquare && grounded)
+            {
+                yield return StartCoroutine(SlideOnIce());
+            }
+
             transitSquare = null;
         }
 
         currentSquare = targetSquare;
         transitSquare = null;
+
+        yield return StartCoroutine(OnArriveCoroutine(targetSquare));
 
         if (!grounded)
         {
@@ -124,7 +133,6 @@ public abstract class KnightBehavior : MonoBehaviour
             targetSquare.knight = this;
         }
 
-        yield return StartCoroutine(OnArriveCoroutine(targetSquare));
         isMoving = false;
     }
 
@@ -134,14 +142,13 @@ public abstract class KnightBehavior : MonoBehaviour
         OnApproach(square);
         while (!KnightsGameManager.instance.canMove)
             yield return null;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
     }
     IEnumerator OnArriveCoroutine(KnightsSquareScript square)
     {
         OnArrive(square);
         while (!KnightsGameManager.instance.canMove)
             yield return null;
-        yield return new WaitForSeconds(0.5f);
     }
     protected virtual void OnApproach(KnightsSquareScript square) { }
     protected virtual void OnArrive(KnightsSquareScript square) { }
@@ -208,5 +215,32 @@ public abstract class KnightBehavior : MonoBehaviour
             sq.ToggleGlow(false, 1);
         }
         possiblePaths.Clear();
+    }
+
+    public IEnumerator SlideOnIce()
+    {
+        Debug.Log("Hielo");
+        while (currentSquare.isIceSquare)
+        {
+            char c = (char)(currentSquare.SquareColumn + slideDirection.x);
+            int r = currentSquare.SquareRow + slideDirection.y;
+
+            if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out var next))
+                yield break;
+
+            if (!next.empty)
+                yield break;
+
+            KnightsSquareScript from = currentSquare;
+
+            from.knight = null;
+            from.empty = true;
+
+            currentSquare = next;
+            next.knight = this;
+            next.empty = false;
+
+            yield return StartCoroutine(SmoothMove(next.knightPosition));
+        }
     }
 }

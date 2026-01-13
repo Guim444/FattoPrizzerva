@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class TucutuKnight : KnightBehavior
@@ -26,20 +27,23 @@ public class TucutuKnight : KnightBehavior
         int row = transitSquare.SquareRow + dir.y;
 
         if (!KnightsBoardManager.instance.squares.TryGetValue(col.ToString() + row, out var front))
+        {
+            KnightsGameManager.instance.canMove = true;
             return;
+        }
 
-        if (front.knight != null && front.knight.player != player)
-            PushChain(front, dir);
+        if (front.knight != null)
+            StartCoroutine(PushForce(front, dir));
 
         KnightsGameManager.instance.canMove = true;
     }
 
-    private void PushChain(KnightsSquareScript origin, Vector2Int dir)
+    private IEnumerator PushForce(KnightsSquareScript origin, Vector2Int dir)
     {
         List<KnightsSquareScript> chain = new();
         KnightsSquareScript current = origin;
 
-        while (current != null && current.knight != null && current.knight.player != player)
+        while (current != null && current.knight != null)
         {
             chain.Add(current);
 
@@ -52,24 +56,23 @@ public class TucutuKnight : KnightBehavior
                 Destroy(lastSquare.knight.gameObject);
                 lastSquare.knight = null;
                 lastSquare.empty = true;
-
                 chain.RemoveAt(chain.Count - 1);
                 break;
             }
-
-            if (current.knight != null && current.knight.player == player)
-                return;
         }
+
+        if (chain.Count == 0)
+            yield break;
 
         KnightsSquareScript last = chain[^1];
         char nextCol = (char)(last.SquareColumn + dir.x);
         int nextRow = last.SquareRow + dir.y;
 
         if (!KnightsBoardManager.instance.squares.TryGetValue(nextCol.ToString() + nextRow, out var target))
-            return;
+            yield break;
 
         if (!target.empty)
-            return;
+            yield break;
 
         for (int i = chain.Count - 1; i >= 0; i--)
         {
@@ -86,12 +89,17 @@ public class TucutuKnight : KnightBehavior
             to.knight = from.knight;
             to.empty = false;
             to.knight.currentSquare = to;
+
             StartCoroutine(to.knight.SmoothMove(to.knightPosition));
 
             from.knight = null;
             from.empty = true;
         }
     }
+
+
+
+
     protected override void OnArrive(KnightsSquareScript square)
     {
         hasPushed = false;

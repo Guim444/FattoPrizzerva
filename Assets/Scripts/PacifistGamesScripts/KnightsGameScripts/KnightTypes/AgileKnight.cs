@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class AgileKnight : KnightBehavior
 {
@@ -39,14 +40,12 @@ public class AgileKnight : KnightBehavior
 
     protected override void OnArrive(KnightsSquareScript square)
     {
-        if (enemyToPush != null && pushDirection != Vector2Int.zero)
+        if (enemyToPush != null &&
+            pushDirection != Vector2Int.zero &&
+            enemyStartSquare == square)
         {
             enemyToPush.currentSquare = enemyStartSquare;
-            enemyStartSquare.knight = enemyToPush;
-            enemyStartSquare.empty = false;
-
-            Vector2Int dir = pushDirection;
-            StartCoroutine(PushEnemy(enemyToPush, dir, 2));
+            StartCoroutine(PushForce(enemyToPush, pushDirection, 2));
         }
 
         enemyToPush = null;
@@ -55,37 +54,50 @@ public class AgileKnight : KnightBehavior
 
         KnightsGameManager.instance.canMove = true;
     }
-
-    public IEnumerator PushEnemy(KnightBehavior enemy, Vector2Int dir, int steps)
+    public IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps)
     {
-        KnightsSquareScript current = enemy.currentSquare;
+        if (enemy == null || steps <= 0)
+            yield break;
 
-        for (int i = 0; i < steps; i++)
+        KnightsSquareScript from = enemy.currentSquare;
+
+        char c = (char)(from.SquareColumn + dir.x);
+        int r = from.SquareRow + dir.y;
+
+        if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out KnightsSquareScript next))
         {
-            char newCol = (char)(current.SquareColumn + dir.x);
-            int newRow = current.SquareRow + dir.y;
-            string name = newCol.ToString() + newRow;
-
-            if (!KnightsBoardManager.instance.squares.TryGetValue(name, out KnightsSquareScript nextSquare))
-            {
-                Destroy(enemy.gameObject);
-                current.knight = null;
-                current.empty = true;
-                yield break;
-            }
-
-            if (!nextSquare.empty && nextSquare.knight != this)
-                break;
-
-            nextSquare.knight = enemy;
-            nextSquare.empty = false;
-            enemy.currentSquare = nextSquare;
-
-            yield return StartCoroutine(enemy.SmoothMove(nextSquare.knightPosition));
-
-            current.knight = null;
-            current.empty = true;
-            current = nextSquare;
+            from.knight = null;
+            from.empty = true;
+            Destroy(enemy.gameObject);
+            yield break;
         }
+
+        if (!next.empty)
+        {
+            KnightBehavior hit = next.knight;
+
+            from.knight = null;
+            from.empty = true;
+
+            next.knight = enemy;
+            next.empty = false;
+            enemy.currentSquare = next;
+
+            yield return StartCoroutine(enemy.SmoothMove(next.knightPosition));
+
+            yield return StartCoroutine(PushForce(hit, dir, steps));
+            yield break;
+        }
+
+        from.knight = null;
+        from.empty = true;
+
+        next.knight = enemy;
+        next.empty = false;
+        enemy.currentSquare = next;
+
+        yield return StartCoroutine(enemy.SmoothMove(next.knightPosition));
+
+        yield return StartCoroutine(PushForce(enemy, dir, steps - 1));
     }
 }

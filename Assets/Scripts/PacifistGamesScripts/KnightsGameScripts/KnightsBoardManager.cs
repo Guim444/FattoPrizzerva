@@ -61,7 +61,7 @@ public class KnightsBoardManager : MonoBehaviour
         }
     }
 
-    public void SpawnKnightInMiddle()
+    public void Test()
     {
         int midRow = (height + 1) / 2;
         int midColIndex = (width - 1) / 2;
@@ -100,17 +100,22 @@ public class KnightsBoardManager : MonoBehaviour
                 }
             }
 
-            if (valid)
-            {
-                chosenPath = path;
-                break;
-            }
+            if (!valid)
+                continue;
+
+            Vector2Int upOffset = path[3] + Vector2Int.up;
+            char uc = (char)(midColumn + upOffset.x);
+            int ur = midRow + upOffset.y;
+
+            if (!squares.TryGetValue(uc.ToString() + ur, out var upSq) || !upSq.empty)
+                continue;
+
+            chosenPath = path;
+            break;
         }
 
         if (chosenPath == null)
-        {
             return;
-        }
 
         for (int i = 0; i < 3; i++)
         {
@@ -131,22 +136,43 @@ public class KnightsBoardManager : MonoBehaviour
             sq.empty = false;
         }
 
+        Vector2Int destOffset = chosenPath[3];
+        char dc = (char)(midColumn + destOffset.x);
+        int dr = midRow + destOffset.y;
+
+        KnightsSquareScript destSq = squares[dc.ToString() + dr];
+
         {
-            char c = (char)(midColumn + chosenPath[3].x);
-            int r = midRow + chosenPath[3].y;
-
-            KnightsSquareScript sq = squares[c.ToString() + r];
-
             GameObject obj = Instantiate(KnightsGameManager.instance.tucutuKnightPrefab);
             KnightBehavior knight = obj.GetComponent<KnightBehavior>();
 
             knight.player = 2;
-            knight.currentSquare = sq;
-            knight.transform.position = sq.knightPosition;
+            knight.currentSquare = destSq;
+            knight.transform.position = destSq.knightPosition;
             knight.GetComponent<MeshRenderer>().material.color = Color.red;
 
-            sq.knight = knight;
-            sq.empty = false;
+            destSq.knight = knight;
+            destSq.empty = false;
+        }
+
+        Vector2Int upOffsetFinal = destOffset + Vector2Int.up;
+        char ucFinal = (char)(midColumn + upOffsetFinal.x);
+        int urFinal = midRow + upOffsetFinal.y;
+
+        KnightsSquareScript upSqFinal = squares[ucFinal.ToString() + urFinal];
+
+        {
+            GameObject obj = Instantiate(KnightsGameManager.instance.tucutuKnightPrefab);
+            KnightBehavior knight = obj.GetComponent<KnightBehavior>();
+
+            knight.player = 2;
+            knight.currentSquare = upSqFinal;
+            knight.transform.position = upSqFinal.knightPosition;
+            knight.GetComponent<MeshRenderer>().material.color = Color.red;
+
+            upSqFinal.knight = knight;
+            upSqFinal.empty = false;
         }
     }
+
 }

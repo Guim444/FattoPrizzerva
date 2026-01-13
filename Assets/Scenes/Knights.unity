@@ -248,6 +248,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &13536988
 GameObject:
@@ -378,6 +379,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &109640608
 GameObject:
@@ -508,6 +510,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &113730787
 GameObject:
@@ -638,6 +641,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &130310531
 GameObject:
@@ -768,6 +772,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &152484262
 GameObject:
@@ -898,6 +903,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &189352696
 GameObject:
@@ -1106,6 +1112,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &260612011
 GameObject:
@@ -1236,6 +1243,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &277645734
 GameObject:
@@ -1366,6 +1374,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &293376282
 GameObject:
@@ -1496,6 +1505,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &316059364
 GameObject:
@@ -1626,6 +1636,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &332616865
 GameObject:
@@ -1756,6 +1767,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &362978557
 GameObject:
@@ -1886,6 +1898,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &371428018
 GameObject:
@@ -2016,6 +2029,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &397339797
 GameObject:
@@ -2146,6 +2160,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &508846433
 GameObject:
@@ -2276,6 +2291,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &546368058
 GameObject:
@@ -2406,6 +2422,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &554619931
 GameObject:
@@ -2536,6 +2553,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &661676730
 GameObject:
@@ -2666,6 +2684,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &687711778
 GameObject:
@@ -2796,6 +2815,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &706921634
 GameObject:
@@ -2926,6 +2946,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &720142976
 GameObject:
@@ -3056,6 +3077,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &723381498
 GameObject:
@@ -3186,6 +3208,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &732039669
 GameObject:
@@ -3316,6 +3339,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 1
   knight: {fileID: 0}
 --- !u!1 &740362241
 GameObject:
@@ -3446,6 +3470,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &744353993
 GameObject:
@@ -3576,6 +3601,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &807548790
 GameObject:
@@ -3706,6 +3732,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &818413964
 GameObject:
@@ -3836,6 +3863,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &826265561
 GameObject:
@@ -3966,6 +3994,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &909891199
 GameObject:
@@ -4096,6 +4125,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &920761040
 GameObject:
@@ -4226,6 +4256,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &930258784
 GameObject:
@@ -4395,6 +4426,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &998496704
 GameObject:
@@ -4525,6 +4557,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1055170905
 GameObject:
@@ -4655,6 +4688,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1064073341
 GameObject:
@@ -4785,6 +4819,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1141166014
 GameObject:
@@ -4915,6 +4950,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1147554863
 GameObject:
@@ -5045,6 +5081,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1181737738
 GameObject:
@@ -5214,6 +5251,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1221422200
 GameObject:
@@ -5562,6 +5600,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1255264284
 GameObject:
@@ -5692,6 +5731,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1270031752
 GameObject:
@@ -5822,6 +5862,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1270311773
 GameObject:
@@ -5952,6 +5993,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1283433562
 GameObject:
@@ -6082,6 +6124,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1295405162
 GameObject:
@@ -6212,6 +6255,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1314311694
 GameObject:
@@ -6469,6 +6513,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1316816588
 GameObject:
@@ -6599,6 +6644,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1334886405
 GameObject:
@@ -6729,6 +6775,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1349677708
 GameObject:
@@ -6986,6 +7033,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 1
   knight: {fileID: 0}
 --- !u!1 &1425270226
 GameObject:
@@ -7116,6 +7164,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1428872917
 GameObject:
@@ -7246,6 +7295,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1447288210
 GameObject:
@@ -7376,6 +7426,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1463232045
 GameObject:
@@ -7506,6 +7557,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1494783074
 GameObject:
@@ -7675,6 +7727,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1525628510
 GameObject:
@@ -7844,6 +7897,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1597020531
 GameObject:
@@ -7974,6 +8028,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1612916130
 GameObject:
@@ -8143,6 +8198,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1674459141
 GameObject:
@@ -8273,6 +8329,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1698658602
 GameObject:
@@ -8403,6 +8460,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1748658051
 GameObject:
@@ -8533,6 +8591,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 1
   knight: {fileID: 0}
 --- !u!1 &1776890597
 GameObject:
@@ -8702,6 +8761,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1882339396
 GameObject:
@@ -8832,6 +8892,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &1897761757
 GameObject:
@@ -9001,6 +9062,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &2064273555
 GameObject:
@@ -9131,6 +9193,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1 &2114159865
 GameObject:
@@ -9261,6 +9324,7 @@ MonoBehaviour:
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
   selectableSquare: 0
+  isIceSquare: 0
   knight: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -9268,5 +9332,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 1221422203}
   - {fileID: 1314311696}
-  - {fileID: 1349677713}
   - {fileID: 1227271427}
+  - {fileID: 1349677713}

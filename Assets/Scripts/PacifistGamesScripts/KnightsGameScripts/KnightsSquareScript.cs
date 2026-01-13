@@ -9,6 +9,7 @@ public class KnightsSquareScript : MonoBehaviour
     public bool empty = true; //default = true
     public Vector3 knightPosition;
     public bool selectableSquare = false;
+    public bool isIceSquare = false;
 
     public KnightBehavior knight;
 
@@ -41,10 +42,14 @@ public class KnightsSquareScript : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         KnightsBoardManager.instance.squares.Add(name, this);
+        if (isIceSquare)
+        {
+            mat.color = Color.cyan * 0.5f;
+        }
         if (KnightsBoardManager.instance.squares.Count == KnightsBoardManager.instance.height * KnightsBoardManager.instance.width)
         {
             //KnightsGameManager.instance.StartGame();
-            KnightsBoardManager.instance.SpawnKnightInMiddle();
+            KnightsBoardManager.instance.Test();
         }
     }
     public void ToggleGlow(bool glow, float intensity)
