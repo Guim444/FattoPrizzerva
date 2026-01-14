@@ -12,6 +12,10 @@ public class TucutuKnight : KnightBehavior
         movementType = false;
         grounded = true;
     }
+    protected override void OnDepart()
+    {
+        stepsMoved = 0;
+    }
 
     protected override void OnApproach(KnightsSquareScript nextSquare)
     {
@@ -96,10 +100,6 @@ public class TucutuKnight : KnightBehavior
             from.empty = true;
         }
     }
-
-
-
-
     protected override void OnArrive(KnightsSquareScript square)
     {
         hasPushed = false;

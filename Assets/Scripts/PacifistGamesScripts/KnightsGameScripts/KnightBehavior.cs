@@ -19,6 +19,8 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public int player;
 
+    public int stepsMoved = 0;
+
     protected virtual void Awake()
     {
         rend = GetComponent<Renderer>();
@@ -85,7 +87,10 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public virtual IEnumerator MoveKnight(KnightsSquareScript targetSquare)
     {
+        bool terrainManipulation = false;
         KnightsGameManager.instance.canMove = false;
+
+        OnDepart();
 
         isMoving = true;
 
@@ -97,8 +102,9 @@ public abstract class KnightBehavior : MonoBehaviour
 
         List<KnightsSquareScript> path = GetPath(startSquare, targetSquare);
 
-        foreach (var sq in path)
+        for (int i = 0; i < path.Count; i++)
         {
+            KnightsSquareScript sq = path[i];
             KnightsSquareScript from = currentSquare;
 
             currentSquare.knight = null;
@@ -116,16 +122,28 @@ public abstract class KnightBehavior : MonoBehaviour
 
             if (sq.isIceSquare && grounded)
             {
+                terrainManipulation = true;
+
+                slideDirection = new Vector2Int(sq.SquareColumn - from.SquareColumn, sq.SquareRow - from.SquareRow);
+
                 yield return StartCoroutine(SlideOnIce());
+
+                int remainingSteps = 3 - stepsMoved;
+                if (remainingSteps <= 0)
+                    break;
+
+                targetSquare = GetNewTargetSquare(currentSquare, remainingSteps);
+                path = GetPath(currentSquare, targetSquare);
+                i = -1;
             }
+
 
             transitSquare = null;
         }
-
-        currentSquare = targetSquare;
+        if (!terrainManipulation)
+            currentSquare = targetSquare;
         transitSquare = null;
 
-        yield return StartCoroutine(OnArriveCoroutine(targetSquare));
 
         if (!grounded)
         {
@@ -133,16 +151,20 @@ public abstract class KnightBehavior : MonoBehaviour
             targetSquare.knight = this;
         }
 
+        yield return StartCoroutine(OnArriveCoroutine(targetSquare));
+
         isMoving = false;
+
+        KnightsGameManager.instance.canMove = true;
     }
 
 
     IEnumerator OnApproachCoroutine(KnightsSquareScript square)
     {
+        stepsMoved++;
         OnApproach(square);
         while (!KnightsGameManager.instance.canMove)
             yield return null;
-        yield return new WaitForSeconds(0.25f);
     }
     IEnumerator OnArriveCoroutine(KnightsSquareScript square)
     {
@@ -150,8 +172,10 @@ public abstract class KnightBehavior : MonoBehaviour
         while (!KnightsGameManager.instance.canMove)
             yield return null;
     }
+    protected virtual void OnDepart() { }
     protected virtual void OnApproach(KnightsSquareScript square) { }
     protected virtual void OnArrive(KnightsSquareScript square) { }
+
 
     protected virtual List<KnightsSquareScript> GetPath(KnightsSquareScript start, KnightsSquareScript end)
     {
@@ -169,7 +193,7 @@ public abstract class KnightBehavior : MonoBehaviour
         char col = start.SquareColumn;
         int row = start.SquareRow;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = stepsMoved; i < 3; i++)
         {
             bool doLong = longFirst ? i < 2 : i > 0;
 
@@ -189,6 +213,77 @@ public abstract class KnightBehavior : MonoBehaviour
 
         return path;
     }
+    protected List<KnightsSquareScript> GetRemainingPath(List<KnightsSquareScript> originalPath, int remainingSteps)
+    {
+        List<KnightsSquareScript> newPath = new List<KnightsSquareScript>();
+
+        int startIndex = stepsMoved;
+        for (int i = 0; i < remainingSteps; i++)
+        {
+            if (startIndex + i < originalPath.Count)
+            {
+                newPath.Add(originalPath[startIndex + i]);
+            }
+            else
+            {
+                KnightsSquareScript last = newPath.Count > 0 ? newPath[newPath.Count - 1] : currentSquare;
+                char col = last.SquareColumn;
+                int row = last.SquareRow;
+
+                int longStep = movementType ? 2 : 1;
+                int shortStep = movementType ? 1 : 2;
+
+                bool longFirst = movementType;
+
+                bool doLong = longFirst ? (stepsMoved + i < 2) : (stepsMoved + i > 0);
+
+                if (Mathf.Abs(longStep) > Mathf.Abs(shortStep))
+                {
+                    if (doLong) col += (char)longStep;
+                    else row += shortStep;
+                }
+                else
+                {
+                    if (doLong) row += longStep;
+                    else col += (char)shortStep;
+                }
+
+                KnightsSquareScript next = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+                if (next != null)
+                    newPath.Add(next);
+            }
+        }
+
+        return newPath;
+    }
+    protected KnightsSquareScript GetNewTargetSquare(KnightsSquareScript start, int remainingSteps)
+    {
+        char col = start.SquareColumn;
+        int row = start.SquareRow;
+
+        int longStep = movementType ? 2 : 1;
+        int shortStep = movementType ? 1 : 2;
+        bool longFirst = movementType;
+
+        for (int i = 0; i < remainingSteps; i++)
+        {
+            bool doLong = longFirst ? i < 2 : i > 0;
+
+            if (Mathf.Abs(longStep) > Mathf.Abs(shortStep))
+            {
+                if (doLong) col += (char)longStep;
+                else row += shortStep;
+            }
+            else
+            {
+                if (doLong) row += longStep;
+                else col += (char)shortStep;
+            }
+        }
+
+        return KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+    }
+    
 
     public IEnumerator SmoothMove(Vector3 targetPos)
     {
@@ -228,7 +323,7 @@ public abstract class KnightBehavior : MonoBehaviour
             if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out var next))
                 yield break;
 
-            if (!next.empty)
+            if (next.isIceSquare && !next.empty)
                 yield break;
 
             KnightsSquareScript from = currentSquare;

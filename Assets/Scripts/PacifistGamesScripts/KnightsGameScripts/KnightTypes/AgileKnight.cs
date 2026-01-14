@@ -9,6 +9,7 @@ public class AgileKnight : KnightBehavior
     private KnightBehavior enemyToPush;
     private KnightsSquareScript enemyStartSquare;
 
+
     protected override void Awake()
     {
         base.Awake();
@@ -16,8 +17,17 @@ public class AgileKnight : KnightBehavior
         grounded = false;
     }
 
+    protected override void OnDepart()
+    {
+        grounded = false;
+        stepsMoved = 0;
+    }
+
     protected override void OnApproach(KnightsSquareScript square)
     {
+        if (stepsMoved > 2)
+            grounded = true;
+
         if (square.knight == null || square.knight.player == player)
         {
             KnightsGameManager.instance.canMove = true;
@@ -76,21 +86,24 @@ public class AgileKnight : KnightBehavior
         {
             KnightBehavior hit = next.knight;
 
-            from.knight = null;
-            from.empty = true;
-
             next.knight = enemy;
             next.empty = false;
             enemy.currentSquare = next;
 
             yield return StartCoroutine(enemy.SmoothMove(next.knightPosition));
 
+            from.knight = null;
+            from.empty = true;
+
             yield return StartCoroutine(PushForce(hit, dir, steps));
             yield break;
         }
 
-        from.knight = null;
-        from.empty = true;
+        if (from.knight == enemy)
+        {
+            from.knight = null;
+            from.empty = true;
+        }
 
         next.knight = enemy;
         next.empty = false;
