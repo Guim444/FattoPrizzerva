@@ -14,20 +14,16 @@ public class AgileKnight : KnightBehavior
     {
         base.Awake();
         movementType = true;
-        grounded = false;
+        grounded = true;
     }
 
     protected override void OnDepart()
     {
         grounded = false;
-        stepsMoved = 0;
+        base.OnDepart();
     }
-
     protected override void OnApproach(KnightsSquareScript square)
     {
-        if (stepsMoved > 2)
-            grounded = true;
-
         if (square.knight == null || square.knight.player == player)
         {
             KnightsGameManager.instance.canMove = true;
@@ -44,18 +40,18 @@ public class AgileKnight : KnightBehavior
             dx != 0 ? (int)Mathf.Sign(dx) : 0,
             dy != 0 ? (int)Mathf.Sign(dy) : 0
         );
-
-        KnightsGameManager.instance.canMove = true;
     }
 
     protected override void OnArrive(KnightsSquareScript square)
     {
+        grounded = true;
+
         if (enemyToPush != null &&
             pushDirection != Vector2Int.zero &&
             enemyStartSquare == square)
         {
             enemyToPush.currentSquare = enemyStartSquare;
-            StartCoroutine(PushForce(enemyToPush, pushDirection, 2));
+            StartCoroutine(PushForce(enemyToPush, pushDirection, 2, allowIce: true));
         }
 
         enemyToPush = null;
@@ -64,53 +60,13 @@ public class AgileKnight : KnightBehavior
 
         KnightsGameManager.instance.canMove = true;
     }
-    public IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps)
+
+    public override void ConsumeMovementDirection()
     {
-        if (enemy == null || steps <= 0)
-            yield break;
-
-        KnightsSquareScript from = enemy.currentSquare;
-
-        char c = (char)(from.SquareColumn + dir.x);
-        int r = from.SquareRow + dir.y;
-
-        if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out KnightsSquareScript next))
-        {
-            from.knight = null;
-            from.empty = true;
-            Destroy(enemy.gameObject);
-            yield break;
-        }
-
-        if (!next.empty)
-        {
-            KnightBehavior hit = next.knight;
-
-            next.knight = enemy;
-            next.empty = false;
-            enemy.currentSquare = next;
-
-            yield return StartCoroutine(enemy.SmoothMove(next.knightPosition));
-
-            from.knight = null;
-            from.empty = true;
-
-            yield return StartCoroutine(PushForce(hit, dir, steps));
-            yield break;
-        }
-
-        if (from.knight == enemy)
-        {
-            from.knight = null;
-            from.empty = true;
-        }
-
-        next.knight = enemy;
-        next.empty = false;
-        enemy.currentSquare = next;
-
-        yield return StartCoroutine(enemy.SmoothMove(next.knightPosition));
-
-        yield return StartCoroutine(PushForce(enemy, dir, steps - 1));
+        base.ConsumeMovementDirection();
+        if (stepsMoved >= 3)
+            grounded = true;
+        else
+            grounded = false;
     }
 }

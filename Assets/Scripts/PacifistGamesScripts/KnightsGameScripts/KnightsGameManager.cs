@@ -1,4 +1,5 @@
-using System.Collections;
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,12 +10,14 @@ public class KnightsGameManager : MonoBehaviour
 
     public KnightBehavior selectedKnight;
     public KnightsSquareScript selectedSquare;
-    bool isSelectingMovement = false;
     public bool canMove;
+
+    public HashSet<KnightBehavior> activeMovements = new();
 
     [Header("Knight Prefabs")]
     public GameObject agileKnightPrefab;
     public GameObject tucutuKnightPrefab;
+
     void Awake()
     {
         if (instance == null)
@@ -27,6 +30,7 @@ public class KnightsGameManager : MonoBehaviour
         }
 
     }
+
     public void StartGame()
     {
         KnightsBoardManager.instance.SpawnKnights(4);
@@ -37,7 +41,6 @@ public class KnightsGameManager : MonoBehaviour
         {
             if (ClickHitsSelectableSquare())
             {
-                isSelectingMovement = true;
                 return;
             }
 
@@ -68,5 +71,20 @@ public class KnightsGameManager : MonoBehaviour
             return false;
         }
         return false;
+    }
+
+    public void BeginMovement(KnightBehavior knight)
+    {
+        activeMovements.Add(knight);
+        canMove = false;
+    }
+
+    public void EndMovement(KnightBehavior knight)
+    {
+        activeMovements.Remove(knight);
+
+        canMove = activeMovements.Count == 0;
+
+        Debug.Log("Active movements remaining: " + activeMovements.Count);
     }
 }

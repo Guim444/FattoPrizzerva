@@ -6,6 +6,7 @@ public class KnightsBoardManager : MonoBehaviour
     public int height, width;
     public static KnightsBoardManager instance;
     public Dictionary<string, KnightsSquareScript> squares = new Dictionary<string, KnightsSquareScript>();
+    public List<KnightBehavior> knightList = new List<KnightBehavior>();
 
     private void Awake()
     {
@@ -49,6 +50,7 @@ public class KnightsBoardManager : MonoBehaviour
 
             GameObject knightObj = Instantiate(KnightsGameManager.instance.agileKnightPrefab);
             KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
+            knightList.Add(knight);
 
             knight.player = 1;
             knight.currentSquare = square;
@@ -134,6 +136,8 @@ public class KnightsBoardManager : MonoBehaviour
 
             sq.knight = knight;
             sq.empty = false;
+
+            knightList.Add(knight);
         }
 
         Vector2Int destOffset = chosenPath[3];
@@ -145,6 +149,7 @@ public class KnightsBoardManager : MonoBehaviour
         {
             GameObject obj = Instantiate(KnightsGameManager.instance.tucutuKnightPrefab);
             KnightBehavior knight = obj.GetComponent<KnightBehavior>();
+            knightList.Add(knight);
 
             knight.player = 2;
             knight.currentSquare = destSq;
@@ -172,6 +177,8 @@ public class KnightsBoardManager : MonoBehaviour
 
             upSqFinal.knight = knight;
             upSqFinal.empty = false;
+
+            knightList.Add(knight);
         }
     }
 

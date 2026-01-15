@@ -16,6 +16,7 @@ public abstract class KnightBehavior : MonoBehaviour
     public bool isMoving = false;
 
     public Vector2Int slideDirection; //for ice squares.
+    public Vector2Int[] movementDirections;
 
     public int player;
 
@@ -87,12 +88,12 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public virtual IEnumerator MoveKnight(KnightsSquareScript targetSquare)
     {
+        stepsMoved = 0;
         bool terrainManipulation = false;
-        KnightsGameManager.instance.canMove = false;
+
+        KnightsGameManager.instance.BeginMovement(this);
 
         OnDepart();
-
-        isMoving = true;
 
         KnightsSquareScript startSquare = currentSquare;
         startSquare.empty = true;
@@ -101,8 +102,12 @@ public abstract class KnightBehavior : MonoBehaviour
         transitSquare = startSquare;
 
         List<KnightsSquareScript> path = GetPath(startSquare, targetSquare);
+        movementDirections = SavePathDirections(path);
+        slideDirection = movementDirections[0];
 
-        for (int i = 0; i < path.Count; i++)
+        int i = 0;
+
+        while (i < path.Count && stepsMoved < 3)
         {
             KnightsSquareScript sq = path[i];
             KnightsSquareScript from = currentSquare;
@@ -110,11 +115,13 @@ public abstract class KnightBehavior : MonoBehaviour
             currentSquare.knight = null;
             currentSquare.empty = true;
 
-            yield return StartCoroutine(SmoothMove(sq.knightPosition));
-
             transitSquare = from;
 
             yield return StartCoroutine(OnApproachCoroutine(sq));
+            yield return StartCoroutine(SmoothMove(sq.knightPosition));
+
+            if (!sq.isIceSquare || !grounded)
+                ConsumeMovementDirection();
 
             currentSquare = sq;
             sq.knight = this;
@@ -124,53 +131,56 @@ public abstract class KnightBehavior : MonoBehaviour
             {
                 terrainManipulation = true;
 
-                slideDirection = new Vector2Int(sq.SquareColumn - from.SquareColumn, sq.SquareRow - from.SquareRow);
+                slideDirection = new Vector2Int(
+                    sq.SquareColumn - from.SquareColumn,
+                    sq.SquareRow - from.SquareRow
+                );
 
                 yield return StartCoroutine(SlideOnIce());
 
-                int remainingSteps = 3 - stepsMoved;
-                if (remainingSteps <= 0)
+                if (stepsMoved >= 3)
                     break;
 
-                targetSquare = GetNewTargetSquare(currentSquare, remainingSteps);
-                path = GetPath(currentSquare, targetSquare);
-                i = -1;
+                path = RecalculatePathFromDirections(currentSquare);
+                i = 0;
+                continue;
             }
 
-
+            i++;
             transitSquare = null;
         }
+
+        targetSquare = currentSquare; // in case of terrain manipulation, ensure targetSquare is correct. It always will be the currentSquare here.
+
         if (!terrainManipulation)
             currentSquare = targetSquare;
         transitSquare = null;
 
 
-        if (!grounded)
-        {
-            targetSquare.empty = false;
-            targetSquare.knight = this;
-        }
-
         yield return StartCoroutine(OnArriveCoroutine(targetSquare));
 
-        isMoving = false;
+        targetSquare.empty = false;
+        targetSquare.knight = this;
 
-        KnightsGameManager.instance.canMove = true;
+        KnightsGameManager.instance.EndMovement(this);
+
     }
 
 
     IEnumerator OnApproachCoroutine(KnightsSquareScript square)
     {
-        stepsMoved++;
         OnApproach(square);
-        while (!KnightsGameManager.instance.canMove)
-            yield return null;
+
+        yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
+
+        if (stepsMoved < 3)
+            yield return new WaitForSeconds(0.1f);
     }
     IEnumerator OnArriveCoroutine(KnightsSquareScript square)
     {
         OnArrive(square);
-        while (!KnightsGameManager.instance.canMove)
-            yield return null;
+
+        yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
     }
     protected virtual void OnDepart() { }
     protected virtual void OnApproach(KnightsSquareScript square) { }
@@ -213,49 +223,58 @@ public abstract class KnightBehavior : MonoBehaviour
 
         return path;
     }
-    protected List<KnightsSquareScript> GetRemainingPath(List<KnightsSquareScript> originalPath, int remainingSteps)
+    protected List<KnightsSquareScript> RecalculatePathFromDirections(KnightsSquareScript start)
     {
-        List<KnightsSquareScript> newPath = new List<KnightsSquareScript>();
+        List<KnightsSquareScript> path = new();
+        char col = start.SquareColumn;
+        int row = start.SquareRow;
 
-        int startIndex = stepsMoved;
-        for (int i = 0; i < remainingSteps; i++)
+        foreach (var dir in movementDirections)
         {
-            if (startIndex + i < originalPath.Count)
-            {
-                newPath.Add(originalPath[startIndex + i]);
-            }
-            else
-            {
-                KnightsSquareScript last = newPath.Count > 0 ? newPath[newPath.Count - 1] : currentSquare;
-                char col = last.SquareColumn;
-                int row = last.SquareRow;
+            col += (char)dir.x;
+            row += dir.y;
 
-                int longStep = movementType ? 2 : 1;
-                int shortStep = movementType ? 1 : 2;
+            KnightsSquareScript sq = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+            if (sq == null)
+                break;
 
-                bool longFirst = movementType;
-
-                bool doLong = longFirst ? (stepsMoved + i < 2) : (stepsMoved + i > 0);
-
-                if (Mathf.Abs(longStep) > Mathf.Abs(shortStep))
-                {
-                    if (doLong) col += (char)longStep;
-                    else row += shortStep;
-                }
-                else
-                {
-                    if (doLong) row += longStep;
-                    else col += (char)shortStep;
-                }
-
-                KnightsSquareScript next = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
-                if (next != null)
-                    newPath.Add(next);
-            }
+            path.Add(sq);
         }
 
-        return newPath;
+        return path;
     }
+    protected Vector2Int[] SavePathDirections(List<KnightsSquareScript> path)
+    {
+        if (path == null || path.Count < 2)
+            return System.Array.Empty<Vector2Int>();
+
+        movementDirections = new Vector2Int[path.Count - 1];
+
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            KnightsSquareScript from = path[i];
+            KnightsSquareScript to = path[i + 1];
+
+            movementDirections[i] = new Vector2Int(to.SquareColumn - from.SquareColumn, to.SquareRow - from.SquareRow);
+        }
+
+        return movementDirections;
+    }
+    public virtual void ConsumeMovementDirection()
+    {
+        stepsMoved++;
+
+        if (movementDirections == null || movementDirections.Length == 0)
+            return;
+
+        Vector2Int[] newDirs = new Vector2Int[movementDirections.Length - 1];
+        for (int i = 1; i < movementDirections.Length; i++)
+            newDirs[i - 1] = movementDirections[i];
+
+        movementDirections = newDirs;
+        slideDirection = movementDirections.Length > 0 ? movementDirections[0] : slideDirection;
+    }
+
     protected KnightsSquareScript GetNewTargetSquare(KnightsSquareScript start, int remainingSteps)
     {
         char col = start.SquareColumn;
@@ -280,13 +299,17 @@ public abstract class KnightBehavior : MonoBehaviour
                 else col += (char)shortStep;
             }
         }
+        KnightsSquareScript target = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
 
-        return KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+        Debug.Log(target.name);
+
+        return target;
     }
     
 
     public IEnumerator SmoothMove(Vector3 targetPos)
     {
+        isMoving = true;
         float elapsed = 0f;
         float duration = 0.3f;
 
@@ -300,6 +323,7 @@ public abstract class KnightBehavior : MonoBehaviour
         }
 
         transform.position = targetPos;
+        isMoving = false;
     }
 
     public void Deselect()
@@ -311,11 +335,56 @@ public abstract class KnightBehavior : MonoBehaviour
         }
         possiblePaths.Clear();
     }
+    protected virtual IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps, bool allowIce = true)
+    {
+        if (enemy == null || steps <= 0)
+            yield break;
 
+        KnightsSquareScript from = enemy.currentSquare;
+
+        char c = (char)(from.SquareColumn + dir.x);
+        int r = from.SquareRow + dir.y;
+
+        if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out var next))
+        {
+            from.knight = null;
+            from.empty = true;
+            Destroy(enemy.gameObject);
+            yield break;
+        }
+
+        if (!next.empty)
+        {
+            yield return StartCoroutine(PushForce(next.knight, dir, steps, allowIce));
+        }
+
+        from.knight = null;
+        from.empty = true;
+
+        enemy.currentSquare = next;
+        next.knight = enemy;
+        next.empty = false;
+
+        yield return StartCoroutine(PushMoveCoroutine(enemy, next.knightPosition));
+
+        if (allowIce && next.isIceSquare)
+        {
+            enemy.slideDirection = dir;
+            yield return null;
+            yield return StartCoroutine(enemy.SlideOnIce());
+        }
+
+        yield return StartCoroutine(PushForce(enemy, dir, steps - 1, allowIce));
+    }
+    private IEnumerator PushMoveCoroutine(KnightBehavior knight, Vector3 targetPos)
+    {
+        KnightsGameManager.instance.BeginMovement(knight);
+        yield return knight.SmoothMove(targetPos);
+        KnightsGameManager.instance.EndMovement(knight);
+    }
     public IEnumerator SlideOnIce()
     {
-        Debug.Log("Hielo");
-        while (currentSquare.isIceSquare)
+        while (true)
         {
             char c = (char)(currentSquare.SquareColumn + slideDirection.x);
             int r = currentSquare.SquareRow + slideDirection.y;
@@ -323,7 +392,12 @@ public abstract class KnightBehavior : MonoBehaviour
             if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out var next))
                 yield break;
 
-            if (next.isIceSquare && !next.empty)
+            if (!next.empty && next.knight != null)
+            {
+                yield return StartCoroutine(PushForce(next.knight, slideDirection, 1, allowIce: true));
+            }
+
+            if (!next.empty)
                 yield break;
 
             KnightsSquareScript from = currentSquare;
@@ -336,6 +410,10 @@ public abstract class KnightBehavior : MonoBehaviour
             next.empty = false;
 
             yield return StartCoroutine(SmoothMove(next.knightPosition));
+
+            if (!next.isIceSquare)
+                yield break;
         }
     }
+
 }
