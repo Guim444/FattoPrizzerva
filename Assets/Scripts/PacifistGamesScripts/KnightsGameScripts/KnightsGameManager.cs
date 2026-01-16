@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,6 +41,8 @@ public class KnightsGameManager : MonoBehaviour
         {
             if (ClickHitsSelectableSquare())
             {
+                canMove = true;
+                activeMovements.Clear();
                 return;
             }
 
@@ -72,6 +74,18 @@ public class KnightsGameManager : MonoBehaviour
         }
         return false;
     }
+    public void NextPlayer()
+    {
+        currentPlayer = currentPlayer == 1 ? 2 : 1;
+
+        foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
+        {
+            if (knight.player == currentPlayer)
+                knight.GetComponent<BoxCollider>().enabled = true;
+            else
+                knight.GetComponent<BoxCollider>().enabled = false;
+        }
+    }
 
     public void BeginMovement(KnightBehavior knight)
     {
@@ -81,10 +95,14 @@ public class KnightsGameManager : MonoBehaviour
 
     public void EndMovement(KnightBehavior knight)
     {
+        StartCoroutine(EndMovementWhenStopped(knight));
+    }
+
+    private IEnumerator EndMovementWhenStopped(KnightBehavior knight)
+    {
+        yield return new WaitUntil(() => !knight.isMoving);
+
         activeMovements.Remove(knight);
-
         canMove = activeMovements.Count == 0;
-
-        Debug.Log("Active movements remaining: " + activeMovements.Count);
     }
 }

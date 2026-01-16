@@ -24,7 +24,7 @@ public class AgileKnight : KnightBehavior
     }
     protected override void OnApproach(KnightsSquareScript square)
     {
-        if (square.knight == null || square.knight.player == player)
+        if (square.knight == null)
         {
             KnightsGameManager.instance.canMove = true;
             return;
@@ -40,15 +40,15 @@ public class AgileKnight : KnightBehavior
             dx != 0 ? (int)Mathf.Sign(dx) : 0,
             dy != 0 ? (int)Mathf.Sign(dy) : 0
         );
+
+        KnightsGameManager.instance.canMove = true;
     }
 
     protected override void OnArrive(KnightsSquareScript square)
     {
         grounded = true;
 
-        if (enemyToPush != null &&
-            pushDirection != Vector2Int.zero &&
-            enemyStartSquare == square)
+        if (enemyToPush != null && pushDirection != Vector2Int.zero && enemyStartSquare == square)
         {
             enemyToPush.currentSquare = enemyStartSquare;
             StartCoroutine(PushForce(enemyToPush, pushDirection, 2, allowIce: true));
@@ -58,7 +58,10 @@ public class AgileKnight : KnightBehavior
         enemyStartSquare = null;
         pushDirection = Vector2Int.zero;
 
-        KnightsGameManager.instance.canMove = true;
+        if (KnightsGameManager.instance.activeMovements.Count == 1 && KnightsGameManager.instance.activeMovements.Contains(this))
+        {
+            KnightsGameManager.instance.canMove = true;
+        }
     }
 
     public override void ConsumeMovementDirection()

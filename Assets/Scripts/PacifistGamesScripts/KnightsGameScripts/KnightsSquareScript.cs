@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class KnightsSquareScript : MonoBehaviour
 {
+    public Color originalColor;
+
     public char SquareColumn;
     public int SquareRow;
     public bool empty = true; //default = true
     public Vector3 knightPosition;
     public bool selectableSquare = false;
+
+    public bool pathSquare = false;
+    public KnightsSquareScript targetSquare;
     public bool isIceSquare = false;
 
     public KnightBehavior knight;
@@ -17,6 +22,8 @@ public class KnightsSquareScript : MonoBehaviour
 
     public void Awake()
     {
+        originalColor = GetComponent<Renderer>().material.color;
+
         Renderer rend = GetComponent<Renderer>();
         mat = new Material(rend.material);
         rend.material = mat;
@@ -34,8 +41,34 @@ public class KnightsSquareScript : MonoBehaviour
             StartCoroutine(thisKnight.MoveKnight(this));
             thisKnight.Deselect();
             thisKnight = null;
-            KnightsGameManager.instance.currentPlayer = KnightsGameManager.instance.currentPlayer == 1 ? 2 : 1;
+
+            KnightsGameManager.instance.NextPlayer();
         }
+    }
+    void OnMouseEnter()
+    {
+        if (!selectableSquare && !pathSquare)
+            return;
+
+        if (pathSquare)
+        {
+            ToggleGlow(true, 0.6f);
+        }
+        else
+        {
+            ToggleGlow(true, 1f);
+        }
+    }
+
+    void OnMouseExit()
+    {
+        if (!selectableSquare && !pathSquare)
+            return;
+
+        if (!selectableSquare)
+            ToggleGlow(true, 0.2f);
+        else
+            ToggleGlow(true, 0.6f);
     }
     IEnumerator InitializeSquare()
     {
@@ -56,15 +89,20 @@ public class KnightsSquareScript : MonoBehaviour
     {
         if (glow)
         {
-            Color glowColor = Color.cyan;
+            Color glowColor = Color.purple;
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", glowColor * intensity);
             mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+
+            mat.color = isIceSquare ? Color.cyan * 0.5f : Color.white;
         }
         else
         {
             mat.SetColor("_EmissionColor", Color.white);
             mat.DisableKeyword("_EMISSION");
+
+            mat.color = isIceSquare ? Color.cyan * 0.5f : originalColor;
+            
         }
     }
 }

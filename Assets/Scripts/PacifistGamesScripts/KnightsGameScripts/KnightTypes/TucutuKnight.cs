@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.AppUI.Core;
 using UnityEngine;
 
 public class TucutuKnight : KnightBehavior
@@ -29,9 +30,19 @@ public class TucutuKnight : KnightBehavior
         if (KnightsBoardManager.instance.squares.TryGetValue(col.ToString() + row, out var front))
         {
             if (front.knight != null)
-                StartCoroutine(PushForce(front.knight, dir, 1, allowIce: false));
+            {
+                StartCoroutine(PushForce(front.knight, dir, 1, allowIce: true));
+            }
         }
 
+        /*if (KnightsGameManager.instance.activeMovements.Count == 1 && KnightsGameManager.instance.activeMovements.Contains(this))
+        {
+            KnightsGameManager.instance.canMove = true;
+        }*/
+        while (isMoving)
+        {
+            KnightsGameManager.instance.canMove = false;
+        }
         KnightsGameManager.instance.canMove = true;
     }
     protected override void OnArrive(KnightsSquareScript square)
