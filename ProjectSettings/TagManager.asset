@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - Back fall
   - Front fall
+  - Arrow
   layers:
   - Default
   - TransparentFX

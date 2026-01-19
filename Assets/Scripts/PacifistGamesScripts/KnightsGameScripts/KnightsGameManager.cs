@@ -18,6 +18,11 @@ public class KnightsGameManager : MonoBehaviour
     public GameObject agileKnightPrefab;
     public GameObject tucutuKnightPrefab;
 
+    [Header("Assets Prefabs")]
+    public GameObject arrowPrefab;
+    public GameObject invertedArrowPrefab;
+    public List<GameObject> arrows;
+
     void Awake()
     {
         if (instance == null)
@@ -62,6 +67,12 @@ public class KnightsGameManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
+                if (hit.collider.tag == "Arrow")
+                {
+                    selectedSquare = hit.collider.GetComponent<LArrow>().target;
+                    return true;
+                }
+
                 KnightsSquareScript square = hit.collider.GetComponent<KnightsSquareScript>();
                 if (square != null && square.selectableSquare)
                 {
@@ -104,5 +115,10 @@ public class KnightsGameManager : MonoBehaviour
 
         activeMovements.Remove(knight);
         canMove = activeMovements.Count == 0;
+    }
+    public void CallMoveCoroutine(KnightBehavior knight, KnightsSquareScript targetSquare)
+    {
+        //This is needed to start the movement when the arrow is clicked, because when it is destroyed, the coroutine stops.
+        StartCoroutine(knight.MoveKnight(targetSquare));
     }
 }

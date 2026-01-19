@@ -45,7 +45,7 @@ public class KnightsSquareScript : MonoBehaviour
             KnightsGameManager.instance.NextPlayer();
         }
     }
-    void OnMouseEnter()
+    /*void OnMouseEnter()
     {
         if (!selectableSquare && !pathSquare)
             return;
@@ -69,7 +69,7 @@ public class KnightsSquareScript : MonoBehaviour
             ToggleGlow(true, 0.2f);
         else
             ToggleGlow(true, 0.6f);
-    }
+    }*/
     IEnumerator InitializeSquare()
     {
         yield return new WaitForSeconds(0.1f);

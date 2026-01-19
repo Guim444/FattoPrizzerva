@@ -71,11 +71,58 @@ public abstract class KnightBehavior : MonoBehaviour
 
             if (target == null)
                 continue;
+
             if (CanMoveTo(target))
             {
                 possiblePaths.Add(target);
                 target.selectableSquare = true;
-                target.ToggleGlow(true, 0.6f);
+
+                Quaternion arrowRot;
+                bool longIsX = Mathf.Abs(offset.x) > Mathf.Abs(offset.y);
+
+                Vector3 finalPosition = new Vector3(currentSquare.knightPosition.x, 0.655f, currentSquare.knightPosition.z);
+
+                GameObject arrow =
+                    movementType
+                    ? Instantiate(KnightsGameManager.instance.arrowPrefab, finalPosition, Quaternion.identity)
+                    : Instantiate(KnightsGameManager.instance.invertedArrowPrefab, finalPosition, Quaternion.identity);
+
+                LArrow arrowScript = arrow.GetComponent<LArrow>();
+                arrowScript.target = target;
+                arrowScript.knight = this;
+
+                KnightsGameManager.instance.arrows.Add(arrow);
+
+                bool flip;
+                if (longIsX)
+                {
+                    if (offset.x > 0)
+                    {
+                        arrowRot = Quaternion.Euler(90, 0, 0);
+                        flip = offset.y > 0;
+                    }
+                    else
+                    {
+                        arrowRot = Quaternion.Euler(90, 0, 180);
+                        flip = offset.y < 0;
+                    }
+                }
+                else
+                {
+                    if (offset.y > 0)
+                    {
+                        arrowRot = Quaternion.Euler(90, 0, 90);
+                        flip = offset.x < 0;
+                    }
+                    else
+                    {
+                        arrowRot = Quaternion.Euler(90, 0, -90);
+                        flip = offset.x > 0;
+                    }
+                }
+
+                arrow.transform.rotation = arrowRot;
+                FlipSpriteAndCollider(arrow, flip);
 
                 List<KnightsSquareScript> path = GetPath(currentSquare, target);
 
@@ -85,10 +132,6 @@ public abstract class KnightBehavior : MonoBehaviour
                         continue;
 
                     sq.pathSquare = true;
-                    if (sq.selectableSquare)
-                        sq.ToggleGlow(true, 0.6f);
-                    else
-                        sq.ToggleGlow(true, 0.2f);
                 }
             }
         }
@@ -356,7 +399,11 @@ public abstract class KnightBehavior : MonoBehaviour
         foreach (var sq in possiblePaths)
         {
             sq.selectableSquare = false;
-            sq.ToggleGlow(false, 1);
+            //sq.ToggleGlow(false, 1);
+        }
+        foreach (var arrow in KnightsGameManager.instance.arrows)
+        {
+            Destroy(arrow);
         }
 
         foreach (var sq in KnightsBoardManager.instance.squares.Values)
@@ -368,7 +415,9 @@ public abstract class KnightBehavior : MonoBehaviour
             }
         }
 
+        KnightsGameManager.instance.arrows.Clear();
         possiblePaths.Clear();
+        KnightsGameManager.instance.selectedKnight = null;
     }
     protected virtual IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps, bool allowIce = true)
     {
@@ -460,5 +509,24 @@ public abstract class KnightBehavior : MonoBehaviour
     protected IEnumerator WaitWhileOtherMovementsActive()
     {
         yield return new WaitUntil(() => KnightsGameManager.instance.activeMovements.Count == 0 || (KnightsGameManager.instance.activeMovements.Count == 1 && KnightsGameManager.instance.activeMovements.Contains(this)));
+    }
+
+    public static void FlipSpriteAndCollider(GameObject obj, bool flipX)
+    {
+        SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
+        LArrow arrow = obj.GetComponent<LArrow>();
+
+        if (sr != null)
+            sr.flipX = flipX;
+
+        if (arrow != null && arrow.boxColliders != null)
+        {
+            foreach (var collider in arrow.boxColliders)
+            {
+                Vector3 originalCenter = collider.Value;
+                originalCenter.x *= flipX? -1 : 1;
+                collider.Key.center = originalCenter;
+            }
+        }
     }
 }
