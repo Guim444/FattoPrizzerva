@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class TucutuKnight : KnightBehavior
 {
-    private bool hasPushed = false;
-
     protected override void Awake()
     {
         base.Awake();
@@ -34,11 +32,6 @@ public class TucutuKnight : KnightBehavior
                 StartCoroutine(PushForce(front.knight, dir, 1, allowIce: true));
             }
         }
-
-        /*if (KnightsGameManager.instance.activeMovements.Count == 1 && KnightsGameManager.instance.activeMovements.Contains(this))
-        {
-            KnightsGameManager.instance.canMove = true;
-        }*/
         while (isMoving)
         {
             KnightsGameManager.instance.canMove = false;
@@ -47,7 +40,6 @@ public class TucutuKnight : KnightBehavior
     }
     protected override void OnArrive(KnightsSquareScript square)
     {
-        hasPushed = false;
         KnightsGameManager.instance.canMove = true;
     }
 }

@@ -5833,7 +5833,6 @@ MonoBehaviour:
   currentPlayer: 2
   selectedKnight: {fileID: 0}
   selectedSquare: {fileID: 0}
-  playerIsActive: 1
   canMove: 1
   agileKnightPrefab: {fileID: 7314694070700786868, guid: 14461682bc245d74fb5e21f2adf29846, type: 3}
   tucutuKnightPrefab: {fileID: 7314694070700786868, guid: 3e706166508a62c43a807eaec01a4e74, type: 3}

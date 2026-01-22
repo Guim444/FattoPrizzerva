@@ -10,6 +10,9 @@ public class KnightsGameManager : MonoBehaviour
 
     public KnightBehavior selectedKnight;
     public KnightsSquareScript selectedSquare;
+
+    public bool playerIsActive;
+
     public bool canMove;
 
     public HashSet<KnightBehavior> activeMovements = new();
@@ -87,10 +90,17 @@ public class KnightsGameManager : MonoBehaviour
     }
     public void NextPlayer()
     {
+        Debug.Log("Llamado");
         currentPlayer = currentPlayer == 1 ? 2 : 1;
+        playerIsActive = true;
 
         foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
         {
+            //Ensure every knight has its square assigned.
+
+            knight.currentSquare.knight = knight;
+            knight.currentSquare.empty = false;
+
             if (knight.player == currentPlayer)
                 knight.GetComponent<BoxCollider>().enabled = true;
             else
@@ -106,7 +116,8 @@ public class KnightsGameManager : MonoBehaviour
 
     public void EndMovement(KnightBehavior knight)
     {
-        StartCoroutine(EndMovementWhenStopped(knight));
+        if (activeMovements.Contains(knight))
+            StartCoroutine(EndMovementWhenStopped(knight));
     }
 
     private IEnumerator EndMovementWhenStopped(KnightBehavior knight)

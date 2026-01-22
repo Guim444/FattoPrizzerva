@@ -26,7 +26,6 @@ public class LArrow : MonoBehaviour
         KnightsGameManager.instance.CallMoveCoroutine(knight, target);
         target.ToggleGlow(false, 1f);
         knight.Deselect();
-        KnightsGameManager.instance.NextPlayer();
     }
     private void OnMouseEnter()
     {

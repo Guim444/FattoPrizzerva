@@ -16,7 +16,10 @@ public class KnightsSquareScript : MonoBehaviour
     public KnightsSquareScript targetSquare;
     public bool isIceSquare = false;
 
+    public bool isVoid;
+
     public KnightBehavior knight;
+    public RockObstacleScript rock;
 
     private Material mat;
 
@@ -41,8 +44,6 @@ public class KnightsSquareScript : MonoBehaviour
             StartCoroutine(thisKnight.MoveKnight(this));
             thisKnight.Deselect();
             thisKnight = null;
-
-            KnightsGameManager.instance.NextPlayer();
         }
     }
     /*void OnMouseEnter()
@@ -72,12 +73,16 @@ public class KnightsSquareScript : MonoBehaviour
     }*/
     IEnumerator InitializeSquare()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitUntil(() => KnightsBoardManager.instance != null);
 
         KnightsBoardManager.instance.squares.Add(name, this);
         if (isIceSquare)
         {
             mat.color = Color.cyan * 0.5f;
+        }
+        else if (isVoid)
+        {
+            GetComponent<Renderer>().enabled = false;
         }
         if (KnightsBoardManager.instance.squares.Count == KnightsBoardManager.instance.height * KnightsBoardManager.instance.width)
         {
@@ -102,7 +107,6 @@ public class KnightsSquareScript : MonoBehaviour
             mat.DisableKeyword("_EMISSION");
 
             mat.color = isIceSquare ? Color.cyan * 0.5f : originalColor;
-            
         }
     }
 }

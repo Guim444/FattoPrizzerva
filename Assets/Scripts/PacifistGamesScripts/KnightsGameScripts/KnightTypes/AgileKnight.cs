@@ -50,7 +50,6 @@ public class AgileKnight : KnightBehavior
 
         if (enemyToPush != null && pushDirection != Vector2Int.zero && enemyStartSquare == square)
         {
-            enemyToPush.currentSquare = enemyStartSquare;
             StartCoroutine(PushForce(enemyToPush, pushDirection, 2, allowIce: true));
         }
 
