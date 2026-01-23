@@ -23,6 +23,8 @@ public class KnightsSquareScript : MonoBehaviour
 
     private Material mat;
 
+    public bool heavenStartZone = false, hellStartZone = false;
+
     public void Awake()
     {
         originalColor = GetComponent<Renderer>().material.color;
@@ -38,13 +40,38 @@ public class KnightsSquareScript : MonoBehaviour
     }
     public void OnMouseDown()
     {
-        if (KnightsGameManager.instance.selectedKnight != null && selectableSquare)
+        if (KnightsGameManager.instance.selectedKnight != null)
         {
             KnightBehavior thisKnight = KnightsGameManager.instance.selectedKnight;
-            StartCoroutine(thisKnight.MoveKnight(this));
-            thisKnight.Deselect();
-            thisKnight = null;
+
+            if (KnightsGameManager.instance.gameHasStarted && selectableSquare)
+            {
+                StartCoroutine(thisKnight.MoveKnight(this));
+                thisKnight.Deselect();
+                thisKnight = null;
+            }
+            else
+            {
+                if ((KnightsGameManager.instance.currentPlayer == 1 && heavenStartZone) || (KnightsGameManager.instance.currentPlayer == 2 && hellStartZone))
+                {
+                    thisKnight.ToggleGlow(false, 1);
+
+                    thisKnight.transform.position = knightPosition;
+
+                    thisKnight.currentSquare.knight = null;
+                    thisKnight.currentSquare.empty = true;
+
+                    thisKnight.currentSquare = this;
+
+                    knight = thisKnight;
+                    empty = false;
+
+                    thisKnight = null;
+                }
+            }
         }
+        else
+            Debug.Log("Por algun motivo no entra directamente");
     }
     /*void OnMouseEnter()
     {
@@ -87,7 +114,18 @@ public class KnightsSquareScript : MonoBehaviour
         if (KnightsBoardManager.instance.squares.Count == KnightsBoardManager.instance.height * KnightsBoardManager.instance.width)
         {
             //KnightsGameManager.instance.StartGame();
-            KnightsBoardManager.instance.Test();
+
+            foreach (var data in KnightsBoardManager.instance.squares)
+            {
+                if (data.Value.heavenStartZone)
+                    KnightsBoardManager.instance.player1StartZone.Add(data.Value);
+                else if (data.Value.hellStartZone)
+                    KnightsBoardManager.instance.player2StartZone.Add(data.Value);
+            }
+
+            //KnightsBoardManager.instance.Test();
+            KnightsBoardManager.instance.TestStartZone();
+            KnightsBoardManager.instance.SetObstacles();
         }
     }
     public void ToggleGlow(bool glow, float intensity)
@@ -95,11 +133,13 @@ public class KnightsSquareScript : MonoBehaviour
         if (glow)
         {
             Color glowColor = Color.purple;
+
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", glowColor * intensity);
+
             mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
 
-            mat.color = isIceSquare ? Color.cyan * 0.5f : Color.white;
+            mat.color = isIceSquare ? Color.cyan * 0.5f : mat.color;
         }
         else
         {
@@ -108,5 +148,11 @@ public class KnightsSquareScript : MonoBehaviour
 
             mat.color = isIceSquare ? Color.cyan * 0.5f : originalColor;
         }
+    }
+
+    public void TurnVoid()
+    {
+        isVoid = true;
+        GetComponent<MeshRenderer>().enabled = false;
     }
 }

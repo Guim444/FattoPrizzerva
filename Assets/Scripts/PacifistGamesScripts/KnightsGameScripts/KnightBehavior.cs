@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AppUI.Core;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.Splines.ExtrusionShapes;
 
@@ -37,10 +38,21 @@ public abstract class KnightBehavior : MonoBehaviour
 
     protected virtual void OnMouseDown()
     {
-        if (player == KnightsGameManager.instance.currentPlayer && KnightsGameManager.instance.playerIsActive)
+        if (KnightsGameManager.instance.gameHasStarted)
         {
-            KnightsGameManager.instance.selectedKnight = this;
-            CalcPaths();
+            if (player == KnightsGameManager.instance.currentPlayer && KnightsGameManager.instance.playerIsActive)
+            {
+                KnightsGameManager.instance.selectedKnight = this;
+                CalcPaths();
+            }
+        }
+        else
+        {
+            if (player == KnightsGameManager.instance.currentPlayer)
+            {
+                KnightsGameManager.instance.selectedKnight = this;
+                ToggleGlow(true, 0.5f);
+            }
         }
     }
 
@@ -546,10 +558,13 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public void Deselect()
     {
+        if (!KnightsGameManager.instance.gameHasStarted)
+        {
+            ToggleGlow(false, 1);
+        }
         foreach (var sq in possiblePaths)
         {
             sq.selectableSquare = false;
-            //sq.ToggleGlow(false, 1);
         }
         foreach (var arrow in KnightsGameManager.instance.arrows)
         {
@@ -780,5 +795,24 @@ public abstract class KnightBehavior : MonoBehaviour
 
         KnightsBoardManager.instance.knightList.Remove(this);
         Destroy(gameObject);
+    }
+
+
+    public void ToggleGlow(bool glow, float intensity)
+    {
+        if (glow)
+        {
+            Color glowColor = mat.color;
+
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", glowColor * intensity);
+
+            mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+        }
+        else
+        {
+            mat.SetColor("_EmissionColor", Color.white);
+            mat.DisableKeyword("_EMISSION");
+        }
     }
 }

@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class KnightsGameManager : MonoBehaviour
 {
@@ -11,7 +14,10 @@ public class KnightsGameManager : MonoBehaviour
     public KnightBehavior selectedKnight;
     public KnightsSquareScript selectedSquare;
 
+    public bool gameHasStarted;
     public bool playerIsActive;
+
+    public int playerSelectionCount = 0;
 
     public bool canMove;
 
@@ -25,6 +31,9 @@ public class KnightsGameManager : MonoBehaviour
     public GameObject arrowPrefab;
     public GameObject invertedArrowPrefab;
     public List<GameObject> arrows;
+
+    [Header("UI Elements")]
+    public GameObject button;
 
     void Awake()
     {
@@ -70,17 +79,29 @@ public class KnightsGameManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.tag == "Arrow")
+                if (gameHasStarted)
                 {
-                    selectedSquare = hit.collider.GetComponent<LArrow>().target;
-                    return true;
-                }
+                    if (hit.collider.tag == "Arrow")
+                    {
+                        selectedSquare = hit.collider.GetComponent<LArrow>().target;
+                        return true;
+                    }
 
-                KnightsSquareScript square = hit.collider.GetComponent<KnightsSquareScript>();
-                if (square != null && square.selectableSquare)
+                    KnightsSquareScript square = hit.collider.GetComponent<KnightsSquareScript>();
+                    if (square != null && square.selectableSquare)
+                    {
+                        selectedSquare = square;
+                        return true;
+                    }
+                }
+                else
                 {
-                    selectedSquare = square;
-                    return true;
+                    KnightsSquareScript square = hit.collider.GetComponent<KnightsSquareScript>();
+                    if (square != null && square.empty && (square.heavenStartZone || square.hellStartZone))
+                    {
+                        selectedSquare = square;
+                        return true;
+                    }
                 }
             }
 
@@ -90,6 +111,12 @@ public class KnightsGameManager : MonoBehaviour
     }
     public void NextPlayer()
     {
+        if (KnightsBoardManager.instance.player1StartZoneActive)
+            KnightsBoardManager.instance.CheckStartZone(1);
+
+        if (KnightsBoardManager.instance.player2StartZoneActive)
+            KnightsBoardManager.instance.CheckStartZone(2);
+
         Debug.Log("Llamado");
         currentPlayer = currentPlayer == 1 ? 2 : 1;
         playerIsActive = true;
@@ -131,5 +158,80 @@ public class KnightsGameManager : MonoBehaviour
     {
         //This is needed to start the movement when the arrow is clicked, because when it is destroyed, the coroutine stops.
         StartCoroutine(knight.MoveKnight(targetSquare));
+    }
+
+    public void ConfirmStartPosition()
+    {
+        currentPlayer = currentPlayer == 1 ? 2 : 1;
+
+        playerSelectionCount++;
+
+        if (playerSelectionCount > 2)
+        {
+            gameHasStarted = true;
+            List<KnightsSquareScript> allStartZones = new List<KnightsSquareScript>();
+            allStartZones.AddRange(KnightsBoardManager.instance.player1StartZone);
+            allStartZones.AddRange(KnightsBoardManager.instance.player2StartZone);
+
+            foreach (KnightsSquareScript sq in allStartZones)
+            {
+                sq.ToggleGlow(false, 1);
+
+                if (sq.knight != null)
+                {
+                    sq.knight.GetComponent<Renderer>().enabled = true;
+                }
+            }
+
+            button.SetActive(false);            
+        }
+        else
+        {
+            if (currentPlayer == 1)
+            {
+                foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player1StartZone)
+                {
+                    sq.ToggleGlow(true, 1);
+
+                    if (sq.knight != null)
+                    {
+                        sq.knight.GetComponent<Renderer>().enabled = true;
+                    }
+                }
+                foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player2StartZone)
+                {
+                    sq.ToggleGlow(false, 1);
+
+                    if (sq.knight != null)
+                    {
+                        sq.knight.GetComponent<Renderer>().enabled = false;
+                    }
+                }
+            }
+
+            else if (currentPlayer == 2)
+            {
+                foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player1StartZone)
+                {
+                    sq.ToggleGlow(false, 1);
+
+                    if (sq.knight != null)
+                    {
+                        sq.knight.GetComponent<Renderer>().enabled = false;
+                    }
+                }
+                foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player2StartZone)
+                {
+                    sq.ToggleGlow(true, 1);
+
+                    if (sq.knight != null)
+                    {
+                        sq.knight.GetComponent<Renderer>().enabled = true;
+                    }
+                }
+            }
+
+            button.GetComponentInChildren<TextMeshProUGUI>().text = "Player " + currentPlayer + "'s turn";
+        }
     }
 }

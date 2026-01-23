@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Splines.ExtrusionShapes;
 
 public class KnightsBoardManager : MonoBehaviour
 {
@@ -7,6 +8,12 @@ public class KnightsBoardManager : MonoBehaviour
     public static KnightsBoardManager instance;
     public Dictionary<string, KnightsSquareScript> squares = new Dictionary<string, KnightsSquareScript>();
     public List<KnightBehavior> knightList = new List<KnightBehavior>();
+
+    public bool player1StartZoneActive = true, player2StartZoneActive = true;
+    public List<KnightsSquareScript> player1StartZone;
+    public List<KnightsSquareScript> player2StartZone;
+
+    public List<RockObstacleScript> obstacles = new List<RockObstacleScript>();
 
     private void Awake()
     {
@@ -25,6 +32,85 @@ public class KnightsBoardManager : MonoBehaviour
             return square;
         return null;
     }
+
+    public void TestStartZone()
+    {
+        int spawned = 0;
+
+        List<KnightsSquareScript> orderedSquares = new List<KnightsSquareScript>(player1StartZone);
+        orderedSquares.Sort((a, b) =>
+        {
+            int rowCompare = a.SquareRow.CompareTo(b.SquareRow);
+            if (rowCompare != 0)
+                return rowCompare;
+
+            return a.SquareColumn.CompareTo(b.SquareColumn);
+        });
+
+        foreach (KnightsSquareScript sq in orderedSquares)
+        {
+            if (spawned >= 3)
+                break;
+
+            if (!sq.empty)
+                continue;
+
+            GameObject knightObj = Instantiate(KnightsGameManager.instance.agileKnightPrefab);
+            KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
+            knightList.Add(knight);
+
+            knight.GetComponent<MeshRenderer>().material.color = Color.skyBlue;
+            knight.player = 1;
+            knight.currentSquare = sq;
+            knight.transform.position = sq.knightPosition;
+
+            sq.knight = knight;
+            sq.empty = false;
+
+            spawned++;
+        }
+
+        spawned = 0;
+        orderedSquares.Clear();
+
+        orderedSquares = new List<KnightsSquareScript>(player2StartZone);
+        orderedSquares.Sort((a, b) =>
+        {
+            int rowCompare = a.SquareRow.CompareTo(b.SquareRow);
+            if (rowCompare != 0)
+                return rowCompare;
+
+            return a.SquareColumn.CompareTo(b.SquareColumn);
+        });
+
+        foreach (KnightsSquareScript sq in orderedSquares)
+        {
+            if (spawned >= 3)
+                break;
+
+            if (!sq.empty)
+                continue;
+
+            GameObject randKnight = Random.Range(0, 2) == 0 ? KnightsGameManager.instance.agileKnightPrefab : KnightsGameManager.instance.tucutuKnightPrefab;
+
+            GameObject knightObj = Instantiate(randKnight);
+            KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
+            knightList.Add(knight);
+
+            knight.GetComponent<MeshRenderer>().material.color = Color.red;
+            knight.player = 2;
+            knight.currentSquare = sq;
+            knight.transform.position = sq.knightPosition;
+
+            sq.knight = knight;
+            sq.empty = false;
+
+            spawned++;
+        }
+
+        KnightsGameManager.instance.ConfirmStartPosition();
+    }
+
     public void SpawnKnights(int spawnedKnights)
     {
         int spawned = 0;
@@ -182,4 +268,42 @@ public class KnightsBoardManager : MonoBehaviour
         }
     }
 
+    public void CheckStartZone(int player)
+    {
+        bool startZoneIsEmpty = true;
+        List<KnightsSquareScript> startZone;
+        if (player == 1)
+            startZone = player1StartZone;
+        else
+            startZone = player2StartZone;
+
+        foreach (KnightsSquareScript sq in startZone)
+        {
+            if (!sq.empty)
+            {
+                startZoneIsEmpty = false;
+                break;
+            }
+        }
+        if (startZoneIsEmpty)
+        {
+            if (player == 1)
+                player1StartZoneActive = false;
+            else
+                player2StartZoneActive = false;
+
+            foreach (KnightsSquareScript sq in startZone)
+                {
+                    sq.TurnVoid();
+                }
+        }
+    }
+
+    public void SetObstacles()
+    {
+        foreach (RockObstacleScript rock in obstacles)
+        {
+            rock.SetDangerousSquares();
+        }
+    }
 }
