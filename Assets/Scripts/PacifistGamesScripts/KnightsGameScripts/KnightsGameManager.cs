@@ -117,7 +117,6 @@ public class KnightsGameManager : MonoBehaviour
         if (KnightsBoardManager.instance.player2StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(2);
 
-        Debug.Log("Llamado");
         currentPlayer = currentPlayer == 1 ? 2 : 1;
         playerIsActive = true;
 

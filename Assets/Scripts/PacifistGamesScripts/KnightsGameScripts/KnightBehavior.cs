@@ -21,6 +21,7 @@ public abstract class KnightBehavior : MonoBehaviour
     public bool canContinue = true;
 
     bool isDead = false;
+    bool spikyRockCrash = false;
 
     public Vector2Int slideDirection; //for ice squares.
     public Vector2Int lookingDirection;
@@ -158,7 +159,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
     protected virtual bool CanMoveTo(KnightsSquareScript target)
     {
-        return target.empty || target.knight != null;
+        return target.empty || target.knight != null || target.rock != null;
     }
 
     public virtual IEnumerator MoveKnight(KnightsSquareScript targetSquare)
@@ -253,19 +254,25 @@ public abstract class KnightBehavior : MonoBehaviour
             }
             else
             {
-                Debug.Log("A");
+
+                Debug.Log("Pasa");
                 stepsMoved = 3;
 
-                if (!grounded)
+                if (spikyRockCrash)
+                {
+                    Debug.Log("Por aqui?");
+                    yield return StartCoroutine(GetImpaled(sq.rock));
+                }
+                else if (!grounded)
                 {
                     yield return StartCoroutine(ForceLanding(currentSquare.knightPosition));
+
+                    grounded = true;
+                    canContinue = true;
+
+                    currentSquare.knight = this;
+                    currentSquare.empty = false;
                 }
-
-                grounded = true;
-                canContinue = true;
-
-                currentSquare.knight = this;
-                currentSquare.empty = false;
 
                 KnightsGameManager.instance.EndMovement(this);
 
@@ -278,7 +285,6 @@ public abstract class KnightBehavior : MonoBehaviour
             {
                 i = path.Count;
                 stepsMoved = 3;
-
             }
 
             transitSquare = null;
@@ -311,6 +317,14 @@ public abstract class KnightBehavior : MonoBehaviour
         {
             isDead = true;
         }
+        else if (square.rock != null && square.rock.dangerousSquares.Contains(currentSquare))
+        {
+            Debug.Log("F");
+            spikyRockCrash = true;
+            canContinue = false;
+
+            KnightsGameManager.instance.EndMovement(this);
+        }
 
         if (canContinue) //true by default
             OnApproach(square);
@@ -325,6 +339,12 @@ public abstract class KnightBehavior : MonoBehaviour
         if (square.isVoid && grounded)
         {
             yield return StartCoroutine(KillKnight(square));
+        }
+        else if (square.rock != null)
+        {
+            currentSquare = previousSquare;
+            yield return StartCoroutine(ForceLanding(currentSquare.knightPosition));
+            OnArrive(currentSquare);
         }
         else
             OnArrive(square);
@@ -374,12 +394,20 @@ public abstract class KnightBehavior : MonoBehaviour
             if (sq.rock != null)
             {
                 //Found a rock
-                Debug.Log("Detecta una roca");
-                if (grounded || (!grounded && sq.rock.isTall))
+                if (sq.rock.spikes.Count == 0)
                 {
-                    Debug.Log("Se come la roca");
-                    return false;
+                    if (grounded || (!grounded && sq.rock.isTall))
+                    {
+                        return false;
+                    }
                 }
+                else if (sq.rock.dangerousSquares.Contains(currentSquare))
+                {
+                    //Yeah a knight will die here
+                    return true;
+                }
+                else
+                    return false;
             }
             if (sq.empty)
             {
@@ -554,6 +582,53 @@ public abstract class KnightBehavior : MonoBehaviour
 
         transform.position = targetPos;
         isMoving = false;
+    }
+    public IEnumerator GetImpaled(RockObstacleScript rock)
+    {
+        grounded = true;
+        isMoving = true;
+        float elapsed = 0f;
+        float duration = 0.3f;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = new Vector3(
+            rock.currentSquare.knightPosition.x * 4 + currentSquare.knightPosition.x,
+            (rock.currentSquare.knightPosition.y + 0.25f) * 5, //just *5 cuz at the end of the line we do /5. I want "rock.currentSquare.knightPosition.y + 0.25f" to be the final result.
+            rock.currentSquare.knightPosition.z * 4 + currentSquare.knightPosition.z) / 5;
+
+        while (elapsed < 1)
+        {
+            elapsed += Time.deltaTime / duration;
+            transform.position = Vector3.Lerp(startPos, endPos, elapsed);
+            yield return null;
+        }
+
+        isMoving = false;
+        KnightsBoardManager.instance.knightList.Remove(this);
+        rock.dangerousSquares.Remove(currentSquare);
+
+        GetComponent<BoxCollider>().enabled = false;
+    }
+    public IEnumerator GetOutOfImpalation(RockObstacleScript rock)
+    {
+        isMoving = true;
+        float elapsed = 0f;
+        float duration = 0.3f;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = currentSquare.knightPosition;
+
+        while (elapsed < 1)
+        {
+            elapsed += Time.deltaTime / duration;
+            transform.position = Vector3.Lerp(startPos, endPos, elapsed);
+            yield return null;
+        }
+
+        isMoving = false;
+        KnightsBoardManager.instance.knightList.Add(this);
+        rock.dangerousSquares.Add(currentSquare);
+
+        if (KnightsGameManager.instance.currentPlayer == player)
+            GetComponent<BoxCollider>().enabled = true;
     }
 
     public void Deselect()

@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.5, y: 1.6, z: 1.5}
-  m_LocalScale: {x: 0.75, y: 2, z: 0.75}
+  m_LocalScale: {x: 0.8, y: 2, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7216211542546758734}
@@ -127,8 +127,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RockObstacleScript
   isTall: 1
   isBreakable: 0
+  currentSquare: {fileID: 0}
   spikes:
   - {fileID: 4831057235792217506}
+  dangerousSquares: []
 --- !u!1 &4831057235792217506
 GameObject:
   m_ObjectHideFlags: 0

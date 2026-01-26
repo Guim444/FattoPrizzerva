@@ -70,8 +70,7 @@ public class KnightsSquareScript : MonoBehaviour
                 }
             }
         }
-        else
-            Debug.Log("Por algun motivo no entra directamente");
+
     }
     /*void OnMouseEnter()
     {

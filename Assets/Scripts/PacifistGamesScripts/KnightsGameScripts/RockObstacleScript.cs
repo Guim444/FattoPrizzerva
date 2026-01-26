@@ -37,8 +37,6 @@ public class RockObstacleScript : MonoBehaviour
         col += (char)stepY;
         row += stepX;
 
-        Debug.Log((char)col + "" + row);
-
         return KnightsBoardManager.instance.GetSquare(col.ToString() + row);
     }
 }
