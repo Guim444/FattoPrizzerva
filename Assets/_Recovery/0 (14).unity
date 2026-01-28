@@ -255,8 +255,7 @@ MonoBehaviour:
   pathSquare: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
+  isWaterSquare: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -397,7 +396,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -538,7 +536,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -679,7 +676,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 1
@@ -820,7 +816,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -961,7 +956,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 1
@@ -1180,7 +1174,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -1321,7 +1314,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -1462,7 +1454,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -1603,61 +1594,9 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
---- !u!1 &305096289
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 305096290}
-  - component: {fileID: 305096291}
-  m_Layer: 0
-  m_Name: WaterCourse1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &305096290
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305096289}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1839895809}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &305096291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305096289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01272a2e4ce2c504d9bf15786f4a0634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterCourse
-  intermitent: 0
-  courseDirection: {x: 1, y: 0}
-  waterCourseSquares:
-  - {fileID: 1270031758}
-  - {fileID: 10853697}
-  - {fileID: 963337909}
-  - {fileID: 1882339402}
 --- !u!1 &316059364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1795,7 +1734,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -1936,7 +1874,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -2179,7 +2116,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 1
@@ -2320,7 +2256,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -2461,7 +2396,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 1
   hellStartZone: 0
@@ -2602,7 +2536,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -2743,7 +2676,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -2884,7 +2816,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -3025,7 +2956,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 1
   hellStartZone: 0
@@ -3166,7 +3096,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -3307,7 +3236,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 1
   hellStartZone: 0
@@ -3448,7 +3376,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -3589,7 +3516,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -3730,7 +3656,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -3871,7 +3796,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4012,7 +3936,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4153,7 +4076,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4294,7 +4216,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 1
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4507,7 +4428,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4648,7 +4568,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4789,7 +4708,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -4969,7 +4887,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -5110,7 +5027,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -5399,7 +5315,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -5540,7 +5455,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -5760,7 +5674,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 1
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -5901,7 +5814,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -6081,7 +5993,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -6447,7 +6358,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 1
   hellStartZone: 0
@@ -6588,7 +6498,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -6728,8 +6637,7 @@ MonoBehaviour:
   pathSquare: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
+  isWaterSquare: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -6869,8 +6777,7 @@ MonoBehaviour:
   pathSquare: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
+  isWaterSquare: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -7011,7 +6918,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -7152,7 +7058,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -7420,7 +7325,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -7561,7 +7465,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -7838,7 +7741,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 1
   hellStartZone: 0
@@ -7953,7 +7855,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 189352697}
-  - {fileID: 1839895809}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1349677714
@@ -7978,9 +7879,7 @@ MonoBehaviour:
   obstacles:
   - {fileID: 1001564069}
   - {fileID: 818866311}
-  waterCourses:
-  - {fileID: 305096291}
-  - {fileID: 2011265459}
+  waterCourse: []
 --- !u!1 &1412834923
 GameObject:
   m_ObjectHideFlags: 0
@@ -8251,7 +8150,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 1
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -8392,7 +8290,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -8533,7 +8430,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 1
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -8674,7 +8570,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -8815,7 +8710,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -8995,7 +8889,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -9175,7 +9068,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -9316,7 +9208,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 1
@@ -9496,7 +9387,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 1
@@ -9637,7 +9527,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -9778,7 +9667,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 1
   hellStartZone: 0
@@ -9919,7 +9807,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 1
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -10099,43 +9986,9 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
---- !u!1 &1839895808
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1839895809}
-  m_Layer: 0
-  m_Name: WaterCourses
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1839895809
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1839895808}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 305096290}
-  - {fileID: 2011265458}
-  m_Father: {fileID: 1349677713}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1882339396
 GameObject:
   m_ObjectHideFlags: 0
@@ -10273,7 +10126,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -10453,7 +10305,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -10518,56 +10369,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 089d16dee0669924888e21678a45ba46, type: 3}
---- !u!1 &2011265457
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2011265458}
-  - component: {fileID: 2011265459}
-  m_Layer: 0
-  m_Name: WaterCourse2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2011265458
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2011265457}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1839895809}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2011265459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2011265457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01272a2e4ce2c504d9bf15786f4a0634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterCourse
-  intermitent: 0
-  courseDirection: {x: 0, y: -1}
-  waterCourseSquares:
-  - {fileID: 1463232051}
-  - {fileID: 1270311779}
-  - {fileID: 1882339402}
 --- !u!1 &2064273555
 GameObject:
   m_ObjectHideFlags: 0
@@ -10705,7 +10506,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 0
@@ -10846,7 +10646,6 @@ MonoBehaviour:
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
   heavenStartZone: 0
   hellStartZone: 1

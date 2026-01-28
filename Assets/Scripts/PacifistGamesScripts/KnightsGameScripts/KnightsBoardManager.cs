@@ -14,6 +14,7 @@ public class KnightsBoardManager : MonoBehaviour
     public List<KnightsSquareScript> player2StartZone;
 
     public List<RockObstacleScript> obstacles = new List<RockObstacleScript>();
+    public List<WaterCourse> waterCourses = new List<WaterCourse>();
 
     private void Awake()
     {

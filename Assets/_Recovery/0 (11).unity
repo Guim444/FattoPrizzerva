@@ -248,16 +248,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &13536988
@@ -389,16 +386,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &109640608
@@ -530,16 +524,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &113730787
@@ -671,16 +662,13 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &130310531
@@ -812,16 +800,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &152484262
@@ -953,16 +938,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &189352696
@@ -1172,16 +1154,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &260612011
@@ -1313,16 +1292,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &277645734
@@ -1454,16 +1430,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &293376282
@@ -1595,69 +1568,15 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
---- !u!1 &305096289
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 305096290}
-  - component: {fileID: 305096291}
-  m_Layer: 0
-  m_Name: WaterCourse1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &305096290
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305096289}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1839895809}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &305096291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305096289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01272a2e4ce2c504d9bf15786f4a0634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterCourse
-  intermitent: 0
-  courseDirection: {x: 1, y: 0}
-  waterCourseSquares:
-  - {fileID: 1270031758}
-  - {fileID: 10853697}
-  - {fileID: 963337909}
-  - {fileID: 1882339402}
 --- !u!1 &316059364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1787,16 +1706,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &332616865
@@ -1928,16 +1844,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &338720574
@@ -2171,16 +2084,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &371428018
@@ -2312,16 +2222,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &397339797
@@ -2453,16 +2360,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &508846433
@@ -2594,16 +2498,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &546368058
@@ -2735,16 +2636,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &554619931
@@ -2876,16 +2774,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &661676730
@@ -3017,16 +2912,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &687711778
@@ -3158,16 +3050,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &706921634
@@ -3299,16 +3188,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &720142976
@@ -3440,16 +3326,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 0
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 818866311}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 818866311}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &723381498
@@ -3581,16 +3464,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &732039669
@@ -3722,16 +3602,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &740362241
@@ -3863,16 +3740,13 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &744353993
@@ -4004,16 +3878,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &807548790
@@ -4145,16 +4016,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &818413964
@@ -4286,16 +4154,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 1
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1001 &818866310
@@ -4499,16 +4364,13 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &909891199
@@ -4640,16 +4502,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &920761040
@@ -4781,16 +4640,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &930258784
@@ -4961,16 +4817,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &998496704
@@ -5102,16 +4955,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!114 &1001564069 stripped
@@ -5391,16 +5241,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1064073341
@@ -5532,16 +5379,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1066221924
@@ -5752,16 +5596,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 1
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1147554863
@@ -5893,16 +5734,13 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1181737738
@@ -6073,16 +5911,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1221422200
@@ -6439,16 +6274,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &1255264284
@@ -6580,16 +6412,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1270031752
@@ -6721,16 +6550,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1270311773
@@ -6862,16 +6688,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1283433562
@@ -7003,16 +6826,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1295405162
@@ -7144,16 +6964,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1314311694
@@ -7412,16 +7229,13 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1316816588
@@ -7553,16 +7367,13 @@ MonoBehaviour:
   SquareRow: 5
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1325594833
@@ -7830,16 +7641,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &1349677708
@@ -7953,7 +7761,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 189352697}
-  - {fileID: 1839895809}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1349677714
@@ -7978,9 +7785,6 @@ MonoBehaviour:
   obstacles:
   - {fileID: 1001564069}
   - {fileID: 818866311}
-  waterCourses:
-  - {fileID: 305096291}
-  - {fileID: 2011265459}
 --- !u!1 &1412834923
 GameObject:
   m_ObjectHideFlags: 0
@@ -8243,16 +8047,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 1
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1425270226
@@ -8384,16 +8185,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1428872917
@@ -8525,16 +8323,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 1
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1447288210
@@ -8666,16 +8461,13 @@ MonoBehaviour:
   SquareRow: 4
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1463232045
@@ -8807,16 +8599,13 @@ MonoBehaviour:
   SquareRow: 3
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1494783074
@@ -8987,16 +8776,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 0
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 1001564069}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 1001564069}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1525628510
@@ -9167,16 +8953,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1597020531
@@ -9308,16 +9091,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &1612916130
@@ -9488,16 +9268,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &1674459141
@@ -9629,16 +9406,13 @@ MonoBehaviour:
   SquareRow: 2
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1698658602
@@ -9770,16 +9544,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &1748658051
@@ -9911,16 +9682,13 @@ MonoBehaviour:
   SquareRow: 6
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 1
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1776890597
@@ -10091,51 +9859,15 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
---- !u!1 &1839895808
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1839895809}
-  m_Layer: 0
-  m_Name: WaterCourses
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1839895809
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1839895808}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 305096290}
-  - {fileID: 2011265458}
-  m_Father: {fileID: 1349677713}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1882339396
 GameObject:
   m_ObjectHideFlags: 0
@@ -10265,16 +9997,13 @@ MonoBehaviour:
   SquareRow: 1
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 1
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1897761757
@@ -10445,16 +10174,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1001 &1995104733
@@ -10518,56 +10244,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 089d16dee0669924888e21678a45ba46, type: 3}
---- !u!1 &2011265457
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2011265458}
-  - component: {fileID: 2011265459}
-  m_Layer: 0
-  m_Name: WaterCourse2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2011265458
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2011265457}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1839895809}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2011265459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2011265457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01272a2e4ce2c504d9bf15786f4a0634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WaterCourse
-  intermitent: 0
-  courseDirection: {x: 0, y: -1}
-  waterCourseSquares:
-  - {fileID: 1463232051}
-  - {fileID: 1270311779}
-  - {fileID: 1882339402}
 --- !u!1 &2064273555
 GameObject:
   m_ObjectHideFlags: 0
@@ -10697,16 +10373,13 @@ MonoBehaviour:
   SquareRow: 8
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &2114159865
@@ -10838,16 +10511,13 @@ MonoBehaviour:
   SquareRow: 7
   empty: 1
   knightPosition: {x: 0, y: 0, z: 0}
-  targetSquare: {fileID: 0}
-  knight: {fileID: 0}
-  rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
-  waterCourseDirection: {x: 0, y: 0}
+  targetSquare: {fileID: 0}
   isIceSquare: 0
-  isWaterSquare: 0
-  isWaterCourseCrossing: 0
   isVoid: 0
+  knight: {fileID: 0}
+  rock: {fileID: 0}
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1660057539 &9223372036854775807

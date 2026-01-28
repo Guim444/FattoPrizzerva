@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ public class KnightsGameManager : MonoBehaviour
     public bool canMove;
 
     public HashSet<KnightBehavior> activeMovements = new();
+    public HashSet<KnightBehavior> movementsInTheRound = new();
 
     [Header("Knight Prefabs")]
     public GameObject agileKnightPrefab;
@@ -111,6 +113,11 @@ public class KnightsGameManager : MonoBehaviour
     }
     public void NextPlayer()
     {
+        if (movementsInTheRound.Count > 0 && KnightsBoardManager.instance.waterCourses.Count > 0)
+        {
+            WaterCourse();
+        }
+
         if (KnightsBoardManager.instance.player1StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(1);
 
@@ -123,20 +130,39 @@ public class KnightsGameManager : MonoBehaviour
         foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
         {
             //Ensure every knight has its square assigned.
-
-            knight.currentSquare.knight = knight;
-            knight.currentSquare.empty = false;
+            if (!knight.isDead)
+            {
+                knight.currentSquare.knight = knight;
+                knight.currentSquare.empty = false;
+            }
 
             if (knight.player == currentPlayer)
                 knight.GetComponent<BoxCollider>().enabled = true;
             else
                 knight.GetComponent<BoxCollider>().enabled = false;
         }
+        movementsInTheRound.Clear();
+    }
+
+    public void WaterCourse()
+    {
+        foreach (WaterCourse waterCourse in KnightsBoardManager.instance.waterCourses)
+        {
+            foreach (KnightsSquareScript sq in waterCourse.waterCourseSquares)
+            {
+                if (movementsInTheRound.Contains(sq.knight))
+                {
+                    KnightBehavior knight = sq.knight;
+                    StartCoroutine(knight.WaterCourseCoroutine(sq));
+                }
+            }
+        }
     }
 
     public void BeginMovement(KnightBehavior knight)
     {
         activeMovements.Add(knight);
+        movementsInTheRound.Add(knight);
         canMove = false;
     }
 

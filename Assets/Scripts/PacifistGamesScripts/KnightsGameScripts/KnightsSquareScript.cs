@@ -10,18 +10,23 @@ public class KnightsSquareScript : MonoBehaviour
     public int SquareRow;
     public bool empty = true; //default = true
     public Vector3 knightPosition;
-    public bool selectableSquare = false;
-
-    public bool pathSquare = false;
     public KnightsSquareScript targetSquare;
-    public bool isIceSquare = false;
-
-    public bool isVoid;
 
     public KnightBehavior knight;
     public RockObstacleScript rock;
 
     private Material mat;
+
+    public bool selectableSquare = false;
+    public bool pathSquare = false;
+
+    public Vector2Int waterCourseDirection = Vector2Int.zero;
+
+    [Header("Terrain flags")]
+    public bool isIceSquare = false;
+    public bool isWaterSquare = false;
+    public bool isWaterCourseCrossing = false;
+    public bool isVoid;
 
     public bool heavenStartZone = false, hellStartZone = false;
 
@@ -72,31 +77,6 @@ public class KnightsSquareScript : MonoBehaviour
         }
 
     }
-    /*void OnMouseEnter()
-    {
-        if (!selectableSquare && !pathSquare)
-            return;
-
-        if (pathSquare)
-        {
-            ToggleGlow(true, 0.6f);
-        }
-        else
-        {
-            ToggleGlow(true, 1f);
-        }
-    }
-
-    void OnMouseExit()
-    {
-        if (!selectableSquare && !pathSquare)
-            return;
-
-        if (!selectableSquare)
-            ToggleGlow(true, 0.2f);
-        else
-            ToggleGlow(true, 0.6f);
-    }*/
     IEnumerator InitializeSquare()
     {
         yield return new WaitUntil(() => KnightsBoardManager.instance != null);
@@ -105,6 +85,12 @@ public class KnightsSquareScript : MonoBehaviour
         if (isIceSquare)
         {
             mat.color = Color.cyan * 0.5f;
+            originalColor = mat.color;
+        }
+        else if (isWaterSquare)
+        {
+            mat.color = Color.mediumBlue;
+            originalColor = mat.color;
         }
         else if (isVoid)
         {
@@ -145,7 +131,7 @@ public class KnightsSquareScript : MonoBehaviour
             mat.SetColor("_EmissionColor", Color.white);
             mat.DisableKeyword("_EMISSION");
 
-            mat.color = isIceSquare ? Color.cyan * 0.5f : originalColor;
+            mat.color = originalColor;
         }
     }
 
