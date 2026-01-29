@@ -46,6 +46,7 @@ public class AgileKnight : KnightBehavior
 
     protected override void OnArrive(KnightsSquareScript square)
     {
+        base.OnArrive(square);
         grounded = true;
 
         if (enemyToPush != null && pushDirection != Vector2Int.zero && enemyStartSquare == square)
@@ -57,11 +58,13 @@ public class AgileKnight : KnightBehavior
         enemyStartSquare = null;
         pushDirection = Vector2Int.zero;
 
-        if (KnightsGameManager.instance.activeMovements.Count == 1 && KnightsGameManager.instance.activeMovements.Contains(this))
+        while (isMoving)
         {
-            KnightsGameManager.instance.canMove = true;
+            KnightsGameManager.instance.canMove = false;
         }
+        KnightsGameManager.instance.canMove = true;
     }
+
 
     public override void ConsumeMovementDirection()
     {

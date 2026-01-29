@@ -87,11 +87,6 @@ public class KnightsSquareScript : MonoBehaviour
             mat.color = Color.cyan * 0.5f;
             originalColor = mat.color;
         }
-        else if (isWaterSquare)
-        {
-            mat.color = Color.mediumBlue;
-            originalColor = mat.color;
-        }
         else if (isVoid)
         {
             GetComponent<Renderer>().enabled = false;

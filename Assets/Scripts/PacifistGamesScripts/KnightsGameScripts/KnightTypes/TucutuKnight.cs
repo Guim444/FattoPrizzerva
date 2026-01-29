@@ -40,6 +40,7 @@ public class TucutuKnight : KnightBehavior
     }
     protected override void OnArrive(KnightsSquareScript square)
     {
+        base.OnArrive(square);
         KnightsGameManager.instance.canMove = true;
     }
 }

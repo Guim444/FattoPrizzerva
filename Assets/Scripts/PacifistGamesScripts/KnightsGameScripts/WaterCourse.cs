@@ -6,6 +6,7 @@ public class WaterCourse : MonoBehaviour
     public bool intermitent = false;
     public Vector2Int courseDirection;
     public List<KnightsSquareScript> waterCourseSquares = new List<KnightsSquareScript>();
+    public bool dryCourse = false;
 
     private void OnEnable()
     {

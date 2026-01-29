@@ -113,11 +113,6 @@ public class KnightsGameManager : MonoBehaviour
     }
     public void NextPlayer()
     {
-        if (movementsInTheRound.Count > 0 && KnightsBoardManager.instance.waterCourses.Count > 0)
-        {
-            WaterCourse();
-        }
-
         if (KnightsBoardManager.instance.player1StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(1);
 
@@ -129,17 +124,25 @@ public class KnightsGameManager : MonoBehaviour
 
         foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
         {
-            //Ensure every knight has its square assigned.
             if (!knight.isDead)
             {
                 knight.currentSquare.knight = knight;
                 knight.currentSquare.empty = false;
             }
 
+            if (knight.player != currentPlayer)
+                knight.GetComponent<BoxCollider>().enabled = false;
+        }
+
+        if (movementsInTheRound.Count > 0 && KnightsBoardManager.instance.waterCourses.Count > 0)
+        {
+            WaterCourse();
+        }
+
+        foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
+        {
             if (knight.player == currentPlayer)
                 knight.GetComponent<BoxCollider>().enabled = true;
-            else
-                knight.GetComponent<BoxCollider>().enabled = false;
         }
         movementsInTheRound.Clear();
     }
@@ -153,7 +156,17 @@ public class KnightsGameManager : MonoBehaviour
                 if (movementsInTheRound.Contains(sq.knight))
                 {
                     KnightBehavior knight = sq.knight;
-                    StartCoroutine(knight.WaterCourseCoroutine(sq));
+
+                    Debug.Log(knight.name);
+
+                    int steps;
+
+                    if (!waterCourse.dryCourse)
+                        steps = 1;
+                    else
+                        steps = 2;
+                    
+                    StartCoroutine(knight.WaterCourseCoroutine(sq, steps, waterCourse));
                 }
             }
         }

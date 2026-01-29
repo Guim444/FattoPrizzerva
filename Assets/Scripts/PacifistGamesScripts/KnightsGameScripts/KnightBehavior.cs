@@ -19,6 +19,7 @@ public abstract class KnightBehavior : MonoBehaviour
     public bool grounded = true; // true = hits obstacles, false = ignores. Default true.
     public bool isMoving = false;
     public bool canContinue = true;
+    public bool canBreakRocks;
 
     public bool isDead = false;
     bool spikyRockCrash = false;
@@ -276,7 +277,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
                 KnightsGameManager.instance.EndMovement(this);
 
-                yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
+                yield return new WaitUntil(() => KnightsGameManager.instance.canMove && KnightsGameManager.instance.activeMovements.Count == 0);
                 KnightsGameManager.instance.NextPlayer();
                 yield break;
             }
@@ -361,7 +362,11 @@ public abstract class KnightBehavior : MonoBehaviour
     }
     protected virtual void OnDepart() { }
     protected virtual void OnApproach(KnightsSquareScript square) { }
-    protected virtual void OnArrive(KnightsSquareScript square) { }
+    protected virtual void OnArrive(KnightsSquareScript square)
+    {
+        if (!KnightsGameManager.instance.movementsInTheRound.Contains(this))
+            KnightsGameManager.instance.movementsInTheRound.Add(this);
+    }
 
     bool CheckRow(Vector2Int dir)
     {
@@ -404,7 +409,17 @@ public abstract class KnightBehavior : MonoBehaviour
             if (sq.rock != null)
             {
                 //Found a rock
-                if (sq.rock.spikes.Count == 0)
+                if (sq.rock.isBreakable && canBreakRocks)
+                {
+                    RockObstacleScript rock = sq.rock;
+                    sq.rock = null;
+
+                    if (KnightsBoardManager.instance.obstacles.Contains(rock))
+                        KnightsBoardManager.instance.obstacles.Remove(rock);
+
+                    Destroy(rock.gameObject);
+                }
+                else if (sq.rock.spikes.Count == 0)
                 {
                     if (grounded || (!grounded && sq.rock.isTall))
                     {
@@ -693,6 +708,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
         if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out var next) || (next.isVoid && enemy.grounded))
         {
+            KnightsGameManager.instance.BeginMovement(enemy);
             if (next != null)
             {
                 StartCoroutine(enemy.SmoothMove(next.knightPosition, 0.3f));
@@ -706,6 +722,9 @@ public abstract class KnightBehavior : MonoBehaviour
 
             if (KnightsGameManager.instance.movementsInTheRound.Contains(enemy))
                 KnightsGameManager.instance.movementsInTheRound.Remove(enemy);
+
+            if (!KnightsGameManager.instance.movementsInTheRound.Contains(this))
+                KnightsGameManager.instance.movementsInTheRound.Add(this);
 
             Destroy(enemy.gameObject);
             yield break;
@@ -752,7 +771,11 @@ public abstract class KnightBehavior : MonoBehaviour
         if (destination != null)
             KnightsGameManager.instance.movementsInTheRound.Add(enemy);
 
+        KnightsGameManager.instance.BeginMovement(enemy);
         yield return StartCoroutine(PushMoveCoroutine(enemy, destination.knightPosition));
+        yield return new WaitUntil(() => !enemy.isMoving);
+        KnightsGameManager.instance.EndMovement(enemy);
+
 
         if (allowIce && next.isIceSquare)
         {
@@ -927,7 +950,7 @@ public abstract class KnightBehavior : MonoBehaviour
         }
     }
 
-    public IEnumerator WaterCourseCoroutine(KnightsSquareScript sq)
+    public IEnumerator WaterCourseCoroutine(KnightsSquareScript sq, int steps, WaterCourse waterCourse)
     {
         canContinue = true;
         KnightsGameManager.instance.BeginMovement(this);
@@ -948,7 +971,15 @@ public abstract class KnightBehavior : MonoBehaviour
 
         if (canContinue)
         {
-            if (target.knight != null)
+            if (target == null)
+            {
+                KnightsGameManager.instance.EndMovement(this);
+
+                yield return StartCoroutine(KillKnight(sq));
+
+                yield break;
+            }
+            else if (target.knight != null)
             {
                 KnightBehavior pushedKnight = target.knight;
 
@@ -958,7 +989,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
                 if (pushedKnight != null && pushedKnight.currentSquare != null && pushedKnight.currentSquare.isWaterSquare)
                 {
-                    yield return StartCoroutine(pushedKnight.WaterCourseCoroutine(pushedKnight.currentSquare));
+                    yield return StartCoroutine(pushedKnight.WaterCourseCoroutine(pushedKnight.currentSquare, steps, waterCourse));
                 }
             }
 
@@ -966,7 +997,7 @@ public abstract class KnightBehavior : MonoBehaviour
             StartCoroutine(SmoothMove(target.knightPosition, 0.6f));
                 
             yield return new WaitUntil(() => !isMoving);
-            KnightsGameManager.instance.EndMovement(this);
+
             currentSquare.knight = null;
             currentSquare.empty = true;
 
@@ -974,6 +1005,27 @@ public abstract class KnightBehavior : MonoBehaviour
 
             target.knight = this;
             target.empty = false;
+
+            if (target.isWaterCourseCrossing)
+            {
+                foreach (WaterCourse wc in KnightsBoardManager.instance.waterCourses)
+                {
+                    if (wc.waterCourseSquares.Contains(currentSquare) && wc != waterCourse)
+                    {
+                        sq = currentSquare;
+                        sq.waterCourseDirection = wc.courseDirection;
+                        yield return StartCoroutine(WaterCourseCoroutine(currentSquare, steps, wc));
+
+                        yield return new WaitUntil(() => KnightsGameManager.instance.activeMovements.Count == 0);
+                        KnightsGameManager.instance.movementsInTheRound.Remove(this);
+                        sq.waterCourseDirection = new Vector2Int(0, 0);
+                    }
+                }
+            }
+            else
+            {
+                KnightsGameManager.instance.EndMovement(this);
+            }
         }
     }
 }
