@@ -22,6 +22,8 @@ public class KnightsGameManager : MonoBehaviour
 
     public bool canMove;
 
+    bool isRotating = false;
+
     public HashSet<KnightBehavior> activeMovements = new();
     public HashSet<KnightBehavior> movementsInTheRound = new();
 
@@ -50,9 +52,30 @@ public class KnightsGameManager : MonoBehaviour
 
     }
 
+    public void StartBoard(Canvas canvas)
+    {
+        Canvas sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponentInParent<Canvas>();
+        if (MapEditorData.instance != null)
+        {
+            if (int.TryParse(MapEditorData.instance.boardSizeX.text, out int x))
+            {
+                KnightsBoardManager.instance.width = x;
+            }
+
+            if (int.TryParse(MapEditorData.instance.boardSizeY.text, out int y))
+            {
+                KnightsBoardManager.instance.height = y;
+            }
+            KnightsBoardManager.instance.GenerateBoard();
+        }
+
+        sender.gameObject.SetActive(false);
+        canvas.gameObject.SetActive(true);
+    }
+
     public void StartGame()
     {
-        KnightsBoardManager.instance.SpawnKnights(4);
+        //KnightsBoardManager.instance.SpawnKnights(4);
     }
     public void OnClick(InputValue value)
     {
@@ -71,6 +94,38 @@ public class KnightsGameManager : MonoBehaviour
                 selectedKnight = null;
             }
         }
+    }
+    public void OnRotate(InputValue value)
+    {
+        if (!value.isPressed)
+            return;
+
+        if (isRotating)
+            return;
+
+        if (MapEditorData.instance.selectedObject != null)
+        {
+            StartCoroutine(RotateCoroutine(MapEditorData.instance.selectedObject.transform));
+        }
+    }
+    IEnumerator RotateCoroutine(Transform target)
+    {
+        isRotating = true;
+        Quaternion startRot = target.rotation;
+        Quaternion endRot = startRot * Quaternion.Euler(0f, 90f, 0f);
+
+        float t = 0f;
+        float duration = 0.25f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            target.rotation = Quaternion.Lerp(startRot, endRot, t);
+            yield return null;
+        }
+
+        target.rotation = endRot;
+        isRotating = false;
     }
     bool ClickHitsSelectableSquare()
     {
@@ -175,7 +230,8 @@ public class KnightsGameManager : MonoBehaviour
     public void BeginMovement(KnightBehavior knight)
     {
         activeMovements.Add(knight);
-        movementsInTheRound.Add(knight);
+        if(!movementsInTheRound.Contains(knight))
+            movementsInTheRound.Add(knight);
         canMove = false;
     }
 
@@ -218,6 +274,21 @@ public class KnightsGameManager : MonoBehaviour
                 if (sq.knight != null)
                 {
                     sq.knight.GetComponent<Renderer>().enabled = true;
+                }
+            }
+
+            for (int i = KnightsBoardManager.instance.player1StartZone.Count - 1; i >= 0; i--)
+            {
+                if (KnightsBoardManager.instance.player1StartZone[i].knight == null)
+                {
+                    KnightsBoardManager.instance.player1StartZone.RemoveAt(i);
+                }
+            }
+            for (int i = KnightsBoardManager.instance.player2StartZone.Count - 1; i >= 0; i--)
+            {
+                if (KnightsBoardManager.instance.player2StartZone[i].knight == null)
+                {
+                    KnightsBoardManager.instance.player2StartZone.RemoveAt(i);
                 }
             }
 

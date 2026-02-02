@@ -23,6 +23,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public bool isDead = false;
     bool spikyRockCrash = false;
+    bool waterResolvedThisTurn = false;
 
     public Vector2Int slideDirection; //for ice squares.
     public Vector2Int lookingDirection;
@@ -950,6 +951,7 @@ public abstract class KnightBehavior : MonoBehaviour
         }
     }
 
+
     public IEnumerator WaterCourseCoroutine(KnightsSquareScript sq, int steps, WaterCourse waterCourse)
     {
         canContinue = true;
@@ -981,19 +983,9 @@ public abstract class KnightBehavior : MonoBehaviour
             }
             else if (target.knight != null)
             {
-                KnightBehavior pushedKnight = target.knight;
-
-                yield return StartCoroutine(PushForce(pushedKnight, sq.waterCourseDirection, 1, true));
-
-                yield return new WaitUntil(() => pushedKnight == null || !pushedKnight.isMoving);
-
-                if (pushedKnight != null && pushedKnight.currentSquare != null && pushedKnight.currentSquare.isWaterSquare)
-                {
-                    yield return StartCoroutine(pushedKnight.WaterCourseCoroutine(pushedKnight.currentSquare, steps, waterCourse));
-                }
+                StartCoroutine(EnemyWaterCourseBehavior(target, sq, steps, waterCourse));
             }
 
-            yield return new WaitForSeconds(0.1f);
             StartCoroutine(SmoothMove(target.knightPosition, 0.6f));
                 
             yield return new WaitUntil(() => !isMoving);
@@ -1026,6 +1018,25 @@ public abstract class KnightBehavior : MonoBehaviour
             {
                 KnightsGameManager.instance.EndMovement(this);
             }
+        }
+    }
+    public IEnumerator EnemyWaterCourseBehavior(KnightsSquareScript target, KnightsSquareScript sq, int steps, WaterCourse waterCourse)
+    {
+        KnightBehavior pushedKnight = target.knight;
+
+        yield return StartCoroutine(PushForce(pushedKnight, sq.waterCourseDirection, 1, true));
+
+        yield return new WaitUntil(() => pushedKnight == null || !pushedKnight.isMoving);
+        yield return new WaitForSeconds(0.1f); //short pause between push and water course movement
+
+        if (pushedKnight != null && pushedKnight.currentSquare != null && pushedKnight.currentSquare.isWaterSquare)
+        {
+            yield return StartCoroutine(pushedKnight.WaterCourseCoroutine(pushedKnight.currentSquare, steps, waterCourse));
+            yield return new WaitUntil(() => !pushedKnight.isMoving);
+
+            if (KnightsGameManager.instance.movementsInTheRound.Contains(pushedKnight))
+                KnightsGameManager.instance.movementsInTheRound.Remove(pushedKnight);
+
         }
     }
 }

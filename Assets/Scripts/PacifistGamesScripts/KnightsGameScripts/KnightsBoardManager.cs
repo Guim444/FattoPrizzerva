@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Splines.ExtrusionShapes;
 
 public class KnightsBoardManager : MonoBehaviour
@@ -15,6 +18,10 @@ public class KnightsBoardManager : MonoBehaviour
 
     public List<RockObstacleScript> obstacles = new List<RockObstacleScript>();
     public List<WaterCourse> waterCourses = new List<WaterCourse>();
+
+    public GameObject whiteSquarePrefab;
+    public GameObject blackSquarePrefab;
+    public GameObject boardPrefab;
 
     private void Awake()
     {
@@ -33,6 +40,59 @@ public class KnightsBoardManager : MonoBehaviour
             return square;
         return null;
     }
+    public void GenerateBoard()
+    {
+        squares.Clear();
+
+        Transform squaresRoot = new GameObject("ChessSquares").transform;
+        squaresRoot.SetParent(transform);
+
+        if (boardPrefab != null)
+        {
+            Vector3 boardSize = new Vector3(width + 0.5f, 1, height + 0.5f);
+            GameObject board = Instantiate(boardPrefab);
+            board.transform.localScale = boardSize;
+            board.transform.position = new Vector3(0, -0.25f, 0);
+        }
+        else
+        {
+            Debug.Log("Nose xd");
+        }
+
+        for (int row = 1; row <= height; row++)
+        {
+            Transform rowParent = new GameObject("Row" + row).transform;
+            rowParent.SetParent(squaresRoot);
+
+            for (int colIndex = 0; colIndex < width; colIndex++)
+            {
+                bool isWhite = (row + colIndex) % 2 == 0;
+                GameObject prefab = isWhite ? whiteSquarePrefab : blackSquarePrefab;
+
+                GameObject squareObj = Instantiate(prefab, rowParent);
+
+                float x = height / 2f - 0.5f - (row - 1);
+                float z = -(width / 2f - 0.5f) + colIndex;
+
+                squareObj.transform.position = new Vector3(x, 0, z);
+
+                KnightsSquareScript sq = squareObj.GetComponent<KnightsSquareScript>();
+                if (sq == null)
+                    sq = squareObj.AddComponent<KnightsSquareScript>();
+
+                sq.SquareColumn = (char)('A' + colIndex);
+                sq.SquareRow = row;
+                sq.empty = true;
+                sq.knight = null;
+
+                StartCoroutine(sq.InitializeSquare());
+            }
+        }
+    }
+
+
+
+
 
     public void TestStartZone()
     {
@@ -307,4 +367,5 @@ public class KnightsBoardManager : MonoBehaviour
             rock.SetDangerousSquares();
         }
     }
+
 }

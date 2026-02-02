@@ -1,22 +1,17 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void ShowCanva(GameObject canva)
     {
-        
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        canva.SetActive(true);
+        sender.SetActive(false);
     }
-
-    // Update is called once per frame
-    void Update()
+    public void ChangeScene(string scene)
     {
-        
-    }
-
-    public void ChangeScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene(scene);
     }
 }

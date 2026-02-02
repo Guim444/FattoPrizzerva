@@ -30,18 +30,14 @@ public class KnightsSquareScript : MonoBehaviour
 
     public bool heavenStartZone = false, hellStartZone = false;
 
-    public void Awake()
+    public void OnEnable()
     {
         originalColor = GetComponent<Renderer>().material.color;
 
         Renderer rend = GetComponent<Renderer>();
         mat = new Material(rend.material);
         rend.material = mat;
-        ToggleGlow(false, 1);
-        name = SquareColumn.ToString() + SquareRow;
-        knightPosition = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-
-        StartCoroutine(InitializeSquare());
+        //StartCoroutine(InitializeSquare());
     }
     public void OnMouseDown()
     {
@@ -77,11 +73,17 @@ public class KnightsSquareScript : MonoBehaviour
         }
 
     }
-    IEnumerator InitializeSquare()
+    public IEnumerator InitializeSquare()
     {
         yield return new WaitUntil(() => KnightsBoardManager.instance != null);
 
+        name = SquareColumn.ToString() + SquareRow;
+        knightPosition = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
+
+        ToggleGlow(false, 1);
+
         KnightsBoardManager.instance.squares.Add(name, this);
+
         if (isIceSquare)
         {
             mat.color = Color.cyan * 0.5f;

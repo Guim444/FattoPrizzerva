@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial Boss Fight.unity
     guid: 14ad360a1a3742543ac5bf39580d45bd
+  - enabled: 1
+    path: Assets/Scenes/Knights.unity
+    guid: 62bd99cdec9efe04f91890a3f302008a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
