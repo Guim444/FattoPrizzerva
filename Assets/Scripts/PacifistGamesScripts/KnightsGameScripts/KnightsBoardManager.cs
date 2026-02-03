@@ -18,6 +18,7 @@ public class KnightsBoardManager : MonoBehaviour
 
     public List<RockObstacleScript> obstacles = new List<RockObstacleScript>();
     public List<WaterCourse> waterCourses = new List<WaterCourse>();
+    public List<KnightsSquareScript> lavaSquares = new List<KnightsSquareScript>();
 
     public GameObject whiteSquarePrefab;
     public GameObject blackSquarePrefab;
@@ -85,7 +86,11 @@ public class KnightsBoardManager : MonoBehaviour
                 sq.empty = true;
                 sq.knight = null;
 
-                StartCoroutine(sq.InitializeSquare());
+                sq.name = sq.SquareColumn.ToString() + sq.SquareRow;
+                sq.knightPosition = new Vector3(sq.transform.position.x, sq.transform.position.y + 0.75f, sq.transform.position.z);
+
+                squares.Add(sq.name, sq);
+                //StartCoroutine(sq.InitializeSquare());
             }
         }
     }

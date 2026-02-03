@@ -52,9 +52,9 @@ public class KnightsGameManager : MonoBehaviour
 
     }
 
-    public void StartBoard(Canvas canvas)
+    public void StartBoard(GameObject confirm)
     {
-        Canvas sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponentInParent<Canvas>();
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.gameObject;
         if (MapEditorData.instance != null)
         {
             if (int.TryParse(MapEditorData.instance.boardSizeX.text, out int x))
@@ -69,8 +69,8 @@ public class KnightsGameManager : MonoBehaviour
             KnightsBoardManager.instance.GenerateBoard();
         }
 
-        sender.gameObject.SetActive(false);
-        canvas.gameObject.SetActive(true);
+        sender.SetActive(false);
+        confirm.SetActive(true);
     }
 
     public void StartGame()

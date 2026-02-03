@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class KnightsSquareScript : MonoBehaviour
@@ -23,10 +24,12 @@ public class KnightsSquareScript : MonoBehaviour
     public Vector2Int waterCourseDirection = Vector2Int.zero;
 
     [Header("Terrain flags")]
+    bool normalSquare = true;
     public bool isIceSquare = false;
     public bool isWaterSquare = false;
     public bool isWaterCourseCrossing = false;
     public bool isVoid;
+    public bool isLava;
 
     public bool heavenStartZone = false, hellStartZone = false;
 
@@ -71,27 +74,124 @@ public class KnightsSquareScript : MonoBehaviour
                 }
             }
         }
+        else if (MapEditorData.instance.selectedObject != null)
+        {
+            if (MapEditorData.instance.selectedObject.TryGetComponent<RockObstacleScript>(out RockObstacleScript currentRock))
+            {
+                rock = currentRock;
+                Vector3 newPos = new Vector3(knightPosition.x, currentRock.transform.position.y, knightPosition.z);
 
+                StartCoroutine(rock.MoveRock(newPos));
+
+                currentRock.currentSquare = this;
+                currentRock.SetDangerousSquares();
+
+                currentRock.GetComponent<BoxCollider>().enabled = true;
+
+                rock.ActivateGlow(false);
+
+                KnightsBoardManager.instance.obstacles.Add(rock);
+            }
+            else if (MapEditorData.instance.voidSelected)
+            {
+                isVoid = true;
+                TurnVoid();
+
+                MapEditorData.instance.voidSelected = false;
+                Destroy(MapEditorData.instance.selectedObject);
+            }
+            else
+            {
+
+            }
+
+            MapEditorData.instance.selectedObject = null;
+        }
+        else if (MapEditorData.instance.chooseHeaven)
+        {
+            if (!KnightsBoardManager.instance.player1StartZone.Contains(this))
+            {
+                StartColor(false);
+                if (MapEditorData.instance.heavenSelected == 0)
+                {
+                    KnightsSquareScript sq = KnightsBoardManager.instance.player1StartZone[0];
+                    sq.heavenStartZone = false;
+                    sq.ToggleGlow(false, 0);
+                    KnightsBoardManager.instance.player1StartZone.Remove(sq);
+                }
+                else
+                {
+                    MapEditorData.instance.heavenSelected--;
+                    MapEditorData.instance.heavenButton.GetComponentInChildren<TextMeshProUGUI>().text = "Heaven (" + MapEditorData.instance.heavenSelected + ") left";
+                }
+                heavenStartZone = true;
+                KnightsBoardManager.instance.player1StartZone.Add(this);
+            }
+            else
+            {
+                KnightsBoardManager.instance.player1StartZone.Remove(this);
+                heavenStartZone = false;
+            }
+        }
+        else if (MapEditorData.instance.chooseHell)
+        {
+            if (!KnightsBoardManager.instance.player2StartZone.Contains(this))
+            {
+                StartColor(true);
+                if (MapEditorData.instance.hellSelected == 0)
+                {
+                    KnightsSquareScript sq = KnightsBoardManager.instance.player2StartZone[0];
+                    sq.hellStartZone = false;
+                    sq.ToggleGlow(false, 0);
+                    KnightsBoardManager.instance.player2StartZone.Remove(sq);
+                }
+                else
+                {
+                    MapEditorData.instance.hellSelected--;
+                    MapEditorData.instance.hellButton.GetComponentInChildren<TextMeshProUGUI>().text = "Hell (" + MapEditorData.instance.hellSelected + ") left";
+                }
+                hellStartZone = true;
+                KnightsBoardManager.instance.player2StartZone.Add(this);
+            }
+            else
+            {
+                KnightsBoardManager.instance.player2StartZone.Remove(this);
+                hellStartZone = false;
+            }
+        }
+    }
+    private void OnMouseEnter()
+    {
+        if (KnightsGameManager.instance.selectedKnight != null && MapEditorData.instance.selectedObject != null)
+            ToggleGlow(true, 0.5f);
+    }
+    private void OnMouseExit()
+    {
+        if (KnightsGameManager.instance.selectedKnight != null && MapEditorData.instance.selectedObject != null)
+            ToggleGlow(false, 0);
     }
     public IEnumerator InitializeSquare()
     {
         yield return new WaitUntil(() => KnightsBoardManager.instance != null);
 
-        name = SquareColumn.ToString() + SquareRow;
-        knightPosition = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-
         ToggleGlow(false, 1);
-
-        KnightsBoardManager.instance.squares.Add(name, this);
 
         if (isIceSquare)
         {
             mat.color = Color.cyan * 0.5f;
             originalColor = mat.color;
+            normalSquare = false;
+        }
+        else if (isLava)
+        {
+            mat.color = Color.orangeRed;
+            originalColor = mat.color;
+            normalSquare = false;
         }
         else if (isVoid)
         {
             GetComponent<Renderer>().enabled = false;
+            normalSquare = false;
         }
         if (KnightsBoardManager.instance.squares.Count == KnightsBoardManager.instance.height * KnightsBoardManager.instance.width)
         {
@@ -110,6 +210,11 @@ public class KnightsSquareScript : MonoBehaviour
             KnightsBoardManager.instance.SetObstacles();
         }
     }
+    public void TurnVoid()
+    {
+        isVoid = true;
+        GetComponent<MeshRenderer>().enabled = false;
+    }
     public void ToggleGlow(bool glow, float intensity)
     {
         if (glow)
@@ -120,8 +225,6 @@ public class KnightsSquareScript : MonoBehaviour
             mat.SetColor("_EmissionColor", glowColor * intensity);
 
             mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
-
-            mat.color = isIceSquare ? Color.cyan * 0.5f : mat.color;
         }
         else
         {
@@ -131,10 +234,13 @@ public class KnightsSquareScript : MonoBehaviour
             mat.color = originalColor;
         }
     }
-
-    public void TurnVoid()
+    public void StartColor(bool heavenOrHell)
     {
-        isVoid = true;
-        GetComponent<MeshRenderer>().enabled = false;
+        Color glowColor = heavenOrHell ? Color.skyBlue : Color.red;
+
+        mat.EnableKeyword("_EMISSION");
+        mat.SetColor("_EmissionColor", glowColor * 0.5f);
+
+        mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
     }
 }

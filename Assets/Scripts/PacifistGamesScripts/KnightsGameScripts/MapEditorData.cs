@@ -6,6 +6,9 @@ using System.Collections.Generic;
 public class MapEditorData : MonoBehaviour
 {
     public static MapEditorData instance;
+    public bool editMode = true;
+    public bool chooseHeaven;
+    public bool chooseHell;
     public TextMeshProUGUI boardSizeX, boardSizeY;
 
     public bool rockIsTall;
@@ -15,7 +18,15 @@ public class MapEditorData : MonoBehaviour
     public GameObject rockIsFragileGameObj;
     public GameObject alignedButton;
 
+    public bool voidSelected;
+
     public GameObject selectedObject;
+
+    public GameObject heavenButton;
+    public int heavenSelected = 6;
+    public GameObject hellButton;
+    public int hellSelected = 6;
+    public GameObject backButton;
 
     [Header("Prefabs")]
     public List<GameObject> rockPrefabs;
@@ -134,5 +145,51 @@ public class MapEditorData : MonoBehaviour
             rockScript.isBreakable = false;
 
         selectedObject = rock;
+
+        rockScript.ActivateGlow(true);
+    }
+
+    public void AddVoid()
+    {
+        GameObject voidObj = new GameObject(); //Just so we don't set it null
+        selectedObject = voidObj;
+        voidSelected = true;
+    }
+
+    public void UIElementSelect(GameObject canvaGameObj)
+    {
+        canvaGameObj.SetActive(true);
+
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.gameObject;
+
+        sender.SetActive(false);
+
+        backButton.SetActive(true);
+    }
+
+    public void GoBack(GameObject selectionCanvas)
+    {
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+
+        foreach (Transform child in sender.transform.parent)
+        {
+            child.gameObject.SetActive(false);
+        }
+
+        selectionCanvas.SetActive(true);
+    }
+
+    public void SelectStartSquare(string category)
+    {
+        if (category == "Heaven")
+        {
+            chooseHeaven = true;
+            chooseHell = false;
+        }
+        else if (category == "Hell")
+        {
+            chooseHeaven = false;
+            chooseHell = true;
+        }
     }
 }
