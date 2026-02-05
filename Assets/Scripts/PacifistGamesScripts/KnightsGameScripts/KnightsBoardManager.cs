@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.ShaderGraph.Internal;
@@ -15,6 +16,11 @@ public class KnightsBoardManager : MonoBehaviour
     public bool player1StartZoneActive = true, player2StartZoneActive = true;
     public List<KnightsSquareScript> player1StartZone;
     public List<KnightsSquareScript> player2StartZone;
+    public List<KnightsSquareScript> fragileFloorPlayer1 = new List<KnightsSquareScript>();
+    public List<KnightsSquareScript> fragileFloorPlayer2 = new List<KnightsSquareScript>();
+
+    public Dictionary<KnightsSquareScript, int> lavaStartSquaresPlayer1 = new Dictionary<KnightsSquareScript, int>();
+    public Dictionary<KnightsSquareScript, int> lavaStartSquaresPlayer2 = new Dictionary<KnightsSquareScript, int>();
 
     public List<RockObstacleScript> obstacles = new List<RockObstacleScript>();
     public List<WaterCourse> waterCourses = new List<WaterCourse>();
@@ -50,15 +56,16 @@ public class KnightsBoardManager : MonoBehaviour
 
         if (boardPrefab != null)
         {
-            Vector3 boardSize = new Vector3(width + 0.5f, 1, height + 0.5f);
+            Vector3 boardSize = new Vector3(height + 0.5f, 1, width + 0.5f);
             GameObject board = Instantiate(boardPrefab);
             board.transform.localScale = boardSize;
             board.transform.position = new Vector3(0, -0.25f, 0);
+            board.name = "Board";
+            squaresRoot.SetParent(transform);
         }
-        else
-        {
-            Debug.Log("Nose xd");
-        }
+
+        Transform obstacles = new GameObject("Obstacles").transform;
+        obstacles.SetParent(transform);
 
         for (int row = 1; row <= height; row++)
         {
@@ -94,11 +101,6 @@ public class KnightsBoardManager : MonoBehaviour
             }
         }
     }
-
-
-
-
-
     public void TestStartZone()
     {
         int spawned = 0;
@@ -157,7 +159,7 @@ public class KnightsBoardManager : MonoBehaviour
             if (!sq.empty)
                 continue;
 
-            GameObject randKnight = Random.Range(0, 2) == 0 ? KnightsGameManager.instance.agileKnightPrefab : KnightsGameManager.instance.tucutuKnightPrefab;
+            GameObject randKnight = UnityEngine.Random.Range(0, 2) == 0 ? KnightsGameManager.instance.agileKnightPrefab : KnightsGameManager.instance.tucutuKnightPrefab;
 
             GameObject knightObj = Instantiate(randKnight);
             KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
@@ -338,10 +340,17 @@ public class KnightsBoardManager : MonoBehaviour
     {
         bool startZoneIsEmpty = true;
         List<KnightsSquareScript> startZone;
+        List<KnightsSquareScript> fragileFloor;
         if (player == 1)
+        {
+            fragileFloor = fragileFloorPlayer1;
             startZone = player1StartZone;
+        }
         else
+        {
+            fragileFloor = fragileFloorPlayer2;
             startZone = player2StartZone;
+        }
 
         foreach (KnightsSquareScript sq in startZone)
         {
@@ -358,7 +367,7 @@ public class KnightsBoardManager : MonoBehaviour
             else
                 player2StartZoneActive = false;
 
-            foreach (KnightsSquareScript sq in startZone)
+            foreach (KnightsSquareScript sq in fragileFloor)
                 {
                     sq.TurnVoid();
                 }
@@ -373,4 +382,8 @@ public class KnightsBoardManager : MonoBehaviour
         }
     }
 
+    public void CheckLavaStart()
+    {
+        //TO DO
+    }
 }

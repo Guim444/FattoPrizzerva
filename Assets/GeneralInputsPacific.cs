@@ -127,6 +127,15 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Delete"",
+                    ""type"": ""Button"",
+                    ""id"": ""ce27852e-5398-4856-9dc9-73979b66fecc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -171,6 +180,17 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e92e142e-9a16-4051-8056-f02e2cf84d63"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Delete"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -297,6 +317,7 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
         m_UIInputs_CameraToggle = m_UIInputs.FindAction("CameraToggle", throwIfNotFound: true);
         m_UIInputs_Exit = m_UIInputs.FindAction("Exit", throwIfNotFound: true);
         m_UIInputs_Rotate = m_UIInputs.FindAction("Rotate", throwIfNotFound: true);
+        m_UIInputs_Delete = m_UIInputs.FindAction("Delete", throwIfNotFound: true);
         // FreeCamMove
         m_FreeCamMove = asset.FindActionMap("FreeCamMove", throwIfNotFound: true);
         m_FreeCamMove_FreeCamMove = m_FreeCamMove.FindAction("FreeCamMove", throwIfNotFound: true);
@@ -387,6 +408,7 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
     private readonly InputAction m_UIInputs_CameraToggle;
     private readonly InputAction m_UIInputs_Exit;
     private readonly InputAction m_UIInputs_Rotate;
+    private readonly InputAction m_UIInputs_Delete;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI Inputs".
     /// </summary>
@@ -414,6 +436,10 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UIInputs/Rotate".
         /// </summary>
         public InputAction @Rotate => m_Wrapper.m_UIInputs_Rotate;
+        /// <summary>
+        /// Provides access to the underlying input action "UIInputs/Delete".
+        /// </summary>
+        public InputAction @Delete => m_Wrapper.m_UIInputs_Delete;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -452,6 +478,9 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
             @Rotate.started += instance.OnRotate;
             @Rotate.performed += instance.OnRotate;
             @Rotate.canceled += instance.OnRotate;
+            @Delete.started += instance.OnDelete;
+            @Delete.performed += instance.OnDelete;
+            @Delete.canceled += instance.OnDelete;
         }
 
         /// <summary>
@@ -475,6 +504,9 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
             @Rotate.started -= instance.OnRotate;
             @Rotate.performed -= instance.OnRotate;
             @Rotate.canceled -= instance.OnRotate;
+            @Delete.started -= instance.OnDelete;
+            @Delete.performed -= instance.OnDelete;
+            @Delete.canceled -= instance.OnDelete;
         }
 
         /// <summary>
@@ -661,6 +693,13 @@ public partial class @GeneralInputsPacific: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRotate(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Delete" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDelete(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "FreeCamMove" which allows adding and removing callbacks.

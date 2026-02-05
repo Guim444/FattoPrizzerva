@@ -33,6 +33,8 @@ public class RockObstacleScript : MonoBehaviour
     }
     public void SetDangerousSquares()
     {
+        if (dangerousSquares.Count > 0)
+            return;
         foreach (var s in spikes)
         {
             Vector2 dir = new Vector2(currentSquare.knightPosition.x - s.transform.position.x, currentSquare.knightPosition.z - s.transform.position.z);

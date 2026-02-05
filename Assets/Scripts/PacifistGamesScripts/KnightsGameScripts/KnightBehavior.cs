@@ -915,7 +915,7 @@ public abstract class KnightBehavior : MonoBehaviour
             }
         }
     }
-    IEnumerator KillKnight(KnightsSquareScript square)
+    public IEnumerator KillKnight(KnightsSquareScript square)
     {
         yield return new WaitUntil(() => !isMoving);
         if (square.knight != null)

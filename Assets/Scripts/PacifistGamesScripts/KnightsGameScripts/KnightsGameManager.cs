@@ -26,6 +26,7 @@ public class KnightsGameManager : MonoBehaviour
 
     public HashSet<KnightBehavior> activeMovements = new();
     public HashSet<KnightBehavior> movementsInTheRound = new();
+    public HashSet<KnightBehavior> knightsInLava = new();
 
     [Header("Knight Prefabs")]
     public GameObject agileKnightPrefab;
@@ -38,6 +39,7 @@ public class KnightsGameManager : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject button;
+    public GameObject startPositionCanvas;
 
     void Awake()
     {
@@ -73,9 +75,19 @@ public class KnightsGameManager : MonoBehaviour
         confirm.SetActive(true);
     }
 
-    public void StartGame()
+    public void StartGame(GameObject sender)
     {
-        //KnightsBoardManager.instance.SpawnKnights(4);
+        MapEditorData.instance.editMode = false;
+
+        sender.SetActive(false);
+        foreach (KnightsSquareScript square in KnightsBoardManager.instance.squares.Values)
+        {
+            StartCoroutine(square.InitializeSquare());
+        }
+
+        startPositionCanvas.SetActive(true);
+        KnightsBoardManager.instance.TestStartZone();
+        KnightsBoardManager.instance.SetObstacles();
     }
     public void OnClick(InputValue value)
     {
@@ -95,6 +107,25 @@ public class KnightsGameManager : MonoBehaviour
             }
         }
     }
+
+    public void OnDelete(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            if (MapEditorData.instance.selectedObject != null)
+            {
+                RockObstacleScript rock = MapEditorData.instance.selectedObject.GetComponent<RockObstacleScript>();
+                if (rock != null)
+                {
+                    rock.currentSquare.rock = null;
+                    rock.currentSquare = null;
+                    Destroy(rock.gameObject);
+                    MapEditorData.instance.selectedObject = null;
+                }
+            }
+        }
+    }
+
     public void OnRotate(InputValue value)
     {
         if (!value.isPressed)
@@ -174,6 +205,14 @@ public class KnightsGameManager : MonoBehaviour
         if (KnightsBoardManager.instance.player2StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(2);
 
+        if (KnightsBoardManager.instance.lavaSquares.Count > 0)
+            LavaBurn();
+
+        if (KnightsBoardManager.instance.lavaStartSquaresPlayer1.Count > 0)
+        {
+            KnightsBoardManager.instance.CheckLavaStart();
+        }
+
         currentPlayer = currentPlayer == 1 ? 2 : 1;
         playerIsActive = true;
 
@@ -226,6 +265,36 @@ public class KnightsGameManager : MonoBehaviour
             }
         }
     }
+    public void LavaBurn()
+    {
+        foreach (KnightsSquareScript sq in KnightsBoardManager.instance.lavaSquares)
+        {
+            if (sq.knight != null && currentPlayer == sq.knight.player)
+            {
+                KnightBehavior knight = sq.knight;
+                if (knightsInLava.Contains(knight))
+                {
+                    Debug.Log("Welp he just fucking died");
+                    StartCoroutine(knight.KillKnight(sq));
+                }
+                else
+                {
+                    Debug.Log("Added to lava");
+                    knightsInLava.Add(knight);
+                }
+            }
+        }
+
+        foreach (KnightBehavior knight in knightsInLava)
+        {
+            if (knight.currentSquare.isLava == false)
+            {
+                Debug.Log("Removed from lava");
+                knightsInLava.Remove(knight);
+                break;
+            }
+        }
+    }
 
     public void BeginMovement(KnightBehavior knight)
     {
@@ -274,21 +343,6 @@ public class KnightsGameManager : MonoBehaviour
                 if (sq.knight != null)
                 {
                     sq.knight.GetComponent<Renderer>().enabled = true;
-                }
-            }
-
-            for (int i = KnightsBoardManager.instance.player1StartZone.Count - 1; i >= 0; i--)
-            {
-                if (KnightsBoardManager.instance.player1StartZone[i].knight == null)
-                {
-                    KnightsBoardManager.instance.player1StartZone.RemoveAt(i);
-                }
-            }
-            for (int i = KnightsBoardManager.instance.player2StartZone.Count - 1; i >= 0; i--)
-            {
-                if (KnightsBoardManager.instance.player2StartZone[i].knight == null)
-                {
-                    KnightsBoardManager.instance.player2StartZone.RemoveAt(i);
                 }
             }
 

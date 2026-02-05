@@ -2,10 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class MapEditorData : MonoBehaviour
 {
     public static MapEditorData instance;
+
     public bool editMode = true;
     public bool chooseHeaven;
     public bool chooseHell;
@@ -19,6 +21,7 @@ public class MapEditorData : MonoBehaviour
     public GameObject alignedButton;
 
     public bool voidSelected;
+    public bool lavaSelected;
 
     public GameObject selectedObject;
 
@@ -27,6 +30,8 @@ public class MapEditorData : MonoBehaviour
     public GameObject hellButton;
     public int hellSelected = 6;
     public GameObject backButton;
+
+    public GameObject errorMessage;
 
     [Header("Prefabs")]
     public List<GameObject> rockPrefabs;
@@ -147,6 +152,8 @@ public class MapEditorData : MonoBehaviour
         selectedObject = rock;
 
         rockScript.ActivateGlow(true);
+
+        rock.transform.SetParent(GameObject.Find("Obstacles").transform);
     }
 
     public void AddVoid()
@@ -154,6 +161,13 @@ public class MapEditorData : MonoBehaviour
         GameObject voidObj = new GameObject(); //Just so we don't set it null
         selectedObject = voidObj;
         voidSelected = true;
+    }
+
+    public void AddLava()
+    {
+        GameObject lavaObj = new GameObject();
+        selectedObject = lavaObj;
+        lavaSelected = true;
     }
 
     public void UIElementSelect(GameObject canvaGameObj)
@@ -170,6 +184,18 @@ public class MapEditorData : MonoBehaviour
     public void GoBack(GameObject selectionCanvas)
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+
+        if (KnightsBoardManager.instance.fragileFloorPlayer2.Count != KnightsBoardManager.instance.fragileFloorPlayer1.Count)
+        {
+            StartCoroutine(WarningMessage("Both players must have the same number of cracked squares."));
+            return;
+        }
+
+        if (KnightsBoardManager.instance.lavaStartSquaresPlayer1.Count != KnightsBoardManager.instance.lavaStartSquaresPlayer2.Count)
+        {
+            StartCoroutine(WarningMessage("Both players must have the same number of lava squares."));
+            return;
+        }
 
         foreach (Transform child in sender.transform.parent)
         {
@@ -191,5 +217,34 @@ public class MapEditorData : MonoBehaviour
             chooseHeaven = false;
             chooseHell = true;
         }
+    }
+
+    public void DoneSelecting(GameObject editorCanvas)
+    {
+        chooseHeaven = false;
+        chooseHell = false;
+        if (KnightsBoardManager.instance.player1StartZone.Count < 3 || KnightsBoardManager.instance.player2StartZone.Count < 3)
+        {
+            StartCoroutine(WarningMessage("There should be a minimum of 3 squares on each side."));
+            return;
+        }
+        if (hellSelected != heavenSelected)
+        {
+            StartCoroutine(WarningMessage("Both players must have the same number of squares."));
+            return;
+        }
+
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+
+        sender.transform.parent.transform.parent.gameObject.SetActive(false); // Canvas
+
+        editorCanvas.SetActive(true);
+    }
+    public IEnumerator WarningMessage(string message)
+    {
+        errorMessage.SetActive(true);
+        errorMessage.GetComponentInChildren<TextMeshProUGUI>().text = message;
+        yield return new WaitForSeconds(3);
+        errorMessage.SetActive(false);
     }
 }
