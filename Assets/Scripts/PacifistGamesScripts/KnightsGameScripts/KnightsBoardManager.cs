@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Splines.ExtrusionShapes;
 
@@ -16,15 +17,17 @@ public class KnightsBoardManager : MonoBehaviour
     public bool player1StartZoneActive = true, player2StartZoneActive = true;
     public List<KnightsSquareScript> player1StartZone;
     public List<KnightsSquareScript> player2StartZone;
-    public List<KnightsSquareScript> fragileFloorPlayer1 = new List<KnightsSquareScript>();
-    public List<KnightsSquareScript> fragileFloorPlayer2 = new List<KnightsSquareScript>();
 
-    public Dictionary<KnightsSquareScript, int> lavaStartSquaresPlayer1 = new Dictionary<KnightsSquareScript, int>();
-    public Dictionary<KnightsSquareScript, int> lavaStartSquaresPlayer2 = new Dictionary<KnightsSquareScript, int>();
+    public List<KnightsSquareScript> fragileFloorStartPlayer1 = new List<KnightsSquareScript>();
+    public List<KnightsSquareScript> fragileFloorStartPlayer2 = new List<KnightsSquareScript>();
+
+    public List<KnightsSquareScript> lavaStartSquaresPlayer1 = new List<KnightsSquareScript>();
+    public List<KnightsSquareScript> lavaStartSquaresPlayer2 = new List<KnightsSquareScript>();
 
     public List<RockObstacleScript> obstacles = new List<RockObstacleScript>();
     public List<WaterCourse> waterCourses = new List<WaterCourse>();
     public List<KnightsSquareScript> lavaSquares = new List<KnightsSquareScript>();
+    public List<KnightsSquareScript> fragileFloor = new List<KnightsSquareScript>();
 
     public GameObject whiteSquarePrefab;
     public GameObject blackSquarePrefab;
@@ -343,12 +346,12 @@ public class KnightsBoardManager : MonoBehaviour
         List<KnightsSquareScript> fragileFloor;
         if (player == 1)
         {
-            fragileFloor = fragileFloorPlayer1;
+            fragileFloor = fragileFloorStartPlayer1;
             startZone = player1StartZone;
         }
         else
         {
-            fragileFloor = fragileFloorPlayer2;
+            fragileFloor = fragileFloorStartPlayer2;
             startZone = player2StartZone;
         }
 
@@ -380,10 +383,5 @@ public class KnightsBoardManager : MonoBehaviour
         {
             rock.SetDangerousSquares();
         }
-    }
-
-    public void CheckLavaStart()
-    {
-        //TO DO
     }
 }

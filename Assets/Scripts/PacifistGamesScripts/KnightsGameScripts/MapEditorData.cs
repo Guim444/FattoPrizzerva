@@ -19,9 +19,11 @@ public class MapEditorData : MonoBehaviour
     public bool aligned; //True = aligned, false = perpendicular
     public GameObject rockIsFragileGameObj;
     public GameObject alignedButton;
+    public TextMeshProUGUI lavaTurnsToKill;
 
     public bool voidSelected;
     public bool lavaSelected;
+    public bool fragileFloorSelected;
 
     public GameObject selectedObject;
 
@@ -158,6 +160,8 @@ public class MapEditorData : MonoBehaviour
 
     public void AddVoid()
     {
+        fragileFloorSelected = false;
+
         GameObject voidObj = new GameObject(); //Just so we don't set it null
         selectedObject = voidObj;
         voidSelected = true;
@@ -168,6 +172,31 @@ public class MapEditorData : MonoBehaviour
         GameObject lavaObj = new GameObject();
         selectedObject = lavaObj;
         lavaSelected = true;
+    }
+
+    public void AddFragileFloor()
+    {
+        voidSelected = false;
+
+        GameObject fragileFloorObj = new GameObject();
+        selectedObject = fragileFloorObj;
+        fragileFloorSelected = true;
+    }
+
+    public void LavaTurnsEdit(int num)
+    {
+        if (int.TryParse(lavaTurnsToKill.text, out int lavaTurns))
+        {
+            lavaTurns += num;
+
+            if (lavaTurns < 1)
+                lavaTurns = 3;
+            if (lavaTurns > 3)
+                lavaTurns = 1;
+
+            KnightsGameManager.instance.lavaTurns = lavaTurns;
+            lavaTurnsToKill.text = lavaTurns.ToString();
+        }
     }
 
     public void UIElementSelect(GameObject canvaGameObj)
@@ -185,7 +214,7 @@ public class MapEditorData : MonoBehaviour
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
 
-        if (KnightsBoardManager.instance.fragileFloorPlayer2.Count != KnightsBoardManager.instance.fragileFloorPlayer1.Count)
+        if (KnightsBoardManager.instance.fragileFloorStartPlayer2.Count != KnightsBoardManager.instance.fragileFloorStartPlayer1.Count)
         {
             StartCoroutine(WarningMessage("Both players must have the same number of cracked squares."));
             return;
@@ -202,6 +231,14 @@ public class MapEditorData : MonoBehaviour
             child.gameObject.SetActive(false);
         }
 
+        if (voidSelected)
+            voidSelected = false;
+        if (lavaSelected)
+            lavaSelected = false;
+
+        Destroy(selectedObject);
+        selectedObject = null;
+        
         selectionCanvas.SetActive(true);
     }
 

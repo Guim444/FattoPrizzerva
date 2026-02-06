@@ -32,6 +32,7 @@ public class KnightsSquareScript : MonoBehaviour
     public bool isWaterCourseCrossing = false;
     public bool isVoid;
     public bool isLava;
+    public bool isFragile;
 
     public bool heavenStartZone = false, hellStartZone = false;
 
@@ -99,23 +100,27 @@ public class KnightsSquareScript : MonoBehaviour
             {
                 if (!isVoid)
                 {
-                    if (heavenStartZone)
+                    /*if (heavenStartZone)
                     {
-                        if (KnightsBoardManager.instance.fragileFloorPlayer1 == null)
+                        if (KnightsBoardManager.instance.fragileFloorStartPlayer1 == null)
                         {
-                            KnightsBoardManager.instance.fragileFloorPlayer1 = new List<KnightsSquareScript>();
+                            KnightsBoardManager.instance.fragileFloorStartPlayer1 = new List<KnightsSquareScript>();
                         }
 
-                        KnightsBoardManager.instance.fragileFloorPlayer1.Add(this);
+                        KnightsBoardManager.instance.fragileFloorStartPlayer1.Add(this);
                     }
                     else if (hellStartZone)
                     {
-                        if (KnightsBoardManager.instance.fragileFloorPlayer2 == null)
+                        if (KnightsBoardManager.instance.fragileFloorStartPlayer2 == null)
                         {
-                            KnightsBoardManager.instance.fragileFloorPlayer2 = new List<KnightsSquareScript>();
+                            KnightsBoardManager.instance.fragileFloorStartPlayer2 = new List<KnightsSquareScript>();
                         }
 
-                        KnightsBoardManager.instance.fragileFloorPlayer2.Add(this);
+                        KnightsBoardManager.instance.fragileFloorStartPlayer2.Add(this);
+                    }*/
+                    if (heavenStartZone || hellStartZone)
+                    {
+                        StartCoroutine(MapEditorData.instance.WarningMessage("You can't set a start square as void. Only as a fragile floor square."));
                     }
                     else
                     {
@@ -125,23 +130,20 @@ public class KnightsSquareScript : MonoBehaviour
                 }
                 else
                 {
-                    if (heavenStartZone)
+                    /*if (heavenStartZone)
                     {
-                        KnightsBoardManager.instance.fragileFloorPlayer1.Remove(this);
+                        KnightsBoardManager.instance.fragileFloorStartPlayer1.Remove(this);
                     }
                     else if (hellStartZone)
                     {
-                        KnightsBoardManager.instance.fragileFloorPlayer2.Remove(this);
-                    }
-                    else
-                    {
-                        isVoid = false;
-                        GetComponent<Renderer>().enabled = true;
-                    }
+                        KnightsBoardManager.instance.fragileFloorStartPlayer2.Remove(this);
+                    }*/
+                    isVoid = false;
+                    GetComponent<Renderer>().enabled = true;
                 }
 
-                MapEditorData.instance.voidSelected = false;
-                Destroy(MapEditorData.instance.selectedObject);
+                /*MapEditorData.instance.voidSelected = false;
+                Destroy(MapEditorData.instance.selectedObject);*/
             }
             else if (MapEditorData.instance.lavaSelected)
             {
@@ -154,11 +156,11 @@ public class KnightsSquareScript : MonoBehaviour
 
                     if (heavenStartZone)
                     {
-                        KnightsBoardManager.instance.lavaStartSquaresPlayer1.Add(this, 0);
+                        KnightsBoardManager.instance.lavaStartSquaresPlayer1.Add(this);
                     }
                     else if (hellStartZone)
                     {
-                        KnightsBoardManager.instance.lavaStartSquaresPlayer2.Add(this, 0);
+                        KnightsBoardManager.instance.lavaStartSquaresPlayer2.Add(this);
                     }
                     else
                     {
@@ -185,68 +187,97 @@ public class KnightsSquareScript : MonoBehaviour
                     }
                 }
 
-                MapEditorData.instance.lavaSelected = false;
-                Destroy(MapEditorData.instance.selectedObject);
+                /*MapEditorData.instance.lavaSelected = false;
+                Destroy(MapEditorData.instance.selectedObject);*/
+            }
+            else if (MapEditorData.instance.fragileFloorSelected)
+            {
+                if (isFragile)
+                {
+                    isFragile = true;
+                    mat.color *= new Color(0.9f, 0.75f, 0.6f);
+                    squareColor = mat.color;
+                    normalSquare = false;
+
+                    if (heavenStartZone)
+                    {
+                        KnightsBoardManager.instance.fragileFloorStartPlayer1.Add(this);
+                    }
+                    else if (hellStartZone)
+                    {
+                        KnightsBoardManager.instance.fragileFloorStartPlayer2.Add(this);
+                    }
+                    else
+                    {
+                        KnightsBoardManager.instance.fragileFloor.Add(this);
+                    }
+                }
             }
             else
             {
 
             }
 
-            MapEditorData.instance.selectedObject = null;
+            //MapEditorData.instance.selectedObject = null;
         }
         else if (MapEditorData.instance.chooseHeaven)
         {
-            if (!KnightsBoardManager.instance.player1StartZone.Contains(this))
+            if (!hellStartZone)
             {
-                if (MapEditorData.instance.heavenSelected == 0)
+                if (!KnightsBoardManager.instance.player1StartZone.Contains(this))
                 {
-                    StartCoroutine(MapEditorData.instance.WarningMessage("There are no Heaven start zones left."));
+                    if (MapEditorData.instance.heavenSelected == 0)
+                    {
+                        StartCoroutine(MapEditorData.instance.WarningMessage("There are no Heaven start zones left."));
+                    }
+                    else
+                    {
+                        StartColor(true);
+                        MapEditorData.instance.heavenSelected--;
+                        heavenStartZone = true;
+                        KnightsBoardManager.instance.player1StartZone.Add(this);
+                    }
                 }
                 else
                 {
-                    StartColor(true);
-                    MapEditorData.instance.heavenSelected--;
-                    heavenStartZone = true;
-                    KnightsBoardManager.instance.player1StartZone.Add(this);
+                    ToggleGlow(false, 1);
+                    MapEditorData.instance.heavenSelected++;
+                    KnightsBoardManager.instance.player1StartZone.Remove(this);
+                    heavenStartZone = false;
                 }
-            }
-            else
-            {
-                ToggleGlow(false, 1);
-                MapEditorData.instance.heavenSelected++;
-                KnightsBoardManager.instance.player1StartZone.Remove(this);
-                heavenStartZone = false;
-            }
 
-            MapEditorData.instance.heavenButton.GetComponentInChildren<TextMeshProUGUI>().text = "Heaven (" + MapEditorData.instance.heavenSelected + ") left";
+                MapEditorData.instance.heavenButton.GetComponentInChildren<TextMeshProUGUI>().text = "Heaven (" + MapEditorData.instance.heavenSelected + ") left";
+            }
         }
         else if (MapEditorData.instance.chooseHell)
         {
-            if (!KnightsBoardManager.instance.player2StartZone.Contains(this))
+            if (!heavenStartZone)
             {
-                if (MapEditorData.instance.hellSelected == 0)
+                if (!KnightsBoardManager.instance.player2StartZone.Contains(this))
                 {
-                    StartCoroutine(MapEditorData.instance.WarningMessage("There are no Hell start zones left."));
+                    if (MapEditorData.instance.hellSelected == 0)
+                    {
+                        StartCoroutine(MapEditorData.instance.WarningMessage("There are no Hell start zones left."));
+                    }
+                    else
+                    {
+                        StartColor(false);
+                        MapEditorData.instance.hellSelected--;
+                        hellStartZone = true;
+                        KnightsBoardManager.instance.player2StartZone.Add(this);
+                    }
+
                 }
                 else
                 {
-                    StartColor(false);
-                    MapEditorData.instance.hellSelected--;
-                    hellStartZone = true;
-                    KnightsBoardManager.instance.player2StartZone.Add(this);
+                    ToggleGlow(false, 1);
+                    MapEditorData.instance.hellSelected++;
+                    KnightsBoardManager.instance.player2StartZone.Remove(this);
+                    hellStartZone = false;
                 }
 
+                MapEditorData.instance.hellButton.GetComponentInChildren<TextMeshProUGUI>().text = "Hell (" + MapEditorData.instance.hellSelected + ") left";
             }
-            else
-            {
-                ToggleGlow(false, 1);
-                MapEditorData.instance.hellSelected++;
-                KnightsBoardManager.instance.player2StartZone.Remove(this);
-                hellStartZone = false;
-            }
-
-            MapEditorData.instance.hellButton.GetComponentInChildren<TextMeshProUGUI>().text = "Hell (" + MapEditorData.instance.hellSelected + ") left";
         }
     }
     private void OnMouseEnter()

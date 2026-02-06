@@ -27,6 +27,7 @@ public class KnightsGameManager : MonoBehaviour
     public HashSet<KnightBehavior> activeMovements = new();
     public HashSet<KnightBehavior> movementsInTheRound = new();
     public HashSet<KnightBehavior> knightsInLava = new();
+    public int lavaTurns = 0;
 
     [Header("Knight Prefabs")]
     public GameObject agileKnightPrefab;
@@ -206,13 +207,15 @@ public class KnightsGameManager : MonoBehaviour
             KnightsBoardManager.instance.CheckStartZone(2);
 
         if (KnightsBoardManager.instance.lavaSquares.Count > 0)
-            LavaBurn();
+            LavaBurn(1, KnightsBoardManager.instance.lavaSquares);
 
         if (KnightsBoardManager.instance.lavaStartSquaresPlayer1.Count > 0)
         {
-            KnightsBoardManager.instance.CheckLavaStart();
+            List<KnightsSquareScript> lavaStartSquares = new List<KnightsSquareScript>();
+            lavaStartSquares.AddRange(KnightsBoardManager.instance.lavaStartSquaresPlayer1);
+            lavaStartSquares.AddRange(KnightsBoardManager.instance.lavaStartSquaresPlayer2);
+            LavaBurn(2, lavaStartSquares);
         }
-
         currentPlayer = currentPlayer == 1 ? 2 : 1;
         playerIsActive = true;
 
@@ -265,34 +268,45 @@ public class KnightsGameManager : MonoBehaviour
             }
         }
     }
-    public void LavaBurn()
+    public void LavaBurn(int multiplier, List<KnightsSquareScript> squares) //This is used for the lava start squares, to make them less punishing, because those last more to kill.
     {
-        foreach (KnightsSquareScript sq in KnightsBoardManager.instance.lavaSquares)
+        foreach (KnightsSquareScript sq in squares)
         {
             if (sq.knight != null && currentPlayer == sq.knight.player)
             {
                 KnightBehavior knight = sq.knight;
                 if (knightsInLava.Contains(knight))
                 {
-                    Debug.Log("Welp he just fucking died");
-                    StartCoroutine(knight.KillKnight(sq));
+                    if (knight.turnsInLava < (lavaTurns * multiplier))
+                    {
+                        Debug.Log("Burn in " + (lavaTurns * multiplier - knight.turnsInLava) + " turns.");
+                        knight.turnsInLava++;
+                    }
+                    else
+                    {
+                        StartCoroutine(knight.KillKnight(sq));
+                    }
                 }
                 else
                 {
-                    Debug.Log("Added to lava");
                     knightsInLava.Add(knight);
                 }
             }
         }
 
-        foreach (KnightBehavior knight in knightsInLava)
+        var toRemove = new List<KnightBehavior>();
+
+        foreach (var knight in knightsInLava)
         {
-            if (knight.currentSquare.isLava == false)
+            if (!knight.currentSquare.isLava)
             {
-                Debug.Log("Removed from lava");
-                knightsInLava.Remove(knight);
-                break;
+                knight.turnsInLava = 0;
+                toRemove.Add(knight);
             }
+        }
+        foreach (var knight in toRemove)
+        {
+            knightsInLava.Remove(knight);
         }
     }
 

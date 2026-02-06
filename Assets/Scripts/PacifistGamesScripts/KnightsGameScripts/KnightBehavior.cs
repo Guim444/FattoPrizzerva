@@ -33,6 +33,8 @@ public abstract class KnightBehavior : MonoBehaviour
 
     public int stepsMoved = 0;
 
+    public int turnsInLava = 0;
+
     protected virtual void Awake()
     {
         rend = GetComponent<Renderer>();
