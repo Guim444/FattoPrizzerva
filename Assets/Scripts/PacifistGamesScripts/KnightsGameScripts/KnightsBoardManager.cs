@@ -126,7 +126,9 @@ public class KnightsBoardManager : MonoBehaviour
             if (!sq.empty)
                 continue;
 
-            GameObject knightObj = Instantiate(KnightsGameManager.instance.agileKnightPrefab);
+            GameObject randKnight = UnityEngine.Random.Range(0, 2) == 0 ? KnightsGameManager.instance.agileKnightPrefab : KnightsGameManager.instance.tucutuKnightPrefab;
+
+            GameObject knightObj = Instantiate(randKnight);
             KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
             knightList.Add(knight);
 

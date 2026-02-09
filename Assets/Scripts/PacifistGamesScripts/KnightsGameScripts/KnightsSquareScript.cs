@@ -23,6 +23,8 @@ public class KnightsSquareScript : MonoBehaviour
     public bool selectableSquare = false;
     public bool pathSquare = false;
 
+    public int fragileFloorCounter = 0;
+
     public Vector2Int waterCourseDirection = Vector2Int.zero;
 
     [Header("Terrain flags")]
@@ -192,10 +194,11 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if (MapEditorData.instance.fragileFloorSelected)
             {
-                if (isFragile)
+                if (!isFragile)
                 {
                     isFragile = true;
-                    mat.color *= new Color(0.9f, 0.75f, 0.6f);
+                    Color brownTint = new Color(0.55f, 0.35f, 0.2f);
+                    mat.color = Color.Lerp(mat.color, brownTint, 0.5f);
                     squareColor = mat.color;
                     normalSquare = false;
 
@@ -210,6 +213,25 @@ public class KnightsSquareScript : MonoBehaviour
                     else
                     {
                         KnightsBoardManager.instance.fragileFloor.Add(this);
+                    }
+                }
+                else
+                {
+                    isFragile = false;
+                    mat.color = originalColor;
+                    squareColor = mat.color;
+                    normalSquare = true;
+                    if (heavenStartZone)
+                    {
+                        KnightsBoardManager.instance.fragileFloorStartPlayer1.Remove(this);
+                    }
+                    else if (hellStartZone)
+                    {
+                        KnightsBoardManager.instance.fragileFloorStartPlayer2.Remove(this);
+                    }
+                    else
+                    {
+                        KnightsBoardManager.instance.fragileFloor.Remove(this);
                     }
                 }
             }
@@ -313,7 +335,13 @@ public class KnightsSquareScript : MonoBehaviour
             GetComponent<Renderer>().enabled = false;
             normalSquare = false;
         }
-        
+        else if (isFragile)
+        {
+            mat.color *= new Color(0.9f, 0.75f, 0.6f);
+            squareColor = mat.color;
+            normalSquare = false;
+        }
+
     }
     public void TurnVoid()
     {
@@ -347,5 +375,25 @@ public class KnightsSquareScript : MonoBehaviour
         mat.SetColor("_EmissionColor", glowColor * 0.5f);
 
         mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+    }
+
+    public void FragileFloor()
+    {
+        if (fragileFloorCounter >= MapEditorData.instance.fragileFloorMax)
+        {
+            isFragile = false;
+            if (heavenStartZone)
+                KnightsBoardManager.instance.fragileFloorStartPlayer1.Remove(this);
+            else if (hellStartZone)
+                KnightsBoardManager.instance.fragileFloorStartPlayer2.Remove(this);
+            else
+                KnightsBoardManager.instance.fragileFloor.Remove(this);
+
+            TurnVoid();
+        }
+        else
+        {
+            fragileFloorCounter++;
+        }
     }
 }

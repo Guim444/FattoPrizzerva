@@ -254,12 +254,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &13536988
@@ -397,12 +399,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &45544598
@@ -671,6 +675,142 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 69090893}
   m_CullTransparentMesh: 1
+--- !u!1 &102079902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 102079903}
+  - component: {fileID: 102079905}
+  - component: {fileID: 102079904}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &102079903
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102079902}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 520527936}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &102079904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102079902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: +
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 15
+  m_fontSizeBase: 15
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &102079905
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102079902}
+  m_CullTransparentMesh: 1
 --- !u!1 &109640608
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,12 +946,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &113730787
@@ -949,12 +1091,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &118850839
@@ -1309,12 +1453,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &143988186
@@ -1585,12 +1731,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &163807897
@@ -2017,12 +2165,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &211892341
@@ -2195,12 +2345,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &265999192
@@ -2456,12 +2608,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &287617804
@@ -2645,12 +2799,14 @@ MonoBehaviour:
   rock: {fileID: 2089388270}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &305096289
@@ -2899,12 +3055,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &321901553
@@ -3106,7 +3264,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 40.9933, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3361,12 +3519,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &338720574
@@ -3579,8 +3739,11 @@ MonoBehaviour:
   rockIsFragileGameObj: {fileID: 1735460000}
   alignedButton: {fileID: 1231119945}
   lavaTurnsToKill: {fileID: 754877306}
+  fragileFloorCounter: {fileID: 795316919}
+  fragileFloorMax: 1
   voidSelected: 0
   lavaSelected: 0
+  fragileFloorSelected: 0
   selectedObject: {fileID: 0}
   heavenButton: {fileID: 1682005827}
   heavenSelected: 12
@@ -3775,12 +3938,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &367685757
@@ -4051,12 +4216,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &397339797
@@ -4194,12 +4361,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &432841253
@@ -4956,14 +5125,149 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
+--- !u!1 &520527935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 520527936}
+  - component: {fileID: 520527939}
+  - component: {fileID: 520527938}
+  - component: {fileID: 520527937}
+  m_Layer: 5
+  m_Name: UP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &520527936
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520527935}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 102079903}
+  m_Father: {fileID: 795316918}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -20, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &520527937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520527935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 520527938}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 347960436}
+        m_TargetAssemblyTypeName: MapEditorData, Assembly-CSharp
+        m_MethodName: FragileFloorEdit
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+--- !u!114 &520527938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520527935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &520527939
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520527935}
+  m_CullTransparentMesh: 1
 --- !u!1 &534857176
 GameObject:
   m_ObjectHideFlags: 0
@@ -5368,12 +5672,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &554619931
@@ -5511,12 +5817,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &567242590
@@ -6183,12 +6491,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &687711778
@@ -6326,12 +6636,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &706921634
@@ -6469,12 +6781,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &720142976
@@ -6612,12 +6926,14 @@ MonoBehaviour:
   rock: {fileID: 818866311}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &723381498
@@ -6755,12 +7071,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &732039669
@@ -6898,12 +7216,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &740362241
@@ -7041,14 +7361,54 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
+--- !u!1 &741519416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 741519417}
+  m_Layer: 5
+  m_Name: Fragile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &741519417
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741519416}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1781064728}
+  - {fileID: 1407477419}
+  - {fileID: 2033708416}
+  m_Father: {fileID: 1697481266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &743041443
 GameObject:
   m_ObjectHideFlags: 0
@@ -7317,12 +7677,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &754877304
@@ -7463,6 +7825,144 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754877304}
   m_CullTransparentMesh: 1
+--- !u!1 &795316917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 795316918}
+  - component: {fileID: 795316920}
+  - component: {fileID: 795316919}
+  m_Layer: 5
+  m_Name: FragileNum
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &795316918
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795316917}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 520527936}
+  - {fileID: 2011446347}
+  m_Father: {fileID: 2033708416}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 75, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &795316919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795316917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 1
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 20
+  m_fontSizeBase: 20
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &795316920
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795316917}
+  m_CullTransparentMesh: 1
 --- !u!1 &807548790
 GameObject:
   m_ObjectHideFlags: 0
@@ -7598,12 +8098,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &809271082
@@ -8007,12 +8509,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1001 &818866310
@@ -8230,12 +8734,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &839724237
@@ -8884,12 +9390,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &920761040
@@ -9027,12 +9535,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &930258784
@@ -9345,12 +9855,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &971388623
@@ -9563,12 +10075,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &999948006
@@ -9857,6 +10371,142 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 60, y: 270, z: 0}
+--- !u!1 &1028759578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1028759579}
+  - component: {fileID: 1028759581}
+  - component: {fileID: 1028759580}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1028759579
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028759578}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2011446347}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1028759580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028759578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: '-'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 15
+  m_fontSizeBase: 15
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1028759581
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028759578}
+  m_CullTransparentMesh: 1
 --- !u!1 &1034226567
 GameObject:
   m_ObjectHideFlags: 0
@@ -10263,12 +10913,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1064073341
@@ -10406,12 +11058,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1066221924
@@ -11458,12 +12112,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1147554863
@@ -11601,12 +12257,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1181737738
@@ -11783,12 +12441,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1206320077
@@ -12424,12 +13084,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1270031752
@@ -12567,12 +13229,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1270311773
@@ -12710,12 +13374,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1283433562
@@ -12853,12 +13519,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1295405162
@@ -12996,12 +13664,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1310188818
@@ -13298,12 +13968,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1316816588
@@ -13441,12 +14113,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1325594833
@@ -13931,12 +14605,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 1
   hellStartZone: 0
 --- !u!1 &1349677708
@@ -14075,8 +14751,8 @@ MonoBehaviour:
   player2StartZoneActive: 1
   player1StartZone: []
   player2StartZone: []
-  fragileFloorPlayer1: []
-  fragileFloorPlayer2: []
+  fragileFloorStartPlayer1: []
+  fragileFloorStartPlayer2: []
   lavaStartSquaresPlayer1: []
   lavaStartSquaresPlayer2: []
   obstacles:
@@ -14087,6 +14763,7 @@ MonoBehaviour:
   - {fileID: 305096291}
   - {fileID: 2011265459}
   lavaSquares: []
+  fragileFloor: []
   whiteSquarePrefab: {fileID: 0}
   blackSquarePrefab: {fileID: 0}
   boardPrefab: {fileID: 0}
@@ -14514,6 +15191,144 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389762989}
   m_CullTransparentMesh: 1
+--- !u!1 &1407477418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1407477419}
+  - component: {fileID: 1407477421}
+  - component: {fileID: 1407477420}
+  m_Layer: 5
+  m_Name: FragileExplanation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1407477419
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407477418}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 741519417}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -300, y: -60}
+  m_SizeDelta: {x: 180, y: 300}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1407477420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407477418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Fragile floor will crack more and more with each step is taken in it. If
+    it arrives to the maximum step amount, the fragile floor will break and turn
+    into a void square.
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 18
+  m_fontSizeBase: 18
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 8
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1407477421
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407477418}
+  m_CullTransparentMesh: 1
 --- !u!1 &1411140144
 GameObject:
   m_ObjectHideFlags: 0
@@ -14565,13 +15380,14 @@ MonoBehaviour:
   player2StartZoneActive: 1
   player1StartZone: []
   player2StartZone: []
-  fragileFloorPlayer1: []
-  fragileFloorPlayer2: []
+  fragileFloorStartPlayer1: []
+  fragileFloorStartPlayer2: []
   lavaStartSquaresPlayer1: []
   lavaStartSquaresPlayer2: []
   obstacles: []
   waterCourses: []
   lavaSquares: []
+  fragileFloor: []
   whiteSquarePrefab: {fileID: 3883550703704227723, guid: 66b32fb40fe1d9847ace9b932472d9a3, type: 3}
   blackSquarePrefab: {fileID: 2497885827258523077, guid: 83ed0b94dbeebc840be8b867c562f3b3, type: 3}
   boardPrefab: {fileID: 1957572251758858398, guid: 921048f574d139842adbb69718edfeb2, type: 3}
@@ -14843,12 +15659,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1425270226
@@ -14986,12 +15804,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1428872917
@@ -15129,12 +15949,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1433596123
@@ -15410,12 +16232,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1448097854
@@ -15628,12 +16452,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1487499782
@@ -16215,14 +17041,91 @@ MonoBehaviour:
   rock: {fileID: 1001564069}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
+--- !u!1 &1522868867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1522868868}
+  - component: {fileID: 1522868870}
+  - component: {fileID: 1522868869}
+  m_Layer: 5
+  m_Name: Fragile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1522868868
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522868867}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1631636416}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -350, y: -75}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1522868869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522868867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1522868870
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522868867}
+  m_CullTransparentMesh: 1
 --- !u!1 &1525628510
 GameObject:
   m_ObjectHideFlags: 0
@@ -16802,12 +17705,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1597020531
@@ -16945,12 +17850,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!1 &1612916130
@@ -17026,6 +17933,8 @@ RectTransform:
   - {fileID: 1048905083}
   - {fileID: 194676620}
   - {fileID: 534857177}
+  - {fileID: 1522868868}
+  - {fileID: 2120705145}
   - {fileID: 1491320403}
   m_Father: {fileID: 331997318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17169,12 +18078,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 1
 --- !u!4 &1673369819 stripped
@@ -17317,12 +18228,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1681204023
@@ -17625,6 +18538,7 @@ RectTransform:
   - {fileID: 1799808314}
   - {fileID: 2035928523}
   - {fileID: 355043168}
+  - {fileID: 741519417}
   - {fileID: 999948007}
   m_Father: {fileID: 331997318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -18007,12 +18921,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1776890597
@@ -18054,6 +18970,139 @@ Transform:
   - {fileID: 1255264285}
   m_Father: {fileID: 189352697}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1781064727
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1781064728}
+  - component: {fileID: 1781064731}
+  - component: {fileID: 1781064730}
+  - component: {fileID: 1781064729}
+  m_Layer: 5
+  m_Name: AddFragile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1781064728
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781064727}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2034836402}
+  m_Father: {fileID: 741519417}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -297.10004, y: 141}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1781064729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781064727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1781064730}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 347960436}
+        m_TargetAssemblyTypeName: MapEditorData, Assembly-CSharp
+        m_MethodName: AddFragileFloor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1781064730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781064727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1781064731
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781064727}
+  m_CullTransparentMesh: 1
 --- !u!1 &1791861808
 GameObject:
   m_ObjectHideFlags: 0
@@ -18636,12 +19685,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1839895808
@@ -18911,12 +19962,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 1
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1890394965
@@ -19344,6 +20397,144 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1925632977}
   m_CullTransparentMesh: 1
+--- !u!1 &1946039137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1946039138}
+  - component: {fileID: 1946039140}
+  - component: {fileID: 1946039139}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1946039138
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946039137}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2120705145}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1946039139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946039137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 'Fragile
+
+    Floor'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 15
+  m_fontSizeBase: 15
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1946039140
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946039137}
+  m_CullTransparentMesh: 1
 --- !u!1 &1967376078
 GameObject:
   m_ObjectHideFlags: 0
@@ -19479,12 +20670,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1 &1968370738
@@ -20212,6 +21405,412 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2011446346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2011446347}
+  - component: {fileID: 2011446350}
+  - component: {fileID: 2011446349}
+  - component: {fileID: 2011446348}
+  m_Layer: 5
+  m_Name: DOWN
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2011446347
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011446346}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1028759579}
+  m_Father: {fileID: 795316918}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 20, y: 0}
+  m_SizeDelta: {x: 20, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2011446348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011446346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2011446349}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 347960436}
+        m_TargetAssemblyTypeName: MapEditorData, Assembly-CSharp
+        m_MethodName: MinMaxEdit
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2011446349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011446346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2011446350
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011446346}
+  m_CullTransparentMesh: 1
+--- !u!1 &2033708415
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2033708416}
+  - component: {fileID: 2033708418}
+  - component: {fileID: 2033708417}
+  m_Layer: 5
+  m_Name: FragileCount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2033708416
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033708415}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -5.212501}
+  m_LocalScale: {x: 1.042511, y: 1.042511, z: 1.042511}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 795316918}
+  m_Father: {fileID: 741519417}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -340, y: 90}
+  m_SizeDelta: {x: 96, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2033708417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033708415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Max steps on a fragile floor square
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 14
+  m_fontSizeBase: 14
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 4
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &2033708418
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033708415}
+  m_CullTransparentMesh: 1
+--- !u!1 &2034836401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2034836402}
+  - component: {fileID: 2034836404}
+  - component: {fileID: 2034836403}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2034836402
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034836401}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1781064728}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2034836403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034836401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Add fragile floor
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 16
+  m_fontSizeBase: 16
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &2034836404
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034836401}
+  m_CullTransparentMesh: 1
 --- !u!1 &2035928522
 GameObject:
   m_ObjectHideFlags: 0
@@ -20520,12 +22119,14 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 0
 --- !u!1001 &2089388269
@@ -20748,14 +22349,149 @@ MonoBehaviour:
   rock: {fileID: 0}
   selectableSquare: 0
   pathSquare: 0
+  fragileFloorCounter: 0
   waterCourseDirection: {x: 0, y: 0}
   isIceSquare: 0
   isWaterSquare: 0
   isWaterCourseCrossing: 0
   isVoid: 0
   isLava: 0
+  isFragile: 0
   heavenStartZone: 0
   hellStartZone: 1
+--- !u!1 &2120705144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2120705145}
+  - component: {fileID: 2120705148}
+  - component: {fileID: 2120705147}
+  - component: {fileID: 2120705146}
+  m_Layer: 5
+  m_Name: FragileButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2120705145
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120705144}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1946039138}
+  m_Father: {fileID: 1631636416}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -255, y: -75}
+  m_SizeDelta: {x: 100, y: 40}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2120705146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120705144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2120705147}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 347960436}
+        m_TargetAssemblyTypeName: MapEditorData, Assembly-CSharp
+        m_MethodName: UIElementSelect
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 741519416}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2120705147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120705144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2120705148
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120705144}
+  m_CullTransparentMesh: 1
 --- !u!1 &2123226244
 GameObject:
   m_ObjectHideFlags: 0

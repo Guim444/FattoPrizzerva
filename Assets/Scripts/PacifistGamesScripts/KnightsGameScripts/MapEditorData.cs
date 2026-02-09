@@ -20,6 +20,8 @@ public class MapEditorData : MonoBehaviour
     public GameObject rockIsFragileGameObj;
     public GameObject alignedButton;
     public TextMeshProUGUI lavaTurnsToKill;
+    public TextMeshProUGUI fragileFloorCounter;
+    public int fragileFloorMax;
 
     public bool voidSelected;
     public bool lavaSelected;
@@ -196,6 +198,22 @@ public class MapEditorData : MonoBehaviour
 
             KnightsGameManager.instance.lavaTurns = lavaTurns;
             lavaTurnsToKill.text = lavaTurns.ToString();
+        }
+    }
+
+    public void FragileFloorEdit(int num)
+    {
+        if (int.TryParse(lavaTurnsToKill.text, out int lavaTurns))
+        {
+            lavaTurns += num;
+
+            if (lavaTurns < 1)
+                lavaTurns = 3;
+            if (lavaTurns > 3)
+                lavaTurns = 1;
+
+            fragileFloorMax = lavaTurns;
+            fragileFloorCounter.text = lavaTurns.ToString();
         }
     }
 

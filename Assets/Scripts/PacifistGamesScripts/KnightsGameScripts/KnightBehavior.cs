@@ -220,6 +220,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
             if (canContinue)
             {
+
                 previousSquare = currentSquare;
                 yield return StartCoroutine(SmoothMove(sq.knightPosition, 0.3f));
 
@@ -234,6 +235,8 @@ public abstract class KnightBehavior : MonoBehaviour
                 {
                     sq.knight = this;
                     sq.empty = false;
+
+                    StepOnSquare(sq);
                 }
 
                 if (sq.isIceSquare && grounded)
@@ -297,7 +300,7 @@ public abstract class KnightBehavior : MonoBehaviour
         if (isDead)
         {
             yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
-            KnightsGameManager.instance.NextPlayer();
+            StartCoroutine(KillKnight(currentSquare));
             yield break;
         }
 
@@ -774,6 +777,8 @@ public abstract class KnightBehavior : MonoBehaviour
         if (destination != null)
             KnightsGameManager.instance.movementsInTheRound.Add(enemy);
 
+        StepOnSquare(destination);
+
         KnightsGameManager.instance.BeginMovement(enemy);
         yield return StartCoroutine(PushMoveCoroutine(enemy, destination.knightPosition));
         yield return new WaitUntil(() => !enemy.isMoving);
@@ -860,6 +865,8 @@ public abstract class KnightBehavior : MonoBehaviour
             next.knight = this;
             next.empty = false;
 
+            StepOnSquare(next);
+
             yield return StartCoroutine(SmoothMove(next.knightPosition, 0.3f));
 
             if (!next.isIceSquare)
@@ -919,6 +926,12 @@ public abstract class KnightBehavior : MonoBehaviour
     }
     public IEnumerator KillKnight(KnightsSquareScript square)
     {
+        KnightsGameManager.instance.EndMovement(this);
+        KnightsBoardManager.instance.knightList.Remove(this);
+
+        if (KnightsGameManager.instance.movementsInTheRound.Contains(this))
+            KnightsGameManager.instance.movementsInTheRound.Remove(this);
+
         yield return new WaitUntil(() => !isMoving);
         if (square.knight != null)
         {
@@ -927,11 +940,7 @@ public abstract class KnightBehavior : MonoBehaviour
             square = null;
         }
 
-        KnightsBoardManager.instance.knightList.Remove(this);
-
-        if (KnightsGameManager.instance.movementsInTheRound.Contains(this))
-            KnightsGameManager.instance.movementsInTheRound.Remove(this);
-
+        KnightsGameManager.instance.NextPlayer();
         Destroy(gameObject);
     }
 
@@ -1039,6 +1048,17 @@ public abstract class KnightBehavior : MonoBehaviour
             if (KnightsGameManager.instance.movementsInTheRound.Contains(pushedKnight))
                 KnightsGameManager.instance.movementsInTheRound.Remove(pushedKnight);
 
+        }
+    }
+
+    public void StepOnSquare(KnightsSquareScript sq)
+    {
+        if (sq == null)
+            return;
+
+        if (sq.isFragile)
+        {
+            sq.FragileFloor();
         }
     }
 }
