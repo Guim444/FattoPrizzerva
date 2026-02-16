@@ -11,6 +11,7 @@ public abstract class KnightBehavior : MonoBehaviour
     public KnightsSquareScript currentSquare;
     public KnightsSquareScript transitSquare;
     public KnightsSquareScript previousSquare;
+    public KnightsSquareScript deathSquare;
 
     protected Renderer rend;
     protected Material mat;
@@ -299,8 +300,10 @@ public abstract class KnightBehavior : MonoBehaviour
 
         if (isDead)
         {
+            KnightsGameManager.instance.EndMovement(this);
             yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
-            StartCoroutine(KillKnight(currentSquare));
+            yield return StartCoroutine(KillKnight(currentSquare));
+            KnightsGameManager.instance.NextPlayer();
             yield break;
         }
 
@@ -732,7 +735,32 @@ public abstract class KnightBehavior : MonoBehaviour
             if (!KnightsGameManager.instance.movementsInTheRound.Contains(this))
                 KnightsGameManager.instance.movementsInTheRound.Add(this);
 
-            Destroy(enemy.gameObject);
+            //Destroy(enemy.gameObject);
+
+            KnightsSquareScript outside = KnightsBoardManager.instance.GetOutsideSquare("OUT_" + c.ToString() + r);
+            if (outside != null)
+            {
+                enemy.deathSquare = outside;
+
+                if (enemy.currentSquare.knight == enemy)
+                {
+                    enemy.currentSquare.knight = null;
+                    enemy.currentSquare.empty = true;
+                }
+
+                yield return StartCoroutine(enemy.SmoothMove(outside.knightPosition, 0.2f));
+
+                if (steps == 0)
+                {
+                    StartCoroutine(enemy.KillKnight(outside));
+                }
+
+                else
+                {
+                    dir = new Vector2Int(outside.SquareColumn - from.SquareColumn, outside.SquareRow - from.SquareRow);
+                    StartCoroutine(PushForce(enemy, dir, steps - 1, allowIce));
+                }
+            }
             yield break;
         }
 
@@ -926,24 +954,37 @@ public abstract class KnightBehavior : MonoBehaviour
     }
     public IEnumerator KillKnight(KnightsSquareScript square)
     {
+        yield return null;
+        isDead = true;
         KnightsGameManager.instance.EndMovement(this);
         KnightsBoardManager.instance.knightList.Remove(this);
+
+        if (square.isVoid)
+        {
+            square.TurnVoid(false);
+            square.knight = null;
+
+            deathSquare = square;
+            currentSquare = null;
+        }
+        else if (square.isLava)
+        {
+            yield return StartCoroutine(SinkInLava(square.knight, true));
+            square.knight = null;
+            square.empty = true;
+            deathSquare = square;
+            currentSquare = null;
+            KnightsGameManager.instance.knightsInLava.Remove(this);
+
+            square.isLava = false;
+        }
 
         if (KnightsGameManager.instance.movementsInTheRound.Contains(this))
             KnightsGameManager.instance.movementsInTheRound.Remove(this);
 
-        yield return new WaitUntil(() => !isMoving);
-        if (square.knight != null)
-        {
-            square.knight = null;
-            square.empty = true;
-            square = null;
-        }
-
-        KnightsGameManager.instance.NextPlayer();
-        Destroy(gameObject);
+        GetComponent<BoxCollider>().enabled = false;
+        KnightsBoardManager.instance.deadKnightList.Add(this);
     }
-
     public void ToggleGlow(bool glow, float intensity)
     {
         if (glow)
@@ -968,33 +1009,58 @@ public abstract class KnightBehavior : MonoBehaviour
         canContinue = true;
         KnightsGameManager.instance.BeginMovement(this);
 
-        char col = (char)(sq.SquareColumn + sq.waterCourseDirection.x);
-        int row = (int)(sq.SquareRow + sq.waterCourseDirection.y);
-        KnightsSquareScript target = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+
 
         if (sq.waterCourseDirection == Vector2Int.zero || !CheckRow(sq.waterCourseDirection))
         {
             canContinue = false;
         }
 
-        if (sq.waterCourseDirection == Vector2Int.zero)
+        if (sq.isWaterCourseCrossing)
         {
-            yield return StartCoroutine(KillKnight(sq));
+            List<Vector2Int> possibleOutcomes = new List<Vector2Int>();
+
+            foreach (WaterCourse wc in KnightsBoardManager.instance.waterCourses)
+            {
+                if (wc.waterCourseSquares.Contains(sq))
+                {
+                    possibleOutcomes.Add(wc.courseDirection);
+                }
+            }
+
+            int i = KnightsGameManager.instance.turnCounter % possibleOutcomes.Count;
+            Debug.Log(KnightsGameManager.instance.turnCounter + "%" + possibleOutcomes.Count + "=" + i);
+            sq.waterCourseDirection = possibleOutcomes[i];
         }
+
+        char col = (char)(sq.SquareColumn + sq.waterCourseDirection.x);
+        int row = (int)(sq.SquareRow + sq.waterCourseDirection.y);
+        KnightsSquareScript target = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
 
         if (canContinue)
         {
             if (target == null)
             {
                 KnightsGameManager.instance.EndMovement(this);
+                Vector3 dir = new Vector3(-sq.waterCourseDirection.y, 0, sq.waterCourseDirection.x);
 
+                yield return StartCoroutine(sq.knight.SmoothMove(dir, 0.6f));
                 yield return StartCoroutine(KillKnight(sq));
 
                 yield break;
             }
             else if (target.knight != null)
             {
-                StartCoroutine(EnemyWaterCourseBehavior(target, sq, steps, waterCourse));
+                if (target.waterCourseDirection == currentSquare.waterCourseDirection)
+                {
+                    yield return StartCoroutine(EnemyWaterCourseBehavior(target, sq, steps, waterCourse));
+                }
+                else
+                {
+                    canContinue = false;
+                    KnightsGameManager.instance.EndMovement(this);
+                    yield break;
+                }
             }
 
             StartCoroutine(SmoothMove(target.knightPosition, 0.6f));
@@ -1027,7 +1093,16 @@ public abstract class KnightBehavior : MonoBehaviour
             }
             else
             {
-                KnightsGameManager.instance.EndMovement(this);
+                steps--;
+
+                if (steps > 0)
+                {
+                    yield return StartCoroutine(WaterCourseCoroutine(currentSquare, steps, waterCourse));
+                }
+                else
+                {
+                    KnightsGameManager.instance.EndMovement(this);
+                }
             }
         }
     }
@@ -1060,5 +1135,42 @@ public abstract class KnightBehavior : MonoBehaviour
         {
             sq.FragileFloor();
         }
+    }
+
+    public IEnumerator SinkInLava(KnightBehavior knight, bool isSinking)
+    {
+        Vector3 targetPos;
+        Color finalColor;
+        if (isSinking)
+        {
+            finalColor = Color.black;
+            targetPos = new Vector3(knight.currentSquare.knightPosition.x, knight.currentSquare.knightPosition.y - 0.6f, knight.currentSquare.knightPosition.z);
+        }
+        else
+        {
+            finalColor = player == 1 ? Color.skyBlue : Color.red;
+            targetPos = knight.deathSquare.knightPosition;
+        }
+
+        float elapsed = 0f;
+
+        Vector3 startPos = transform.position;
+
+        float jump = grounded ? 0 : 1.5f;
+
+        while (elapsed < 1f)
+        {
+            if (stepsMoved >= 2)
+            {
+                jump = 0;
+            }
+
+            elapsed += Time.deltaTime / 0.3f;
+            transform.position = Vector3.Lerp(startPos, new Vector3(targetPos.x, targetPos.y + jump, targetPos.z), elapsed);
+            mat.color = Color.Lerp(mat.color, finalColor, elapsed);
+            yield return null;
+        }
+
+        transform.position = new Vector3(targetPos.x, targetPos.y + jump, targetPos.z);
     }
 }

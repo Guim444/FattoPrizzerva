@@ -3,6 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class KnightsSquareScript : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class KnightsSquareScript : MonoBehaviour
     public bool isIceSquare = false;
     public bool isWaterSquare = false;
     public bool isWaterCourseCrossing = false;
+    public bool isWaterCourseOrigin = false;
     public bool isVoid;
     public bool isLava;
     public bool isFragile;
@@ -40,12 +42,18 @@ public class KnightsSquareScript : MonoBehaviour
 
     public void OnEnable()
     {
-        originalColor = GetComponent<Renderer>().material.color;
-        squareColor = originalColor;
+        if (TryGetComponent<Renderer>(out Renderer rend))
+        {
+            originalColor = GetComponent<Renderer>().material.color;
+            squareColor = originalColor;
 
-        Renderer rend = GetComponent<Renderer>();
-        mat = new Material(rend.material);
-        rend.material = mat;
+            mat = new Material(rend.material);
+            rend.material = mat;
+        }
+        else
+        {
+            knightPosition = new Vector3(transform.position.x, transform.position.y + 0.15f, transform.position.z);
+        }
         //StartCoroutine(InitializeSquare());
     }
     public void OnMouseDown()
@@ -97,29 +105,13 @@ public class KnightsSquareScript : MonoBehaviour
                 rock.ActivateGlow(false);
 
                 KnightsBoardManager.instance.obstacles.Add(rock);
+
+                MapEditorData.instance.selectedObject = null;
             }
             else if (MapEditorData.instance.voidSelected)
             {
                 if (!isVoid)
                 {
-                    /*if (heavenStartZone)
-                    {
-                        if (KnightsBoardManager.instance.fragileFloorStartPlayer1 == null)
-                        {
-                            KnightsBoardManager.instance.fragileFloorStartPlayer1 = new List<KnightsSquareScript>();
-                        }
-
-                        KnightsBoardManager.instance.fragileFloorStartPlayer1.Add(this);
-                    }
-                    else if (hellStartZone)
-                    {
-                        if (KnightsBoardManager.instance.fragileFloorStartPlayer2 == null)
-                        {
-                            KnightsBoardManager.instance.fragileFloorStartPlayer2 = new List<KnightsSquareScript>();
-                        }
-
-                        KnightsBoardManager.instance.fragileFloorStartPlayer2.Add(this);
-                    }*/
                     if (heavenStartZone || hellStartZone)
                     {
                         StartCoroutine(MapEditorData.instance.WarningMessage("You can't set a start square as void. Only as a fragile floor square."));
@@ -127,7 +119,8 @@ public class KnightsSquareScript : MonoBehaviour
                     else
                     {
                         isVoid = true;
-                        TurnVoid();
+                        normalSquare = false;
+                        TurnVoid(true);
                     }
                 }
                 else
@@ -141,6 +134,7 @@ public class KnightsSquareScript : MonoBehaviour
                         KnightsBoardManager.instance.fragileFloorStartPlayer2.Remove(this);
                     }*/
                     isVoid = false;
+                    normalSquare = true;
                     GetComponent<Renderer>().enabled = true;
                 }
 
@@ -234,6 +228,65 @@ public class KnightsSquareScript : MonoBehaviour
                         KnightsBoardManager.instance.fragileFloor.Remove(this);
                     }
                 }
+            }
+            else if (MapEditorData.instance.selectedObject.TryGetComponent<WaterCourse>(out WaterCourse currentCourse))
+            {
+                currentCourse.waterCourseSquares.Clear();
+
+                int row = SquareRow;
+                char col = SquareColumn;
+
+                for (int i = 0; i < currentCourse.length; i++)
+                {
+                    string squareName = col.ToString() + row.ToString();
+                    KnightsSquareScript targetSquare = KnightsBoardManager.instance.GetSquare(squareName);
+
+                    if (targetSquare == null || !targetSquare.normalSquare || isWaterCourseOrigin)
+                    {
+                        if (targetSquare == null)
+                        {
+                            StartCoroutine(MapEditorData.instance.WarningMessage("The water course must be placed within the board limits."));
+                        }
+                        else if (isWaterCourseOrigin)
+                        {
+                            StartCoroutine(MapEditorData.instance.WarningMessage("The water course must be placed within the board limits."));
+                        }
+                        else
+                        {
+                            StartCoroutine(MapEditorData.instance.WarningMessage("The water course can't go through altered squares"));
+                        }
+                        currentCourse.waterCourseSquares.Clear();
+                        return;
+                    }
+
+                    currentCourse.waterCourseSquares.Add(targetSquare);
+
+                    row += currentCourse.courseDirection.y;
+                    col += (char)currentCourse.courseDirection.x;
+                }
+
+                isWaterCourseOrigin = true;
+
+                Vector3 newPos = new Vector3(knightPosition.x, currentCourse.transform.position.y, knightPosition.z);
+
+                StartCoroutine(currentCourse.MoveCourse(newPos));
+
+                KnightsBoardManager.instance.waterCourses.Add(currentCourse);
+
+                MapEditorData.instance.selectedObject = null;
+
+                /*StartCoroutine(rock.MoveRock(newPos));
+
+                currentRock.currentSquare = this;
+                currentRock.SetDangerousSquares();
+
+                currentRock.GetComponent<BoxCollider>().enabled = true;
+
+                rock.ActivateGlow(false);
+
+                KnightsBoardManager.instance.obstacles.Add(rock);
+
+                MapEditorData.instance.selectedObject = null;*/
             }
             else
             {
@@ -334,6 +387,7 @@ public class KnightsSquareScript : MonoBehaviour
         {
             GetComponent<Renderer>().enabled = false;
             normalSquare = false;
+            knightPosition = new Vector3(transform.position.x, 0.15f, transform.position.z);
         }
         else if (isFragile)
         {
@@ -341,11 +395,30 @@ public class KnightsSquareScript : MonoBehaviour
             squareColor = mat.color;
             normalSquare = false;
         }
+        else
+        {
+            normalSquare = true;
+        }
 
     }
-    public void TurnVoid()
+    public void TurnVoid(bool turn)
     {
-        isVoid = true;
+        if (turn == false)
+        {
+            knightPosition = new Vector3(transform.position.x, 0.85f, transform.position.z);
+            isVoid = false;
+
+            if (knight != null)
+            {
+                knight = null;
+            }
+        }
+        else
+        {
+            knightPosition = new Vector3(transform.position.x, 0.15f, transform.position.z);
+            isVoid = true;
+        }
+
         GetComponent<MeshRenderer>().enabled = false;
     }
     public void ToggleGlow(bool glow, float intensity)
@@ -389,7 +462,7 @@ public class KnightsSquareScript : MonoBehaviour
             else
                 KnightsBoardManager.instance.fragileFloor.Remove(this);
 
-            TurnVoid();
+            TurnVoid(true);
         }
         else
         {

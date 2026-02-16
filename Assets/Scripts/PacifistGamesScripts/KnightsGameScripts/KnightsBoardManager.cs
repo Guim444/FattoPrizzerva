@@ -12,7 +12,9 @@ public class KnightsBoardManager : MonoBehaviour
     public int height, width;
     public static KnightsBoardManager instance;
     public Dictionary<string, KnightsSquareScript> squares = new Dictionary<string, KnightsSquareScript>();
+    public Dictionary<string, KnightsSquareScript> outsideSquares = new Dictionary<string, KnightsSquareScript>();
     public List<KnightBehavior> knightList = new List<KnightBehavior>();
+    public List<KnightBehavior> deadKnightList;
 
     public bool player1StartZoneActive = true, player2StartZoneActive = true;
     public List<KnightsSquareScript> player1StartZone;
@@ -47,6 +49,13 @@ public class KnightsBoardManager : MonoBehaviour
     public KnightsSquareScript GetSquare(string squareName)
     {
         if (squares.TryGetValue(squareName, out KnightsSquareScript square))
+            return square;
+        return null;
+    }
+
+    public KnightsSquareScript GetOutsideSquare(string squareName)
+    {
+        if (outsideSquares.TryGetValue(squareName, out KnightsSquareScript square))
             return square;
         return null;
     }
@@ -97,12 +106,73 @@ public class KnightsBoardManager : MonoBehaviour
                 sq.knight = null;
 
                 sq.name = sq.SquareColumn.ToString() + sq.SquareRow;
-                sq.knightPosition = new Vector3(sq.transform.position.x, sq.transform.position.y + 0.75f, sq.transform.position.z);
+                sq.knightPosition = new Vector3(sq.transform.position.x, sq.transform.position.y + 0.85f, sq.transform.position.z);
 
                 squares.Add(sq.name, sq);
                 //StartCoroutine(sq.InitializeSquare());
             }
         }
+
+        outsideSquares.Clear();
+
+        Transform outsideRoot = new GameObject("OutsideSquares").transform;
+        outsideRoot.SetParent(transform);
+
+        Transform upParent = new GameObject("Up").transform;
+        upParent.SetParent(outsideRoot);
+
+        for (int colIndex = 0; colIndex < width; colIndex++)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                int row = height + 1 + i;
+
+                CreateOutsideSquare(row, colIndex, upParent);
+            }
+        }
+
+
+        Transform downParent = new GameObject("Down").transform;
+        downParent.SetParent(outsideRoot);
+
+        for (int colIndex = 0; colIndex < width; colIndex++)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                int row = -i;
+
+                CreateOutsideSquare(row, colIndex, downParent);
+            }
+        }
+
+
+        Transform leftParent = new GameObject("Left").transform;
+        leftParent.SetParent(outsideRoot);
+
+        for (int row = 1; row <= height; row++)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                int colIndex = -i;
+
+                CreateOutsideSquare(row, colIndex, leftParent);
+            }
+        }
+
+
+        Transform rightParent = new GameObject("Right").transform;
+        rightParent.SetParent(outsideRoot);
+
+        for (int row = 1; row <= height; row++)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                int colIndex = width + i;
+
+                CreateOutsideSquare(row, colIndex, rightParent);
+            }
+        }
+
     }
     public void TestStartZone()
     {
@@ -373,9 +443,9 @@ public class KnightsBoardManager : MonoBehaviour
                 player2StartZoneActive = false;
 
             foreach (KnightsSquareScript sq in fragileFloor)
-                {
-                    sq.TurnVoid();
-                }
+            {
+                sq.TurnVoid(true);
+            }
         }
     }
 
@@ -385,5 +455,46 @@ public class KnightsBoardManager : MonoBehaviour
         {
             rock.SetDangerousSquares();
         }
+
+        List<KnightsSquareScript> squaresDone = new List<KnightsSquareScript>();
+        foreach (WaterCourse water in waterCourses)
+        {
+            foreach (KnightsSquareScript sq in water.waterCourseSquares)
+            {
+                sq.isWaterSquare = true;
+                if (!squaresDone.Contains(sq))
+                {
+                    sq.waterCourseDirection = water.courseDirection;
+                    squaresDone.Add(sq);
+                }
+                else
+                {
+                    sq.isWaterCourseCrossing = true;
+                    sq.waterCourseDirection = Vector2Int.zero;
+                }
+            }
+        }
     }
+    void CreateOutsideSquare(int row, int colIndex, Transform parent)
+    {
+        GameObject squareObj = new GameObject("OutsideSquare");
+        squareObj.transform.SetParent(parent);
+
+        float x = height / 2f - 0.5f - (row - 1);
+        float z = -(width / 2f - 0.5f) + colIndex;
+
+        squareObj.transform.position = new Vector3(x, 0, z);
+
+        KnightsSquareScript sq = squareObj.AddComponent<KnightsSquareScript>();
+
+        sq.SquareColumn = (char)('A' + colIndex);
+        sq.SquareRow = row;
+        sq.empty = true;
+
+        string key = $"OUT_{sq.SquareColumn}{sq.SquareRow}";
+        sq.name = key;
+
+        outsideSquares.Add(key, sq);
+    }
+
 }

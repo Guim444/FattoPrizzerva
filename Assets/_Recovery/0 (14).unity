@@ -14750,6 +14750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KnightsGameManager
   currentPlayer: 2
+  turnCounter: 0
   selectedKnight: {fileID: 0}
   selectedSquare: {fileID: 0}
   gameHasStarted: 0

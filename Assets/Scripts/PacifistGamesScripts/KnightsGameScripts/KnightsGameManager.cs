@@ -11,6 +11,7 @@ public class KnightsGameManager : MonoBehaviour
 {
     public static KnightsGameManager instance;
     public int currentPlayer = 1;
+    public int turnCounter = 0;
 
     public KnightBehavior selectedKnight;
     public KnightsSquareScript selectedSquare;
@@ -137,7 +138,33 @@ public class KnightsGameManager : MonoBehaviour
 
         if (MapEditorData.instance.selectedObject != null)
         {
-            StartCoroutine(RotateCoroutine(MapEditorData.instance.selectedObject.transform));
+            if (MapEditorData.instance.selectedObject.TryGetComponent<WaterCourse>(out WaterCourse water))
+            {
+                if (water.courseDirection == Vector2Int.up)
+                {
+                    StartCoroutine(WaterCourseRotate(water.gameObject.transform, Quaternion.Euler(90, 0, 90)));
+                    water.courseDirection = Vector2Int.right;
+                }
+                else if (water.courseDirection == Vector2Int.right)
+                {
+                    StartCoroutine(WaterCourseRotate(water.gameObject.transform, Quaternion.Euler(90, 0, 0)));
+                    water.courseDirection = Vector2Int.down;
+                }
+                else if (water.courseDirection == Vector2Int.down)
+                {
+                    StartCoroutine(WaterCourseRotate(water.gameObject.transform, Quaternion.Euler(90, 0, -90)));
+                    water.courseDirection = Vector2Int.left;
+                }
+                else if (water.courseDirection == Vector2Int.left)
+                {
+                    StartCoroutine(WaterCourseRotate(water.gameObject.transform, Quaternion.Euler(90, 0, 180)));
+                    water.courseDirection = Vector2Int.up;
+                }
+            }
+            else
+            {
+                StartCoroutine(RotateCoroutine(MapEditorData.instance.selectedObject.transform));
+            }
         }
     }
     IEnumerator RotateCoroutine(Transform target)
@@ -157,6 +184,24 @@ public class KnightsGameManager : MonoBehaviour
         }
 
         target.rotation = endRot;
+        isRotating = false;
+    }
+    IEnumerator WaterCourseRotate(Transform target, Quaternion targetAngle)
+    {
+        isRotating = true;
+        Quaternion startRot = target.rotation;
+
+        float t = 0f;
+        float duration = 0.25f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            target.rotation = Quaternion.Lerp(startRot, targetAngle, t);
+            yield return null;
+        }
+
+        target.rotation = targetAngle;
         isRotating = false;
     }
     bool ClickHitsSelectableSquare()
@@ -200,6 +245,9 @@ public class KnightsGameManager : MonoBehaviour
     }
     public void NextPlayer()
     {
+        turnCounter++;
+        Debug.Log("Next Player");
+
         if (KnightsBoardManager.instance.player1StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(1);
 
@@ -226,9 +274,41 @@ public class KnightsGameManager : MonoBehaviour
                 knight.currentSquare.knight = knight;
                 knight.currentSquare.empty = false;
             }
+            else
+            {
+                knight.deathSquare.knight = knight;
+                knight.deathSquare.empty = false;
+            }
 
             if (knight.player != currentPlayer)
                 knight.GetComponent<BoxCollider>().enabled = false;
+        }
+
+        foreach (WaterCourse wc in KnightsBoardManager.instance.waterCourses)
+        {
+            if (wc.dryCourse)
+            {
+
+                if (wc.dryTurns == 0 && wc.activeTurns > 0)
+                {
+                    wc.activeTurns--;
+                }
+                else
+                {
+                    wc.dryTurns--;
+                }
+
+                if (wc.dryTurns == 0)
+                {
+                    wc.activeTurns = MapEditorData.instance.turnsWithWater;
+                    wc.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
+                else if (wc.dryTurns < 0)
+                {
+                    wc.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+                    wc.dryTurns = MapEditorData.instance.dryTurnsMax;
+                }
+            }
         }
 
         if (movementsInTheRound.Count > 0 && KnightsBoardManager.instance.waterCourses.Count > 0)
@@ -241,6 +321,7 @@ public class KnightsGameManager : MonoBehaviour
             if (knight.player == currentPlayer)
                 knight.GetComponent<BoxCollider>().enabled = true;
         }
+
         movementsInTheRound.Clear();
     }
 
@@ -248,6 +329,9 @@ public class KnightsGameManager : MonoBehaviour
     {
         foreach (WaterCourse waterCourse in KnightsBoardManager.instance.waterCourses)
         {
+            if (waterCourse.dryCourse && waterCourse.dryTurns != 0)
+                continue;
+
             foreach (KnightsSquareScript sq in waterCourse.waterCourseSquares)
             {
                 if (movementsInTheRound.Contains(sq.knight))
@@ -272,7 +356,7 @@ public class KnightsGameManager : MonoBehaviour
     {
         foreach (KnightsSquareScript sq in squares)
         {
-            if (sq.knight != null && currentPlayer == sq.knight.player)
+            if (sq.isLava && sq.knight != null && currentPlayer == sq.knight.player)
             {
                 KnightBehavior knight = sq.knight;
                 if (knightsInLava.Contains(knight))

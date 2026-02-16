@@ -22,6 +22,10 @@ public class MapEditorData : MonoBehaviour
     public TextMeshProUGUI lavaTurnsToKill;
     public TextMeshProUGUI fragileFloorCounter;
     public int fragileFloorMax;
+    public Toggle isDry;
+
+    public TextMeshProUGUI dryTurnsMaxCounter, turnsWithWaterCounter;
+    public int dryTurnsMax, turnsWithWater;
 
     public bool voidSelected;
     public bool lavaSelected;
@@ -39,6 +43,7 @@ public class MapEditorData : MonoBehaviour
 
     [Header("Prefabs")]
     public List<GameObject> rockPrefabs;
+    public List<GameObject> waterCoursePrefabs;
 
     private void Awake()
     {
@@ -217,6 +222,61 @@ public class MapEditorData : MonoBehaviour
         }
     }
 
+    public void AddWaterCourse(int length)
+    {
+        GameObject waterCourseObj = Instantiate(waterCoursePrefabs[length - 3]);
+        selectedObject = waterCourseObj;
+
+        if (waterCourseObj.TryGetComponent<WaterCourse>(out WaterCourse waterCourseScript))
+        {
+            waterCourseScript.length = length;
+            waterCourseScript.dryCourse = isDry.isOn;
+            waterCourseScript.courseDirection = Vector2Int.right;
+        }
+
+        if (waterCourseScript.dryCourse)
+        {
+            waterCourseScript.dryTurns = dryTurnsMax;
+            waterCourseObj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+        }
+    }
+
+    public void DryCourseToggle()
+    {
+        Toggle sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Toggle>();
+
+        turnsWithWaterCounter.transform.parent.gameObject.SetActive(sender.isOn);
+        dryTurnsMaxCounter.transform.parent.gameObject.SetActive(sender.isOn);
+    }
+    public void DryTurnsMaxEdit(int num)
+    {
+        if (int.TryParse(dryTurnsMaxCounter.text, out int max))
+        {
+            max += num;
+
+            if (max < 2)
+                max = 4;
+            if (max > 4)
+                max = 2;
+
+            dryTurnsMax = max;
+            dryTurnsMaxCounter.text = max.ToString();
+        }
+    }
+
+    public void TurnsWithWaterEdit(int num)
+    {
+        if (int.TryParse(turnsWithWaterCounter.text, out int turns))
+        {
+            turns += num;
+            if (turns < 1)
+                turns = 3;
+            if (turns > 3)
+                turns = 1;
+            turnsWithWater = turns;
+            turnsWithWaterCounter.text = turns.ToString();
+        }
+    }
     public void UIElementSelect(GameObject canvaGameObj)
     {
         canvaGameObj.SetActive(true);
@@ -253,10 +313,15 @@ public class MapEditorData : MonoBehaviour
             voidSelected = false;
         if (lavaSelected)
             lavaSelected = false;
+        if (fragileFloorSelected)
+            fragileFloorSelected = false;
 
-        Destroy(selectedObject);
-        selectedObject = null;
-        
+        if (selectedObject != null)
+        {
+            Destroy(selectedObject.gameObject);
+            selectedObject = null;
+        }
+
         selectionCanvas.SetActive(true);
     }
 
