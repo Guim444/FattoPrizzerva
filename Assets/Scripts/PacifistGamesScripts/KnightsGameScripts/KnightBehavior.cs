@@ -978,7 +978,15 @@ public abstract class KnightBehavior : MonoBehaviour
 
             square.isLava = false;
         }
-
+        else if (square.isWaterSquare)
+        {
+            KnightsSquareScript target = KnightsBoardManager.instance.GetOutsideSquare("OUT_" + square.SquareColumn.ToString() + square.SquareRow);
+            yield return StartCoroutine(SmoothMove(target.knightPosition, 0.3f));
+            previousSquare.knight = null;
+            previousSquare.empty = true;
+            deathSquare = square;
+            currentSquare = null;
+        }
         if (KnightsGameManager.instance.movementsInTheRound.Contains(this))
             KnightsGameManager.instance.movementsInTheRound.Remove(this);
 
@@ -1009,13 +1017,33 @@ public abstract class KnightBehavior : MonoBehaviour
         canContinue = true;
         KnightsGameManager.instance.BeginMovement(this);
 
+        if (isDead)
+        {
+            KnightsGameManager.instance.EndMovement(this);
+            yield break;
+        }
 
+        /*if (sq.waterCourseDirection == Vector2Int.zero || !CheckRow(sq.waterCourseDirection))
+        {
+            canContinue = false;
+        }*/
 
-        if (sq.waterCourseDirection == Vector2Int.zero || !CheckRow(sq.waterCourseDirection))
+        if (sq.waterCourseDirection == Vector2Int.zero)
         {
             canContinue = false;
         }
+        else
+        {
+            char nextCol = (char)(sq.SquareColumn + sq.waterCourseDirection.x);
+            int nextRow = sq.SquareRow + sq.waterCourseDirection.y;
+            KnightsSquareScript nextSq = KnightsBoardManager.instance.GetSquare(nextCol.ToString() + nextRow);
 
+            if (nextSq != null && (nextSq.isWaterSquare || nextSq.isWaterCourseCrossing))
+            {
+                if (!CheckRow(sq.waterCourseDirection))
+                    canContinue = false;
+            }
+        }
         if (sq.isWaterCourseCrossing)
         {
             List<Vector2Int> possibleOutcomes = new List<Vector2Int>();
@@ -1042,24 +1070,25 @@ public abstract class KnightBehavior : MonoBehaviour
             if (target == null)
             {
                 KnightsGameManager.instance.EndMovement(this);
-                Vector3 dir = new Vector3(-sq.waterCourseDirection.y, 0, sq.waterCourseDirection.x);
-
-                yield return StartCoroutine(sq.knight.SmoothMove(dir, 0.6f));
+                Debug.Log("Target fuera del tablero");
                 yield return StartCoroutine(KillKnight(sq));
 
                 yield break;
             }
             else if (target.knight != null)
             {
-                if (target.waterCourseDirection == currentSquare.waterCourseDirection)
+                if (target.isWaterSquare)
                 {
-                    yield return StartCoroutine(EnemyWaterCourseBehavior(target, sq, steps, waterCourse));
-                }
-                else
-                {
-                    canContinue = false;
-                    KnightsGameManager.instance.EndMovement(this);
-                    yield break;
+                    if (target.waterCourseDirection == currentSquare.waterCourseDirection)
+                    {
+                        yield return StartCoroutine(EnemyWaterCourseBehavior(target, sq, steps, waterCourse));
+                    }
+                    else
+                    {
+                        canContinue = false;
+                        KnightsGameManager.instance.EndMovement(this);
+                        yield break;
+                    }
                 }
             }
 
