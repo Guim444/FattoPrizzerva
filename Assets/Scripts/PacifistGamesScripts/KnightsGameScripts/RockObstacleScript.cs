@@ -37,9 +37,15 @@ public class RockObstacleScript : MonoBehaviour
             return;
         foreach (var s in spikes)
         {
-            Vector2 dir = new Vector2(currentSquare.knightPosition.x - s.transform.position.x, currentSquare.knightPosition.z - s.transform.position.z);
+            Vector2 dir = new Vector2(transform.position.x - s.transform.position.x, transform.position.z - s.transform.position.z);
+            //transform to -1, 0 , or 1
+            dir.x = dir.x > 0 ? 1 : dir.x < 0 ? -1 : 0;
+            dir.y = dir.y > 0 ? -1 : dir.y < 0 ? 1 : 0;
             KnightsSquareScript sq = GetNearestSquareInDirection(dir);
-            if (sq != null)
+
+            if (sq == null)
+                continue;
+            else
                 dangerousSquares.Add(sq);
         }
     }

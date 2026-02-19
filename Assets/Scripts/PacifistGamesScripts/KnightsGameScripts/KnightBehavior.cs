@@ -750,16 +750,18 @@ public abstract class KnightBehavior : MonoBehaviour
 
                 yield return StartCoroutine(enemy.SmoothMove(outside.knightPosition, 0.2f));
 
-                if (steps == 0)
+                StartCoroutine(enemy.KillKnight(outside));
+                currentSquare = null;
+
+                /*if (steps == 0)
                 {
-                    StartCoroutine(enemy.KillKnight(outside));
                 }
 
                 else
                 {
                     dir = new Vector2Int(outside.SquareColumn - from.SquareColumn, outside.SquareRow - from.SquareRow);
                     StartCoroutine(PushForce(enemy, dir, steps - 1, allowIce));
-                }
+                }*/
             }
             yield break;
         }
@@ -958,6 +960,8 @@ public abstract class KnightBehavior : MonoBehaviour
         isDead = true;
         KnightsGameManager.instance.EndMovement(this);
         KnightsBoardManager.instance.knightList.Remove(this);
+        GetComponent<BoxCollider>().enabled = false;
+        KnightsBoardManager.instance.deadKnightList.Add(this);
 
         if (square.isVoid)
         {
@@ -965,7 +969,6 @@ public abstract class KnightBehavior : MonoBehaviour
             square.knight = null;
 
             deathSquare = square;
-            currentSquare = null;
         }
         else if (square.isLava)
         {
@@ -973,25 +976,82 @@ public abstract class KnightBehavior : MonoBehaviour
             square.knight = null;
             square.empty = true;
             deathSquare = square;
-            currentSquare = null;
             KnightsGameManager.instance.knightsInLava.Remove(this);
 
             square.isLava = false;
         }
         else if (square.isWaterSquare)
         {
-            KnightsSquareScript target = KnightsBoardManager.instance.GetOutsideSquare("OUT_" + square.SquareColumn.ToString() + square.SquareRow);
+            string outsideName = "OUT_" + ((char)(square.SquareColumn + square.waterCourseDirection.x)).ToString() + (square.SquareRow + square.waterCourseDirection.y);
+            KnightsSquareScript target = KnightsBoardManager.instance.GetOutsideSquare(outsideName);
             yield return StartCoroutine(SmoothMove(target.knightPosition, 0.3f));
+
             previousSquare.knight = null;
             previousSquare.empty = true;
-            deathSquare = square;
-            currentSquare = null;
+            deathSquare = target;
+        }
+        else
+        {
+            yield return StartCoroutine(FadeOutByFalling(this, true));
         }
         if (KnightsGameManager.instance.movementsInTheRound.Contains(this))
             KnightsGameManager.instance.movementsInTheRound.Remove(this);
 
-        GetComponent<BoxCollider>().enabled = false;
-        KnightsBoardManager.instance.deadKnightList.Add(this);
+        deathSquare = square;
+
+        if (player == 1)
+            KnightsGameManager.instance.CheckKnights(2);
+        else
+            KnightsGameManager.instance.CheckKnights(1);
+    }
+
+    public IEnumerator ReviveKnight(KnightsSquareScript sq)
+    {
+        Debug.Log("A");
+        yield return null;
+        isDead = false;
+        mat.color = player == 1 ? Color.skyBlue : Color.red;
+
+        KnightsBoardManager.instance.deadKnightList.Remove(this);
+        KnightsBoardManager.instance.knightList.Add(this);
+
+        if (sq.isLava)
+        {
+            if (!sq.empty && sq.knight != null)
+            {
+                Vector2Int dir;
+                do
+                {
+                    dir = new Vector2Int(Random.Range(0, 2), Random.Range(0, 2));
+                }
+                while (KnightsBoardManager.instance.GetSquare(((char)(sq.SquareColumn + dir.x)).ToString() + sq.SquareRow + dir.y) == null);
+
+                yield return StartCoroutine(PushForce(sq.knight, dir, 1, allowIce: true));
+            }
+            sq.knight = this;
+            sq.empty = false;
+            yield return StartCoroutine(SinkInLava(sq.knight, false));
+            deathSquare = null;
+        }
+        else
+        {
+            if (!sq.empty && sq.knight != null)
+            {
+                Vector2Int dir;
+                do
+                {
+                    dir = new Vector2Int(Random.Range(0, 2), Random.Range(0, 2));
+                }
+                while (KnightsBoardManager.instance.GetSquare(((char)(sq.SquareColumn + dir.x)).ToString() + sq.SquareRow + dir.y) == null);
+
+                yield return StartCoroutine(PushForce(sq.knight, dir, 1, allowIce: true));
+            }
+
+            sq.knight = this;
+            sq.empty = false;
+            yield return StartCoroutine(SmoothMove(sq.knightPosition, 0.3f));
+            deathSquare = null;
+        }
     }
     public void ToggleGlow(bool glow, float intensity)
     {
@@ -1065,6 +1125,18 @@ public abstract class KnightBehavior : MonoBehaviour
         int row = (int)(sq.SquareRow + sq.waterCourseDirection.y);
         KnightsSquareScript target = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
 
+        if (target.rock != null && target.rock.dangerousSquares.Contains(currentSquare))
+        {
+            yield return StartCoroutine(GetImpaled(target.rock));
+            currentSquare.empty = true;
+            currentSquare.knight = null;
+            currentSquare = null;
+
+            deathSquare = target;
+
+            yield break;
+        }
+
         if (canContinue)
         {
             if (target == null)
@@ -1072,7 +1144,6 @@ public abstract class KnightBehavior : MonoBehaviour
                 KnightsGameManager.instance.EndMovement(this);
                 Debug.Log("Target fuera del tablero");
                 yield return StartCoroutine(KillKnight(sq));
-
                 yield break;
             }
             else if (target.knight != null)
@@ -1093,7 +1164,7 @@ public abstract class KnightBehavior : MonoBehaviour
             }
 
             StartCoroutine(SmoothMove(target.knightPosition, 0.6f));
-                
+
             yield return new WaitUntil(() => !isMoving);
 
             currentSquare.knight = null;
@@ -1185,21 +1256,41 @@ public abstract class KnightBehavior : MonoBehaviour
 
         Vector3 startPos = transform.position;
 
-        float jump = grounded ? 0 : 1.5f;
 
         while (elapsed < 1f)
         {
-            if (stepsMoved >= 2)
-            {
-                jump = 0;
-            }
-
             elapsed += Time.deltaTime / 0.3f;
-            transform.position = Vector3.Lerp(startPos, new Vector3(targetPos.x, targetPos.y + jump, targetPos.z), elapsed);
+            transform.position = Vector3.Lerp(startPos, new Vector3(targetPos.x, targetPos.y, targetPos.z), elapsed);
             mat.color = Color.Lerp(mat.color, finalColor, elapsed);
             yield return null;
         }
 
-        transform.position = new Vector3(targetPos.x, targetPos.y + jump, targetPos.z);
+        transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
+    }
+
+    public IEnumerator FadeOutByFalling(KnightBehavior knight, bool fade)
+    {
+        Color finalColor;
+        if (fade)
+        {
+            finalColor = new Color(0, 0, 0, 0);
+        }
+        else
+        {
+            finalColor = player == 1? Color.skyBlue : Color.red;
+        }
+
+        float elapsed = 0f;
+
+        Vector3 startPos = transform.position;
+
+        while (elapsed < 1f)
+        {
+            elapsed += Time.deltaTime / 0.3f;
+            mat.color = Color.Lerp(mat.color, finalColor, elapsed);
+            yield return null;
+        }
+
+        mat.color = finalColor;
     }
 }

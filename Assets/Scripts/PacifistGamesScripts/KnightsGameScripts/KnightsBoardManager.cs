@@ -153,7 +153,7 @@ public class KnightsBoardManager : MonoBehaviour
         {
             for (int i = 0; i < 2; i++)
             {
-                int colIndex = -i;
+                int colIndex = -(i + 1);
 
                 CreateOutsideSquare(row, colIndex, leftParent);
             }

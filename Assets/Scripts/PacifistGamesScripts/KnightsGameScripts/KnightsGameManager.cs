@@ -246,7 +246,6 @@ public class KnightsGameManager : MonoBehaviour
     public void NextPlayer()
     {
         turnCounter++;
-        Debug.Log("Next Player");
 
         if (KnightsBoardManager.instance.player1StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(1);
@@ -493,6 +492,33 @@ public class KnightsGameManager : MonoBehaviour
             }
 
             button.GetComponentInChildren<TextMeshProUGUI>().text = "Player " + currentPlayer + "'s turn";
+        }
+    }
+
+    public void CheckKnights(int player)
+    {
+        List<KnightBehavior> deadKnights = new List<KnightBehavior>();
+        List<KnightBehavior> rivalDeadKnights = new List<KnightBehavior>();
+
+        foreach (KnightBehavior knight in KnightsBoardManager.instance.deadKnightList)
+        {
+            if (knight.player == player)
+            {
+                deadKnights.Add(knight);
+            }
+            else
+            {
+                rivalDeadKnights.Add(knight);
+            }
+        }
+
+        if (deadKnights.Count == 2 && rivalDeadKnights.Count == 2)
+        {
+            Debug.Log("Mi bombo");
+            int randIndex = Random.Range(0, deadKnights.Count);
+            KnightBehavior knightToRevive = deadKnights[randIndex];
+
+            StartCoroutine(knightToRevive.ReviveKnight(knightToRevive.currentSquare));
         }
     }
 }
