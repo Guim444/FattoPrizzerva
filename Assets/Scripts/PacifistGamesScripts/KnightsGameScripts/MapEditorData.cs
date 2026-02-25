@@ -29,6 +29,7 @@ public class MapEditorData : MonoBehaviour
 
     public bool voidSelected;
     public bool lavaSelected;
+    public bool iceSelected;
     public bool fragileFloorSelected;
 
     public GameObject selectedObject;
@@ -179,6 +180,13 @@ public class MapEditorData : MonoBehaviour
         GameObject lavaObj = new GameObject();
         selectedObject = lavaObj;
         lavaSelected = true;
+    }
+
+    public void AddIce()
+    {
+        GameObject iceObj = new GameObject();
+        selectedObject = iceObj;
+        iceSelected = true;
     }
 
     public void AddFragileFloor()

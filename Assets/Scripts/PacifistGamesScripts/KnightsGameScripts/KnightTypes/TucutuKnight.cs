@@ -43,4 +43,10 @@ public class TucutuKnight : KnightBehavior
         base.OnArrive(square);
         KnightsGameManager.instance.canMove = true;
     }
+    public override void ConsumeMovementDirection()
+    {
+        base.ConsumeMovementDirection();
+
+        lastMovement = stepsMoved >= 3;
+    }
 }

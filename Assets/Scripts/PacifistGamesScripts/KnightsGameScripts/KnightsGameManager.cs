@@ -30,6 +30,8 @@ public class KnightsGameManager : MonoBehaviour
     public HashSet<KnightBehavior> knightsInLava = new();
     public int lavaTurns = 0;
 
+    public bool revivedThisTurn = false;
+
     [Header("Knight Prefabs")]
     public GameObject agileKnightPrefab;
     public GameObject tucutuKnightPrefab;
@@ -42,6 +44,7 @@ public class KnightsGameManager : MonoBehaviour
     [Header("UI Elements")]
     public GameObject button;
     public GameObject startPositionCanvas;
+
 
     void Awake()
     {
@@ -243,8 +246,9 @@ public class KnightsGameManager : MonoBehaviour
         }
         return false;
     }
-    public void NextPlayer()
+    public IEnumerator NextPlayer()
     {
+        yield return new WaitUntil(() => activeMovements.Count == 0);
         turnCounter++;
 
         if (KnightsBoardManager.instance.player1StartZoneActive)
@@ -322,6 +326,7 @@ public class KnightsGameManager : MonoBehaviour
         }
 
         movementsInTheRound.Clear();
+        revivedThisTurn = false;
     }
 
     public void WaterCourse()

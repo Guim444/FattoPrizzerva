@@ -186,6 +186,26 @@ public class KnightsSquareScript : MonoBehaviour
                 /*MapEditorData.instance.lavaSelected = false;
                 Destroy(MapEditorData.instance.selectedObject);*/
             }
+            else if (MapEditorData.instance.iceSelected)
+            {
+                if (!isIceSquare)
+                {
+                    isIceSquare = true;
+                    mat.color = Color.cyan;
+                    squareColor = mat.color;
+                    normalSquare = false;
+                }
+                else
+                {
+                    isIceSquare = false;
+                    mat.color = originalColor;
+                    squareColor = mat.color;
+                    normalSquare = true;
+                }
+
+                /*MapEditorData.instance.lavaSelected = false;
+                Destroy(MapEditorData.instance.selectedObject);*/
+            }
             else if (MapEditorData.instance.fragileFloorSelected)
             {
                 if (!isFragile)
@@ -462,7 +482,13 @@ public class KnightsSquareScript : MonoBehaviour
             else
                 KnightsBoardManager.instance.fragileFloor.Remove(this);
 
-            TurnVoid(true);
+            isVoid = true;
+            knightPosition = new Vector3(knightPosition.x, 0.15f, knightPosition.z);
+
+            if (knight != null)
+            {
+                StartCoroutine(knight.SmoothMove(knightPosition, 0.3f));
+            }
         }
         else
         {

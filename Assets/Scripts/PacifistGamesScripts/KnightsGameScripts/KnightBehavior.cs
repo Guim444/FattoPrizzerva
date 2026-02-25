@@ -25,6 +25,7 @@ public abstract class KnightBehavior : MonoBehaviour
     public bool isDead = false;
     bool spikyRockCrash = false;
     bool waterResolvedThisTurn = false;
+    public bool lastMovement = false;
 
     public Vector2Int slideDirection; //for ice squares.
     public Vector2Int lookingDirection;
@@ -196,6 +197,9 @@ public abstract class KnightBehavior : MonoBehaviour
 
         while (i < path.Count && stepsMoved < 3)
         {
+            /*if (stepsMoved == 2)
+                lastMovement = true;*/
+
             lookingDirection = new Vector2Int(path[i].SquareColumn - currentSquare.SquareColumn, path[i].SquareRow - currentSquare.SquareRow);
 
             if (!CheckRow(lookingDirection))
@@ -285,7 +289,7 @@ public abstract class KnightBehavior : MonoBehaviour
                 KnightsGameManager.instance.EndMovement(this);
 
                 yield return new WaitUntil(() => KnightsGameManager.instance.canMove && KnightsGameManager.instance.activeMovements.Count == 0);
-                KnightsGameManager.instance.NextPlayer();
+                yield return StartCoroutine(KnightsGameManager.instance.NextPlayer());
                 yield break;
             }
 
@@ -303,7 +307,7 @@ public abstract class KnightBehavior : MonoBehaviour
             KnightsGameManager.instance.EndMovement(this);
             yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
             yield return StartCoroutine(KillKnight(currentSquare));
-            KnightsGameManager.instance.NextPlayer();
+            yield return StartCoroutine(KnightsGameManager.instance.NextPlayer());
             yield break;
         }
 
@@ -314,7 +318,7 @@ public abstract class KnightBehavior : MonoBehaviour
         yield return StartCoroutine(OnArriveCoroutine(targetSquare));
 
         yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
-        KnightsGameManager.instance.NextPlayer();
+        yield return StartCoroutine(KnightsGameManager.instance.NextPlayer());
     }
 
     IEnumerator OnApproachCoroutine(KnightsSquareScript square)
@@ -366,6 +370,8 @@ public abstract class KnightBehavior : MonoBehaviour
         else
         {
             OnArrive(square);
+
+
         }
         yield return new WaitUntil(() => KnightsGameManager.instance.canMove);
     }
@@ -617,22 +623,100 @@ public abstract class KnightBehavior : MonoBehaviour
         transform.position = targetPos;
         isMoving = false;
     }
+    /*public IEnumerator GetImpaled(RockObstacleScript rock)
+    {
+        if (isDead)
+        {
+            isDead = false;
+
+            isMoving = true;
+            float elapsed = 0f;
+            float duration = 0.3f;
+            Vector3 startPos = transform.position;
+            string sqName = ((char)(currentSquare.SquareColumn - lookingDirection.x)).ToString() + (currentSquare.SquareRow - lookingDirection.y).ToString();
+            KnightsSquareScript sq = KnightsBoardManager.instance.GetSquare(sqName);
+
+            Vector3 endPos = sq.knightPosition;
+
+            while (elapsed < 1f)
+            {
+                elapsed += Time.deltaTime / duration;
+                transform.position = Vector3.Lerp(startPos, endPos, elapsed);
+                yield return null;
+            }
+            Debug.Log("A");
+            isMoving = false;
+
+            if (!sq.empty && sq.knight != null)
+            {
+                Vector2Int dir;
+                do
+                {
+                    dir = new Vector2Int(Random.Range(0, 2), Random.Range(0, 2));
+                }
+                while (KnightsBoardManager.instance.GetSquare(((char)(sq.SquareColumn + dir.x)).ToString() + sq.SquareRow + dir.y) == null);
+
+                yield return StartCoroutine(PushForce(sq.knight, dir, 1, allowIce: true));
+            }
+            currentSquare = sq;
+
+            currentSquare.knight = this;
+            currentSquare.empty = false;
+            deathSquare = null;
+
+            yield break;
+        }
+        else
+        {
+            isDead = true;
+
+            grounded = true;
+            isMoving = true;
+
+            float elapsed = 0f;
+            float duration = 0.3f;
+            Vector3 startPos = transform.position;
+            Vector3 endPos = new Vector3(
+                rock.currentSquare.knightPosition.x * 4 + currentSquare.knightPosition.x,
+                (rock.currentSquare.knightPosition.y + 0.25f) * 5, //just *5 cuz at the end of the line we do /5. I want "rock.currentSquare.knightPosition.y + 0.25f" to be the final result.
+                rock.currentSquare.knightPosition.z * 4 + currentSquare.knightPosition.z) / 5;
+
+            while (elapsed < 1)
+            {
+                elapsed += Time.deltaTime / duration;
+                transform.position = Vector3.Lerp(startPos, endPos, elapsed);
+                yield return null;
+            }
+
+            isMoving = false;
+            /*KnightsBoardManager.instance.knightList.Remove(this);
+            rock.dangerousSquares.Remove(currentSquare);
+
+            GetComponent<BoxCollider>().enabled = false;
+            previousSquare = currentSquare;
+            currentSquare = rock.currentSquare;
+
+            yield return StartCoroutine(KillKnight(currentSquare));
+        }
+    }*/
+
     public IEnumerator GetImpaled(RockObstacleScript rock)
     {
         isDead = true;
-
         grounded = true;
         isMoving = true;
 
         float elapsed = 0f;
         float duration = 0.3f;
+
         Vector3 startPos = transform.position;
         Vector3 endPos = new Vector3(
             rock.currentSquare.knightPosition.x * 4 + currentSquare.knightPosition.x,
-            (rock.currentSquare.knightPosition.y + 0.25f) * 5, //just *5 cuz at the end of the line we do /5. I want "rock.currentSquare.knightPosition.y + 0.25f" to be the final result.
-            rock.currentSquare.knightPosition.z * 4 + currentSquare.knightPosition.z) / 5;
+            (rock.currentSquare.knightPosition.y + 0.25f) * 5,
+            rock.currentSquare.knightPosition.z * 4 + currentSquare.knightPosition.z
+        ) / 5;
 
-        while (elapsed < 1)
+        while (elapsed < 1f)
         {
             elapsed += Time.deltaTime / duration;
             transform.position = Vector3.Lerp(startPos, endPos, elapsed);
@@ -640,10 +724,12 @@ public abstract class KnightBehavior : MonoBehaviour
         }
 
         isMoving = false;
-        KnightsBoardManager.instance.knightList.Remove(this);
-        rock.dangerousSquares.Remove(currentSquare);
 
-        GetComponent<BoxCollider>().enabled = false;
+        previousSquare = currentSquare;
+
+        yield return StartCoroutine(KillKnight(previousSquare));
+
+        rock.dangerousSquares.Remove(previousSquare);
     }
     public IEnumerator GetOutOfImpalation(RockObstacleScript rock)
     {
@@ -659,6 +745,8 @@ public abstract class KnightBehavior : MonoBehaviour
             transform.position = Vector3.Lerp(startPos, endPos, elapsed);
             yield return null;
         }
+
+        currentSquare = previousSquare;
 
         isMoving = false;
         KnightsBoardManager.instance.knightList.Add(this);
@@ -751,7 +839,7 @@ public abstract class KnightBehavior : MonoBehaviour
                 yield return StartCoroutine(enemy.SmoothMove(outside.knightPosition, 0.2f));
 
                 StartCoroutine(enemy.KillKnight(outside));
-                currentSquare = null;
+                //currentSquare = null;
 
                 /*if (steps == 0)
                 {
@@ -760,7 +848,7 @@ public abstract class KnightBehavior : MonoBehaviour
                 else
                 {
                     dir = new Vector2Int(outside.SquareColumn - from.SquareColumn, outside.SquareRow - from.SquareRow);
-                    StartCoroutine(PushForce(enemy, dir, steps - 1, allowIce));
+                    StartCoroutine( hForce(enemy, dir, steps - 1, allowIce));
                 }*/
             }
             yield break;
@@ -790,7 +878,10 @@ public abstract class KnightBehavior : MonoBehaviour
 
         if (!next.empty && willPush)
         {
+            grounded = true;
             yield return StartCoroutine(PushForce(next.knight, dir, steps, allowIce));
+            steps = 1;
+            enemy.grounded = true;
         }
 
         origin.knight = null;
@@ -833,7 +924,10 @@ public abstract class KnightBehavior : MonoBehaviour
             KnightsGameManager.instance.EndMovement(enemy);
         }
 
-        yield return StartCoroutine(PushForce(enemy, dir, steps - 1, allowIce));
+        if (steps > 1)
+        {
+            yield return StartCoroutine(PushForce(enemy, dir, steps - 1, allowIce));
+        }
     }
     internal KnightsSquareScript CalcFinalSquare(KnightsSquareScript current, Vector2Int direction, int steps)
     {
@@ -967,7 +1061,17 @@ public abstract class KnightBehavior : MonoBehaviour
         {
             square.TurnVoid(false);
             square.knight = null;
+            deathSquare = square;
 
+            square.empty = true;
+        }
+        else if (square.rock != null)
+        {
+            if (previousSquare != null && previousSquare.knight == this)
+            {
+                previousSquare.knight = null;
+                previousSquare.empty = true;
+            }
             deathSquare = square;
         }
         else if (square.isLava)
@@ -999,10 +1103,15 @@ public abstract class KnightBehavior : MonoBehaviour
 
         deathSquare = square;
 
-        if (player == 1)
-            KnightsGameManager.instance.CheckKnights(2);
-        else
-            KnightsGameManager.instance.CheckKnights(1);
+        if (!KnightsGameManager.instance.revivedThisTurn)
+        {
+            if (player == 1)
+                KnightsGameManager.instance.CheckKnights(2);
+            else
+                KnightsGameManager.instance.CheckKnights(1);
+
+            KnightsGameManager.instance.revivedThisTurn = true;
+        }
     }
 
     public IEnumerator ReviveKnight(KnightsSquareScript sq)
@@ -1014,17 +1123,20 @@ public abstract class KnightBehavior : MonoBehaviour
 
         KnightsBoardManager.instance.deadKnightList.Remove(this);
         KnightsBoardManager.instance.knightList.Add(this);
+        GetComponent<BoxCollider>().enabled = true;
 
-        if (sq.isLava)
+        if (KnightsBoardManager.instance.lavaSquares.Contains(sq) || KnightsBoardManager.instance.lavaStartSquaresPlayer1.Contains(sq) || KnightsBoardManager.instance.lavaStartSquaresPlayer2.Contains(sq))
         {
+            sq.isLava = true;
             if (!sq.empty && sq.knight != null)
             {
+                turnsInLava = 0;
                 Vector2Int dir;
                 do
                 {
                     dir = new Vector2Int(Random.Range(0, 2), Random.Range(0, 2));
                 }
-                while (KnightsBoardManager.instance.GetSquare(((char)(sq.SquareColumn + dir.x)).ToString() + sq.SquareRow + dir.y) == null);
+                while (KnightsBoardManager.instance.GetSquare(((char)(sq.SquareColumn + dir.x)).ToString() + (sq.SquareRow + dir.y).ToString()) == null);
 
                 yield return StartCoroutine(PushForce(sq.knight, dir, 1, allowIce: true));
             }
@@ -1033,18 +1145,15 @@ public abstract class KnightBehavior : MonoBehaviour
             yield return StartCoroutine(SinkInLava(sq.knight, false));
             deathSquare = null;
         }
+        else if (deathSquare.rock != null)
+        {
+            yield return StartCoroutine(GetOutOfImpalation(deathSquare.rock));
+        }
         else
         {
             if (!sq.empty && sq.knight != null)
             {
-                Vector2Int dir;
-                do
-                {
-                    dir = new Vector2Int(Random.Range(0, 2), Random.Range(0, 2));
-                }
-                while (KnightsBoardManager.instance.GetSquare(((char)(sq.SquareColumn + dir.x)).ToString() + sq.SquareRow + dir.y) == null);
-
-                yield return StartCoroutine(PushForce(sq.knight, dir, 1, allowIce: true));
+                yield return StartCoroutine(PushForce(sq.knight, -lookingDirection, 1, allowIce: true));
             }
 
             sq.knight = this;
@@ -1052,6 +1161,7 @@ public abstract class KnightBehavior : MonoBehaviour
             yield return StartCoroutine(SmoothMove(sq.knightPosition, 0.3f));
             deathSquare = null;
         }
+
     }
     public void ToggleGlow(bool glow, float intensity)
     {

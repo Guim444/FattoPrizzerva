@@ -29,17 +29,34 @@ public class AgileKnight : KnightBehavior
             KnightsGameManager.instance.canMove = true;
             return;
         }
-
-        enemyToPush = square.knight;
-        enemyStartSquare = square;
-
         int dx = square.SquareColumn - transitSquare.SquareColumn;
         int dy = square.SquareRow - transitSquare.SquareRow;
 
-        pushDirection = new Vector2Int(
-            dx != 0 ? (int)Mathf.Sign(dx) : 0,
-            dy != 0 ? (int)Mathf.Sign(dy) : 0
-        );
+        pushDirection = new Vector2Int(dx != 0 ? (int)Mathf.Sign(dx) : 0, dy != 0 ? (int)Mathf.Sign(dy) : 0);
+        if (lastMovement)
+        {
+            grounded = true;
+
+            if (enemyToPush != null && pushDirection != Vector2Int.zero && enemyStartSquare == square)
+            {
+                StartCoroutine(PushForce(enemyToPush, pushDirection, 2, allowIce: true));
+            }
+
+            enemyToPush = null;
+            enemyStartSquare = null;
+            pushDirection = Vector2Int.zero;
+
+            while (isMoving)
+            {
+                KnightsGameManager.instance.canMove = false;
+            }
+            KnightsGameManager.instance.canMove = true;
+        }
+        else
+        {
+            enemyToPush = square.knight;
+            enemyStartSquare = square;
+        }
 
         KnightsGameManager.instance.canMove = true;
     }
@@ -47,7 +64,7 @@ public class AgileKnight : KnightBehavior
     protected override void OnArrive(KnightsSquareScript square)
     {
         base.OnArrive(square);
-        grounded = true;
+        /*grounded = true;
 
         if (enemyToPush != null && pushDirection != Vector2Int.zero && enemyStartSquare == square)
         {
@@ -63,15 +80,14 @@ public class AgileKnight : KnightBehavior
             KnightsGameManager.instance.canMove = false;
         }
         KnightsGameManager.instance.canMove = true;
+        */
     }
 
 
     public override void ConsumeMovementDirection()
     {
         base.ConsumeMovementDirection();
-        if (stepsMoved >= 3)
-            grounded = true;
-        else
-            grounded = false;
+        lastMovement = stepsMoved >= 3;
+        grounded = lastMovement;
     }
 }
