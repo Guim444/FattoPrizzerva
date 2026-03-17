@@ -9,16 +9,16 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/Main menu.unity
+    path: Assets/Prefabs/Knights/WaterCourse/Scenes/Main menu.unity
     guid: 091e8f56788a07942babc0223863269b
   - enabled: 1
-    path: Assets/Scenes/Pawns.unity
+    path: Assets/Prefabs/Knights/WaterCourse/Scenes/Pawns.unity
     guid: ee078068c4862704e957fedd3c551402
   - enabled: 1
-    path: Assets/Scenes/Tutorial Boss Fight.unity
+    path: Assets/Prefabs/Knights/WaterCourse/Scenes/Tutorial Boss Fight.unity
     guid: 14ad360a1a3742543ac5bf39580d45bd
   - enabled: 1
-    path: Assets/Scenes/Knights.unity
+    path: Assets/Prefabs/Knights/WaterCourse/Scenes/Knights.unity
     guid: 62bd99cdec9efe04f91890a3f302008a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

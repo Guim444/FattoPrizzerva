@@ -45,6 +45,7 @@ public class MapEditorData : MonoBehaviour
     [Header("Prefabs")]
     public List<GameObject> rockPrefabs;
     public List<GameObject> waterCoursePrefabs;
+    public GameObject knightStatue;
 
     private void Awake()
     {
@@ -198,6 +199,18 @@ public class MapEditorData : MonoBehaviour
         fragileFloorSelected = true;
     }
 
+    public void AddStatue()
+    {
+        if (selectedObject != null)
+        {
+            Destroy(selectedObject.gameObject);
+        }
+        GameObject statue = Instantiate(knightStatue);
+        statue.transform.position += new Vector3(statue.transform.position.x, statue.transform.position.y + 1, statue.transform.position.z);
+        selectedObject = statue;
+        statue.GetComponent<KnightStatue>().ToggleGlow(true, 1);
+        statue.transform.SetParent(GameObject.Find("Obstacles").transform);
+    }
     public void LavaTurnsEdit(int num)
     {
         if (int.TryParse(lavaTurnsToKill.text, out int lavaTurns))

@@ -21,6 +21,8 @@ public class KnightsGameManager : MonoBehaviour
 
     public int playerSelectionCount = 0;
 
+    public List<int> knightValues = new List<int>();
+
     public bool canMove;
 
     bool isRotating = false;
@@ -35,6 +37,10 @@ public class KnightsGameManager : MonoBehaviour
     [Header("Knight Prefabs")]
     public GameObject agileKnightPrefab;
     public GameObject tucutuKnightPrefab;
+    public GameObject jumpyKnightPrefab;
+    public GameObject bullKnightPrefab;
+    public GameObject shakyKnightPrefab;
+    public GameObject shiftKnightPrefab;
 
     [Header("Assets Prefabs")]
     public GameObject arrowPrefab;
@@ -44,7 +50,7 @@ public class KnightsGameManager : MonoBehaviour
     [Header("UI Elements")]
     public GameObject button;
     public GameObject startPositionCanvas;
-
+    public List<GameObject> knightDropdowns;
 
     void Awake()
     {
@@ -78,6 +84,31 @@ public class KnightsGameManager : MonoBehaviour
 
         sender.SetActive(false);
         confirm.SetActive(true);
+
+        for (int i = 0; i < knightDropdowns.Count; i++)
+        {
+            switch (knightDropdowns[i].GetComponent<TextMeshProUGUI>().text)
+            {
+                case "Agile":
+                    knightValues.Add(0);
+                    break;
+                case "Tucutu":
+                    knightValues.Add(1);
+                    break;
+                case "Shaky":
+                    knightValues.Add(2);
+                    break;
+                case "Bull":
+                    knightValues.Add(3);
+                    break;
+                case "Shapeshifter":
+                    knightValues.Add(4);
+                    break;
+                case "Jumpy":
+                    knightValues.Add(5);
+                    break;
+            }
+        }
     }
 
     public void StartGame(GameObject sender)
@@ -270,21 +301,32 @@ public class KnightsGameManager : MonoBehaviour
         currentPlayer = currentPlayer == 1 ? 2 : 1;
         playerIsActive = true;
 
-        foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
+        foreach (KnightsSquareScript sq in KnightsBoardManager.instance.squares.Values)
         {
-            if (!knight.isDead)
+            if (sq.knight != null)
             {
-                knight.currentSquare.knight = knight;
-                knight.currentSquare.empty = false;
-            }
-            else
-            {
-                knight.deathSquare.knight = knight;
-                knight.deathSquare.empty = false;
-            }
+                if (sq.knight.currentSquare != sq)
+                {
+                    //Handler
+                    sq.knight = null;
+                    sq.empty = true;
+                    continue;
+                }
 
-            if (knight.player != currentPlayer)
-                knight.GetComponent<BoxCollider>().enabled = false;
+                if (!sq.knight.isDead)
+                {
+                    sq.knight.currentSquare.knight = sq.knight;
+                    sq.knight.currentSquare.empty = false;
+                }
+                else
+                {
+                    sq.knight.deathSquare.knight = sq.knight;
+                    sq.knight.deathSquare.empty = false;
+                }
+
+                if (sq.knight.player != currentPlayer)
+                    sq.knight.GetComponent<BoxCollider>().enabled = false;
+            }
         }
 
         foreach (WaterCourse wc in KnightsBoardManager.instance.waterCourses)
@@ -319,12 +361,22 @@ public class KnightsGameManager : MonoBehaviour
             WaterCourse();
         }
 
-        foreach (KnightBehavior knight in KnightsBoardManager.instance.knightList)
+        List<KnightBehavior> newKnightList = new List<KnightBehavior>();
+        newKnightList.AddRange(KnightsBoardManager.instance.knightList);
+
+        foreach (KnightBehavior knight in newKnightList)
         {
             if (knight.player == currentPlayer)
                 knight.GetComponent<BoxCollider>().enabled = true;
         }
 
+        foreach (ShiftKnight shapeshifter in KnightsBoardManager.instance.shapeshifters)
+        {
+            if (shapeshifter.currentKnight.player == currentPlayer)
+            {
+                shapeshifter.ChangeForm();
+            }
+        }
         movementsInTheRound.Clear();
         revivedThisTurn = false;
     }

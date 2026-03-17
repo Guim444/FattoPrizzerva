@@ -1,11 +1,6 @@
-using System;
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.ShaderGraph.Internal;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.Splines.ExtrusionShapes;
 
 public class KnightsBoardManager : MonoBehaviour
 {
@@ -14,6 +9,7 @@ public class KnightsBoardManager : MonoBehaviour
     public Dictionary<string, KnightsSquareScript> squares = new Dictionary<string, KnightsSquareScript>();
     public Dictionary<string, KnightsSquareScript> outsideSquares = new Dictionary<string, KnightsSquareScript>();
     public List<KnightBehavior> knightList = new List<KnightBehavior>();
+    public List<ShiftKnight> shapeshifters;
     public List<KnightBehavior> deadKnightList;
 
     public bool player1StartZoneActive = true, player2StartZoneActive = true;
@@ -176,80 +172,8 @@ public class KnightsBoardManager : MonoBehaviour
     }
     public void TestStartZone()
     {
-        int spawned = 0;
-
-        List<KnightsSquareScript> orderedSquares = new List<KnightsSquareScript>(player1StartZone);
-        orderedSquares.Sort((a, b) =>
-        {
-            int rowCompare = a.SquareRow.CompareTo(b.SquareRow);
-            if (rowCompare != 0)
-                return rowCompare;
-
-            return a.SquareColumn.CompareTo(b.SquareColumn);
-        });
-
-        foreach (KnightsSquareScript sq in orderedSquares)
-        {
-            if (spawned >= 3)
-                break;
-
-            if (!sq.empty)
-                continue;
-
-            GameObject randKnight = UnityEngine.Random.Range(0, 2) == 0 ? KnightsGameManager.instance.agileKnightPrefab : KnightsGameManager.instance.tucutuKnightPrefab;
-
-            GameObject knightObj = Instantiate(randKnight);
-            KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
-            knightList.Add(knight);
-
-            knight.GetComponent<MeshRenderer>().material.color = Color.skyBlue;
-            knight.player = 1;
-            knight.currentSquare = sq;
-            knight.transform.position = sq.knightPosition;
-
-            sq.knight = knight;
-            sq.empty = false;
-
-            spawned++;
-        }
-
-        spawned = 0;
-        orderedSquares.Clear();
-
-        orderedSquares = new List<KnightsSquareScript>(player2StartZone);
-        orderedSquares.Sort((a, b) =>
-        {
-            int rowCompare = a.SquareRow.CompareTo(b.SquareRow);
-            if (rowCompare != 0)
-                return rowCompare;
-
-            return a.SquareColumn.CompareTo(b.SquareColumn);
-        });
-
-        foreach (KnightsSquareScript sq in orderedSquares)
-        {
-            if (spawned >= 3)
-                break;
-
-            if (!sq.empty)
-                continue;
-
-            GameObject randKnight = UnityEngine.Random.Range(0, 2) == 0 ? KnightsGameManager.instance.agileKnightPrefab : KnightsGameManager.instance.tucutuKnightPrefab;
-
-            GameObject knightObj = Instantiate(randKnight);
-            KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
-            knightList.Add(knight);
-
-            knight.GetComponent<MeshRenderer>().material.color = Color.red;
-            knight.player = 2;
-            knight.currentSquare = sq;
-            knight.transform.position = sq.knightPosition;
-
-            sq.knight = knight;
-            sq.empty = false;
-
-            spawned++;
-        }
+        GenerateKnightsForPlayer(1, player1StartZone, Color.skyBlue);
+        GenerateKnightsForPlayer(2, player2StartZone, Color.red);
 
         KnightsGameManager.instance.ConfirmStartPosition();
     }
@@ -292,6 +216,10 @@ public class KnightsBoardManager : MonoBehaviour
         }
     }
 
+    public void GenerateKnights(int player)
+    {
+
+    }
     public void Test()
     {
         int midRow = (height + 1) / 2;
@@ -496,5 +424,64 @@ public class KnightsBoardManager : MonoBehaviour
 
         outsideSquares.Add(key, sq);
     }
+    void GenerateKnightsForPlayer(int player, List<KnightsSquareScript> startZone, Color color)
+    {
+        List<KnightsSquareScript> orderedSquares = new List<KnightsSquareScript>(startZone);
 
+        orderedSquares.Sort((a, b) =>
+        {
+            int rowCompare = a.SquareRow.CompareTo(b.SquareRow);
+            if (rowCompare != 0)
+                return rowCompare;
+
+            return a.SquareColumn.CompareTo(b.SquareColumn);
+        });
+
+        int max = Mathf.Min(KnightsGameManager.instance.knightValues.Count, orderedSquares.Count);
+
+        for (int i = 0; i < max; i++)
+        {
+            KnightsSquareScript sq = orderedSquares[i];
+
+            if (!sq.empty)
+                continue;
+
+            GameObject knightPrefab = GetKnightPrefab(KnightsGameManager.instance.knightValues[i]);
+
+            GameObject knightObj = Instantiate(knightPrefab);
+            KnightBehavior knight = knightObj.GetComponent<KnightBehavior>();
+
+            knightList.Add(knight);
+
+            knight.player = player;
+            knight.currentSquare = sq;
+            knight.transform.position = sq.knightPosition;
+
+            knight.GetComponent<MeshRenderer>().material.color = color;
+
+            sq.knight = knight;
+            sq.empty = false;
+        }
+    }
+
+    GameObject GetKnightPrefab(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                return KnightsGameManager.instance.agileKnightPrefab;
+            case 1:
+                return KnightsGameManager.instance.tucutuKnightPrefab;
+            case 2:
+                return KnightsGameManager.instance.bullKnightPrefab;
+            case 3:
+                return KnightsGameManager.instance.shakyKnightPrefab;
+            case 4:
+                return KnightsGameManager.instance.shiftKnightPrefab;
+            case 5:
+                return KnightsGameManager.instance.jumpyKnightPrefab;
+            default:
+                return KnightsGameManager.instance.agileKnightPrefab;
+        }
+    }
 }

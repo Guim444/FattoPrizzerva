@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 9200250885016666954}
   - component: {fileID: 184575746998907810}
   - component: {fileID: 7773909145747167499}
-  - component: {fileID: 4537045468086781104}
+  - component: {fileID: -7023960359748703513}
   m_Layer: 0
-  m_Name: AgileKnight
+  m_Name: _BullKnight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,7 +112,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4537045468086781104
+--- !u!114 &-7023960359748703513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,19 +121,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 7314694070700786868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aa44191c01bcc746ace084d9bb6b9e2, type: 3}
+  m_Script: {fileID: 11500000, guid: 08778d9921ce60d4dbe4f4c6e585c5cf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AgileKnight
+  m_EditorClassIdentifier: Assembly-CSharp::BullKnight
   possiblePaths: []
   currentSquare: {fileID: 0}
   transitSquare: {fileID: 0}
   previousSquare: {fileID: 0}
-  movementType: 1
+  deathSquare: {fileID: 0}
+  movementType: 0
   grounded: 1
   isMoving: 0
   canContinue: 1
+  canBreakRocks: 1
+  isDead: 0
+  lastMovement: 0
   slideDirection: {x: 0, y: 0}
   lookingDirection: {x: 0, y: 0}
   movementDirections: []
+  firstDir: {x: 0, y: 0}
+  lastDir: {x: 0, y: 0}
   player: 0
   stepsMoved: 0
+  moveIndex: 0
+  turnsInLava: 0

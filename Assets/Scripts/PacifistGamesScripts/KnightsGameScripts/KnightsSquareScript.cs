@@ -92,6 +92,11 @@ public class KnightsSquareScript : MonoBehaviour
         {
             if (MapEditorData.instance.selectedObject.TryGetComponent<RockObstacleScript>(out RockObstacleScript currentRock))
             {
+                if (heavenStartZone || hellStartZone)
+                {
+                    MapEditorData.instance.WarningMessage("You cannot set a rock in start squares.");
+                    return;
+                }
                 rock = currentRock;
                 Vector3 newPos = new Vector3(knightPosition.x, currentRock.transform.position.y, knightPosition.z);
 
@@ -105,6 +110,26 @@ public class KnightsSquareScript : MonoBehaviour
                 rock.ActivateGlow(false);
 
                 KnightsBoardManager.instance.obstacles.Add(rock);
+
+                MapEditorData.instance.selectedObject = null;
+            }
+            else if (MapEditorData.instance.selectedObject.TryGetComponent<KnightStatue>(out KnightStatue statue))
+            {
+                if (heavenStartZone || hellStartZone)
+                {
+                    MapEditorData.instance.WarningMessage("You cannot set an statue in start squares.");
+                    return;
+                }
+                knight = statue;
+                statue.currentSquare = this;
+
+                StartCoroutine(statue.SmoothMove(knightPosition, 0.3f));
+
+                KnightsBoardManager.instance.knightList.Add(knight);
+
+                statue.ToggleGlow(false, 0.3f);
+
+                currentRock.GetComponent<BoxCollider>().enabled = true;
 
                 MapEditorData.instance.selectedObject = null;
             }

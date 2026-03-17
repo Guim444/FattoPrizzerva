@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 9200250885016666954}
   - component: {fileID: 184575746998907810}
   - component: {fileID: 7773909145747167499}
-  - component: {fileID: -6087841772008901060}
+  - component: {fileID: -1766591128264913214}
   m_Layer: 0
-  m_Name: TucutuKnight
+  m_Name: KnightStatue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 54bf7abb111970e49b7dd9654d34a4a8, type: 2}
+  - {fileID: 2100000, guid: 9ccb83ea7900bd5418b01b9ae9111235, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -112,7 +112,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-6087841772008901060
+--- !u!114 &-1766591128264913214
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,21 +121,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 7314694070700786868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17286b43fdb0c6c44a5ed55928c86923, type: 3}
+  m_Script: {fileID: 11500000, guid: 53488f88f265a5a4082aeb5089066449, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TucutuKnight
+  m_EditorClassIdentifier: Assembly-CSharp::KnightStatue
   possiblePaths: []
   currentSquare: {fileID: 0}
   transitSquare: {fileID: 0}
   previousSquare: {fileID: 0}
+  deathSquare: {fileID: 0}
   movementType: 0
   grounded: 1
   isMoving: 0
-  canContinue: 1
-  canBreakRocks: 1
+  canContinue: 0
+  movementPaused: 0
+  canBreakRocks: 0
+  invulnerable: 0
   isDead: 0
+  lastMovement: 0
   slideDirection: {x: 0, y: 0}
   lookingDirection: {x: 0, y: 0}
   movementDirections: []
-  player: 0
+  firstDir: {x: 0, y: 0}
+  lastDir: {x: 0, y: 0}
+  player: 3
   stepsMoved: 0
+  moveIndex: 0
+  turnsInLava: 0
