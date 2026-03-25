@@ -28,6 +28,8 @@ public class KnightsSquareScript : MonoBehaviour
 
     public Vector2Int waterCourseDirection = Vector2Int.zero;
 
+    public List<KnightBehavior> knightAdjacent;
+
     [Header("Terrain flags")]
     bool normalSquare = true;
     public bool isIceSquare = false;
@@ -129,7 +131,7 @@ public class KnightsSquareScript : MonoBehaviour
 
                 statue.ToggleGlow(false, 0.3f);
 
-                currentRock.GetComponent<BoxCollider>().enabled = true;
+                statue.GetComponent<BoxCollider>().enabled = true;
 
                 MapEditorData.instance.selectedObject = null;
             }
@@ -518,6 +520,40 @@ public class KnightsSquareScript : MonoBehaviour
         else
         {
             fragileFloorCounter++;
+        }
+    }
+
+
+    //GHOST KNIGHT EXCLUSIVE
+    public void CheckGhostAdjacency(KnightsSquareScript sq)
+    {
+        Vector2Int[] directions =
+        {
+        new Vector2Int(0, 1),
+        new Vector2Int(0, -1),
+        new Vector2Int(1, 0),
+        new Vector2Int(-1, 0)
+    };
+
+        foreach (var dir in directions)
+        {
+            char col = (char)(sq.SquareColumn + dir.x);
+            int row = sq.SquareRow + dir.y;
+
+            if (KnightsBoardManager.instance.squares.TryGetValue(col.ToString() + row, out var adj))
+            {
+                if (adj.knight is GhostKnight ghost)
+                {
+                    GhostSquare g = ghost.adjacentSquares.FirstOrDefault(x => x.sq == sq);
+
+                    if (g != null)
+                    {
+                        g.occupied = true;
+                    }
+
+                    ghost.GhostKnightAdjacentHandler(null);
+                }
+            }
         }
     }
 }

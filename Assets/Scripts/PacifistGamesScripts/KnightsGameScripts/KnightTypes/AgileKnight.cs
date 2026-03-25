@@ -6,11 +6,6 @@ using UnityEngine.Splines.ExtrusionShapes;
 
 public class AgileKnight : KnightBehavior
 {
-    private Vector2Int pushDirection;
-    private KnightBehavior enemyToPush;
-    private KnightsSquareScript enemyStartSquare;
-
-
     protected override void Awake()
     {
         base.Awake();

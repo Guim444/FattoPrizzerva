@@ -5990,6 +5990,9 @@ MonoBehaviour:
     - m_Text: Jumpy
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: Ghost
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -17749,6 +17752,7 @@ MonoBehaviour:
   jumpyKnightPrefab: {fileID: 7314694070700786868, guid: 70791db02e2a4f54dad36821cdc6cb12, type: 3}
   bullKnightPrefab: {fileID: 7314694070700786868, guid: eb2e7202a32fbc94aa3172f7a16d9883, type: 3}
   shakyKnightPrefab: {fileID: 7314694070700786868, guid: d284396d64d61634ba9d8cf3a5a15559, type: 3}
+  ghostKnightPrefab: {fileID: 7314694070700786868, guid: abb7c05317fb4ea4889abcfd58660e45, type: 3}
   shiftKnightPrefab: {fileID: 7314694070700786868, guid: ab37de04e45ac4243bbe7061a7a8f4ea, type: 3}
   arrowPrefab: {fileID: 8345330863796333391, guid: 0b9d7b3fbc1cafc449ca09abe2374928, type: 3}
   invertedArrowPrefab: {fileID: 2952405729353323760, guid: e62a19d7fb5232f418b28f50e7880ed0, type: 3}
@@ -25095,6 +25099,9 @@ MonoBehaviour:
     - m_Text: Jumpy
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: Ghost
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -27545,6 +27552,9 @@ MonoBehaviour:
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Jumpy
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: Ghost
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Shapeshifter

@@ -60,15 +60,20 @@ public class JumpyKnight : KnightBehavior
 
         if (stepsMoved == 1)
         {
-            Vector3 vector = currentSquare.knightPosition - previousSquare.knightPosition;
-            firstDir = new Vector2Int((int)vector.x, (int)vector.z);
+            int dx = currentSquare.SquareColumn - previousSquare.SquareColumn;
+            int dy = currentSquare.SquareRow - previousSquare.SquareRow;
+
+            firstDir = new Vector2Int(dx != 0 ? (int)Mathf.Sign(dx) : 0, dy != 0 ? (int)Mathf.Sign(dy) : 0);
         }
         if (stepsMoved == 2)
         {
             surpassed = true;
 
-            if (!sq.empty)
+            if (sq.knight != null || sq.rock != null)
             {
+                if (sq.knight != null)
+                    StartCoroutine(PushForce(sq.knight, -lastDir, 1));
+
                 restartTarget = GetLTargetFromFirstStep(currentSquare);
                 restartMovement = true;
                 stepsMoved = 3;

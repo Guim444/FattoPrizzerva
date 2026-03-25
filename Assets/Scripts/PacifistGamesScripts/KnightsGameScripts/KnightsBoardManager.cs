@@ -215,11 +215,6 @@ public class KnightsBoardManager : MonoBehaviour
             spawned++;
         }
     }
-
-    public void GenerateKnights(int player)
-    {
-
-    }
     public void Test()
     {
         int midRow = (height + 1) / 2;
@@ -473,13 +468,15 @@ public class KnightsBoardManager : MonoBehaviour
             case 1:
                 return KnightsGameManager.instance.tucutuKnightPrefab;
             case 2:
-                return KnightsGameManager.instance.bullKnightPrefab;
-            case 3:
                 return KnightsGameManager.instance.shakyKnightPrefab;
+            case 3:
+                return KnightsGameManager.instance.bullKnightPrefab;
             case 4:
                 return KnightsGameManager.instance.shiftKnightPrefab;
             case 5:
                 return KnightsGameManager.instance.jumpyKnightPrefab;
+            case 6:
+                return KnightsGameManager.instance.ghostKnightPrefab;
             default:
                 return KnightsGameManager.instance.agileKnightPrefab;
         }

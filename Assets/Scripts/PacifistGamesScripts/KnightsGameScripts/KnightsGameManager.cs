@@ -27,6 +27,8 @@ public class KnightsGameManager : MonoBehaviour
 
     bool isRotating = false;
 
+    public List<FloatyKnight> floatyKnights = new List<FloatyKnight>();    
+
     public HashSet<KnightBehavior> activeMovements = new();
     public HashSet<KnightBehavior> movementsInTheRound = new();
     public HashSet<KnightBehavior> knightsInLava = new();
@@ -40,6 +42,7 @@ public class KnightsGameManager : MonoBehaviour
     public GameObject jumpyKnightPrefab;
     public GameObject bullKnightPrefab;
     public GameObject shakyKnightPrefab;
+    public GameObject ghostKnightPrefab;
     public GameObject shiftKnightPrefab;
 
     [Header("Assets Prefabs")]
@@ -106,6 +109,9 @@ public class KnightsGameManager : MonoBehaviour
                     break;
                 case "Jumpy":
                     knightValues.Add(5);
+                    break;
+                case "Ghost":
+                    knightValues.Add(6);
                     break;
             }
         }

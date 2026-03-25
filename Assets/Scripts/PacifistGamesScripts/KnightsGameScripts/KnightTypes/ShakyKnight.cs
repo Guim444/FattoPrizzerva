@@ -14,6 +14,11 @@ public class ShakyKnight : KnightBehavior
         grounded = true;
     }
 
+    protected override void OnDepart()
+    {
+        grounded = false;
+        base.OnDepart();
+    }
     protected override void OnApproach(KnightsSquareScript nextSquare)
     {
 
@@ -28,6 +33,8 @@ public class ShakyKnight : KnightBehavior
             return;
         
     }
+
+
     IEnumerator ApproachCoroutine(Vector2Int dir)
     {
         if (stepsMoved == 2)
@@ -36,10 +43,11 @@ public class ShakyKnight : KnightBehavior
             movementPaused = true;
 
             yield return new WaitUntil(() => !isMoving);
-            invulnerable = true;
+            //invulnerable = true;
             StartCoroutine(ShakePush(dir));
 
         }
+
         yield return new WaitUntil(() => !shake);
 
         char col = (char)(transitSquare.SquareColumn + dir.x);
@@ -47,7 +55,7 @@ public class ShakyKnight : KnightBehavior
 
         if (KnightsBoardManager.instance.squares.TryGetValue(col.ToString() + row, out var front))
         {
-            if (front.knight != null)
+            if (front.knight != null && grounded)
             {
                 yield return StartCoroutine(PushForce(front.knight, dir, 1, allowIce: true));
             }
@@ -86,5 +94,7 @@ public class ShakyKnight : KnightBehavior
         base.ConsumeMovementDirection();
 
         lastMovement = stepsMoved >= 3;
+        if (stepsMoved >= 2)
+            grounded = true;
     }
 }

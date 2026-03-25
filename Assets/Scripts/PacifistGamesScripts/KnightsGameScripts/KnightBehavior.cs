@@ -42,7 +42,6 @@ public abstract class KnightBehavior : MonoBehaviour
 
     protected bool restartMovement = false;
     protected KnightsSquareScript restartTarget;
-
     protected virtual void Awake()
     {
         rend = GetComponent<Renderer>();
@@ -424,7 +423,7 @@ public abstract class KnightBehavior : MonoBehaviour
             KnightsGameManager.instance.movementsInTheRound.Add(this);
     }
 
-    bool CheckRow(Vector2Int dir)
+    public bool CheckRow(Vector2Int dir)
     {
         char col = currentSquare.SquareColumn;
         int row = currentSquare.SquareRow;
@@ -835,6 +834,9 @@ public abstract class KnightBehavior : MonoBehaviour
     }
     protected virtual IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps, bool pushThroughAir = false, bool allowIce = true, float waitTime = 0)
     {
+        if (enemy.invulnerable)
+            yield break;
+
         if (enemy == null || steps <= 0)
             yield break;
 
@@ -1409,9 +1411,36 @@ public abstract class KnightBehavior : MonoBehaviour
         if (sq == null)
             return;
 
+        // Lógica original
         if (isGrounded && sq.isFragile)
         {
             sq.FragileFloor();
+        }
+
+        if (!isGrounded)
+            return;
+
+        sq.CheckGhostAdjacency(sq);
+
+        if (previousSquare != null)
+        {
+            foreach (var floaty in KnightsGameManager.instance.floatyKnights)
+            {
+                bool wasInside = floaty.adjacentSquares.Contains(previousSquare);
+                bool isInside = floaty.adjacentSquares.Contains(sq);
+
+                if (wasInside && !isInside)
+                {
+                    floaty.FloatyKnightAdjacentHandler(this);
+                }
+            }
+        }
+        foreach (var floaty in KnightsGameManager.instance.floatyKnights)
+        {
+            if (floaty.adjacentSquares.Contains(sq))
+            {
+                floaty.FloatyKnightAdjacentHandler(this);
+            }
         }
     }
 
