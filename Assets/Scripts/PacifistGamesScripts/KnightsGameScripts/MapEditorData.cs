@@ -46,6 +46,7 @@ public class MapEditorData : MonoBehaviour
     public List<GameObject> rockPrefabs;
     public List<GameObject> waterCoursePrefabs;
     public GameObject knightStatue;
+    public GameObject snakePrefab;
 
     private void Awake()
     {
@@ -210,6 +211,18 @@ public class MapEditorData : MonoBehaviour
         selectedObject = statue;
         statue.GetComponent<KnightStatue>().ToggleGlow(true, 1);
         statue.transform.SetParent(GameObject.Find("Obstacles").transform);
+    }
+    
+    public void AddSnake()
+    {
+        if (selectedObject != null)
+        {
+            Destroy(selectedObject.gameObject);
+        }
+        GameObject snake = Instantiate(snakePrefab);
+        snake.transform.position += new Vector3(snake.transform.position.x, snake.transform.position.y + 1, snake.transform.position.z);
+        selectedObject = snake;
+        snake.GetComponent<SnakeBody>().ToggleGlow(true, 1);
     }
     public void LavaTurnsEdit(int num)
     {

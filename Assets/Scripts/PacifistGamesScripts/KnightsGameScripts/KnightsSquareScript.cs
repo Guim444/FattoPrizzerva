@@ -39,6 +39,7 @@ public class KnightsSquareScript : MonoBehaviour
     public bool isVoid;
     public bool isLava;
     public bool isFragile;
+    public SnakeBody snake;
 
     public bool heavenStartZone = false, hellStartZone = false;
 
@@ -96,7 +97,7 @@ public class KnightsSquareScript : MonoBehaviour
             {
                 if (heavenStartZone || hellStartZone)
                 {
-                    MapEditorData.instance.WarningMessage("You cannot set a rock in start squares.");
+                    StartCoroutine(MapEditorData.instance.WarningMessage("You cannot set a rock in start squares."));
                     return;
                 }
                 rock = currentRock;
@@ -119,7 +120,7 @@ public class KnightsSquareScript : MonoBehaviour
             {
                 if (heavenStartZone || hellStartZone)
                 {
-                    MapEditorData.instance.WarningMessage("You cannot set an statue in start squares.");
+                    StartCoroutine(MapEditorData.instance.WarningMessage("You cannot set an statue in start squares."));
                     return;
                 }
                 knight = statue;
@@ -134,6 +135,30 @@ public class KnightsSquareScript : MonoBehaviour
                 statue.GetComponent<BoxCollider>().enabled = true;
 
                 MapEditorData.instance.selectedObject = null;
+            }
+            else if(MapEditorData.instance.selectedObject.TryGetComponent<SnakeBody>(out SnakeBody snake))
+            {
+                Vector3 position = snake.transform.position;
+                snake.transform.position = new Vector3(knightPosition.x, knightPosition.y - 0.8f, knightPosition.z);
+                snake.RecalcPositions();
+
+                if (!snake.CheckAll())
+                {
+                    StartCoroutine(MapEditorData.instance.WarningMessage("You cannot set a snake body in these squares."));
+                    snake.transform.position = position;
+                    snake.RecalcPositions();
+                    return;
+                }
+                else
+                {
+                    foreach (var part in snake.bodyParts)
+                    {
+                        part.ToggleGlow(false, 0.3f);
+                        part.GetComponent<BoxCollider>().enabled = true;
+                        part.currentSquare.empty = false;
+                    }
+                    MapEditorData.instance.selectedObject = null;
+                }
             }
             else if (MapEditorData.instance.voidSelected)
             {

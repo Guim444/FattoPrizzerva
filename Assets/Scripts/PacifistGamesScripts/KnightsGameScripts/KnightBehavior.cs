@@ -222,6 +222,8 @@ public abstract class KnightBehavior : MonoBehaviour
 
             lookingDirection = new Vector2Int(path[moveIndex].SquareColumn - currentSquare.SquareColumn, path[moveIndex].SquareRow - currentSquare.SquareRow);
 
+            yield return StartCoroutine(RotateTowards(lookingDirection));
+
             if (!CheckRow(lookingDirection))
             {
                 canContinue = false;
@@ -832,7 +834,7 @@ public abstract class KnightBehavior : MonoBehaviour
         possiblePaths.Clear();
         KnightsGameManager.instance.selectedKnight = null;
     }
-    protected virtual IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps, bool pushThroughAir = false, bool allowIce = true, float waitTime = 0)
+    internal virtual IEnumerator PushForce(KnightBehavior enemy, Vector2Int dir, int steps, bool pushThroughAir = false, bool allowIce = true, float waitTime = 0)
     {
         if (enemy.invulnerable)
             yield break;
@@ -1420,6 +1422,11 @@ public abstract class KnightBehavior : MonoBehaviour
         if (!isGrounded)
             return;
 
+        if (sq.snake != null)
+        {
+            
+        }
+
         sq.CheckGhostAdjacency(sq);
 
         if (previousSquare != null)
@@ -1519,5 +1526,29 @@ public abstract class KnightBehavior : MonoBehaviour
         previousSquare = null;
 
         spikyRockCrash = false;
+    }
+
+    IEnumerator RotateTowards(Vector2Int dir)
+    {
+        if (dir == Vector2Int.zero)
+            yield break;
+
+        Vector3 lookDir = new Vector3(dir.x, 0, dir.y);
+        Quaternion targetRot = Quaternion.LookRotation(lookDir);
+
+        float rotateSpeed = 720f;
+
+        while (Quaternion.Angle(transform.rotation, targetRot) > 0.1f)
+        {
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRot,
+                rotateSpeed * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        transform.rotation = targetRot;
     }
 }

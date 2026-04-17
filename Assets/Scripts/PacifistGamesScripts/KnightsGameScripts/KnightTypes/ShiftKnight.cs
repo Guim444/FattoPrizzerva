@@ -59,8 +59,12 @@ public class ShiftKnight : MonoBehaviour
         {
             case 0: return gameObject.AddComponent<AgileKnight>();
             case 1: return gameObject.AddComponent<TucutuKnight>();
-            case 2: return gameObject.AddComponent<BullKnight>();
-            case 3: return gameObject.AddComponent<ShakyKnight>();
+            case 2: return gameObject.AddComponent<ShakyKnight>();
+            case 3: return gameObject.AddComponent<BullKnight>();
+            case 4: break;
+            case 5: return gameObject.AddComponent<JumpyKnight>();
+            case 6: return gameObject.AddComponent<GhostKnight>();
+            default: break;
         }
 
         return gameObject.AddComponent<AgileKnight>();

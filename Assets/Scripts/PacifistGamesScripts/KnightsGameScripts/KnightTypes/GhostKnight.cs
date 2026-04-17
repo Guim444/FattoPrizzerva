@@ -44,7 +44,7 @@ public class GhostKnight : KnightBehavior
         {
             if (front.knight != null && stepsMoved == 2)
             {
-                StartCoroutine(PushForce(front.knight, dir, 1, allowIce: true, waitTime: 0.5f));
+                StartCoroutine(PushForce(front.knight, dir, 1, allowIce: true, waitTime: 0.25f));
             }
         }
 
@@ -87,12 +87,21 @@ public class GhostKnight : KnightBehavior
 
     public void CalcAdjacent(KnightsSquareScript sq)
     {
+        Vector2Int forward = lookingDirection;
+
+        if (forward == Vector2Int.zero)
+            forward = Vector2Int.up;
+
+        Vector2Int right = new Vector2Int(forward.y, -forward.x);
+        Vector2Int back = -forward;
+        Vector2Int left = new Vector2Int(-forward.y, forward.x);
+
         Vector2Int[] directions =
         {
-            new(0, 1),
-            new(0, -1),
-            new(-1, 0),
-            new(1, 0),
+            forward,
+            right,
+            back,
+            left
         };
 
         for (int i = 0; i < directions.Length; i++)
@@ -131,16 +140,18 @@ public class GhostKnight : KnightBehavior
 
     internal void GhostKnightAdjacentHandler(KnightBehavior knightBehavior)
     {
-        bool anyKnightNearby = adjacentSquares.Any(adj => adj.sq != null && adj.sq.knight != null);
+        bool allCovered = true;
 
-        if (anyKnightNearby)
+        foreach (var sq in adjacentSquares)
         {
-            invulnerable = false;
+            if (!sq.occupied)
+            {
+                allCovered = false;
+                break;
+            }
         }
-        else
-        {
-            invulnerable = true;
-        }
+
+        invulnerable = !allCovered;
     }
 }
 

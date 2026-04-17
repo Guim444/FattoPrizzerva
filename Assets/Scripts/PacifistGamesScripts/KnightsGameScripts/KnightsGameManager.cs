@@ -167,7 +167,16 @@ public class KnightsGameManager : MonoBehaviour
             }
         }
     }
+    public void OnFlip(InputValue value)
+    {
+        if (!value.isPressed || isRotating)
+            return;
 
+        if (MapEditorData.instance.selectedObject.TryGetComponent<SnakeBody>(out SnakeBody snake))
+        {
+            snake.FlipSnake();
+        }
+    }
     public void OnRotate(InputValue value)
     {
         if (!value.isPressed)
@@ -204,6 +213,7 @@ public class KnightsGameManager : MonoBehaviour
             else
             {
                 StartCoroutine(RotateCoroutine(MapEditorData.instance.selectedObject.transform));
+
             }
         }
     }
@@ -225,6 +235,11 @@ public class KnightsGameManager : MonoBehaviour
 
         target.rotation = endRot;
         isRotating = false;
+
+        if (MapEditorData.instance.selectedObject.TryGetComponent<SnakeBody>(out SnakeBody snake))
+        {
+            snake.RecalcDirection();
+        }
     }
     IEnumerator WaterCourseRotate(Transform target, Quaternion targetAngle)
     {
