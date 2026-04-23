@@ -155,9 +155,10 @@ public class KnightsSquareScript : MonoBehaviour
                     {
                         part.ToggleGlow(false, 0.3f);
                         part.GetComponent<BoxCollider>().enabled = true;
-                        part.currentSquare.empty = false;
                     }
                     MapEditorData.instance.selectedObject = null;
+                    snake.bodyParts[0].currentSquare = this;
+                    snake.SetAllSquares();
                 }
             }
             else if (MapEditorData.instance.voidSelected)

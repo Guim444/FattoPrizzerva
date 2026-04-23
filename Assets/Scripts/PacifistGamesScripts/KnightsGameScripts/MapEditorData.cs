@@ -41,6 +41,7 @@ public class MapEditorData : MonoBehaviour
     public GameObject backButton;
 
     public GameObject errorMessage;
+    public GameObject scrollRect;
 
     [Header("Prefabs")]
     public List<GameObject> rockPrefabs;
@@ -317,7 +318,7 @@ public class MapEditorData : MonoBehaviour
 
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.gameObject;
 
-        sender.SetActive(false);
+        scrollRect.SetActive(false);
 
         backButton.SetActive(true);
     }
@@ -356,7 +357,7 @@ public class MapEditorData : MonoBehaviour
             selectedObject = null;
         }
 
-        selectionCanvas.SetActive(true);
+        scrollRect.SetActive(true);
     }
 
     public void SelectStartSquare(string category)

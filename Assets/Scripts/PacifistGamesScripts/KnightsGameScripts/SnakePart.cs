@@ -17,7 +17,7 @@ public class SnakePart : MonoBehaviour
     {
         if (MapEditorData.instance.editMode && MapEditorData.instance.selectedObject == null)
         {
-            MapEditorData.instance.selectedObject = gameObject;
+            MapEditorData.instance.selectedObject = body.gameObject;
 
             foreach (SnakePart part in body.bodyParts)
             {

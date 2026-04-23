@@ -1424,7 +1424,7 @@ public abstract class KnightBehavior : MonoBehaviour
 
         if (sq.snake != null)
         {
-            
+            sq.snake.SnakeEffect(this);
         }
 
         sq.CheckGhostAdjacency(sq);

@@ -34,12 +34,63 @@ public class SnakeBody : MonoBehaviour
     {
         if (effectType == SnakeEffectType.Push)
         {
-            Vector2Int pushDir = new Vector2Int((int)direction.x, (int)direction.z);
+            Vector2Int pushDir = -knight.lookingDirection;
+            var origin = knight.currentSquare;
+
+            char col = (char)(origin.SquareColumn + pushDir.x);
+            int row = origin.SquareRow + pushDir.y;
+
+            var target = KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+
+            if (target != null && target.snake != null)
+            {
+                Vector2Int[] perpendiculars =
+                {
+                new Vector2Int(pushDir.y, -pushDir.x),
+                new Vector2Int(-pushDir.y, pushDir.x)
+            };
+
+                foreach (var dir in perpendiculars)
+                {
+                    char c = (char)(origin.SquareColumn + dir.x);
+                    int r = origin.SquareRow + dir.y;
+
+                    var alt = KnightsBoardManager.instance.GetSquare(c.ToString() + r);
+
+                    if (alt != null && alt.snake == null)
+                    {
+                        pushDir = dir;
+                        break;
+                    }
+                }
+            }
+
             knight.StartCoroutine(knight.PushForce(knight, pushDir, 1, allowIce: true));
         }
         else if (effectType == SnakeEffectType.Eat)
         {
             //TO DO
+        }
+    }
+
+    public void SetAllSquares()
+    {
+        for (int i = 1; i < bodyParts.Count; i++)
+        {
+            Vector3 relativeDir = bodyParts[i].transform.position - bodyParts[i - 1].transform.position;
+            Vector2Int dir2D = new Vector2Int(Mathf.RoundToInt(relativeDir.x), Mathf.RoundToInt(relativeDir.z));
+
+            char col = (char)(bodyParts[i - 1].currentSquare.SquareColumn + dir2D.y);
+            int row = bodyParts[i - 1].currentSquare.SquareRow - dir2D.x;
+            string sqName = col.ToString() + row.ToString();
+            Debug.Log(sqName);
+
+            bodyParts[i].currentSquare = KnightsBoardManager.instance.GetSquare(sqName);
+        }
+
+        foreach (SnakePart part in bodyParts)
+        {
+            part.currentSquare.snake = this;
         }
     }
     public void FlipSnake()
