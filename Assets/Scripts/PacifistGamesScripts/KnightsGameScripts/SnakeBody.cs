@@ -69,7 +69,9 @@ public class SnakeBody : MonoBehaviour
         }
         else if (effectType == SnakeEffectType.Eat)
         {
-            //TO DO
+            knight.currentSquare = bodyParts[0].currentSquare;
+            knight.transform.position = bodyParts[0].currentSquare.transform.position - new Vector3(0, 0.5f, 0);
+            KnightsBoardManager.instance.knightList.Remove(knight);
         }
     }
 
