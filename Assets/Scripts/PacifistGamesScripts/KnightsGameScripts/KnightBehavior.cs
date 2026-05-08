@@ -1528,7 +1528,7 @@ public abstract class KnightBehavior : MonoBehaviour
         spikyRockCrash = false;
     }
 
-    IEnumerator RotateTowards(Vector2Int dir)
+    internal IEnumerator RotateTowards(Vector2Int dir)
     {
         if (dir == Vector2Int.zero)
             yield break;

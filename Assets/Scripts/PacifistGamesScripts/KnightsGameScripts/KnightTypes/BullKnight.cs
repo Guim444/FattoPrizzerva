@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Splines.ExtrusionShapes;
 
 public class BullKnight : KnightBehavior
 {
@@ -45,6 +46,10 @@ public class BullKnight : KnightBehavior
 
             stepsMoved = 2;
 
+            //Force the knight to face the direction it is going to be pushed in
+
+            StartCoroutine(RotateTowards(dir));
+
             StartCoroutine(SelfPush(nextSquare));
             canContinue = false;
             return;
@@ -64,6 +69,8 @@ public class BullKnight : KnightBehavior
                 else
                 {
                     canContinue = false;
+                    currentSquare.knight = this;
+                    currentSquare.empty = false;
                     KnightsGameManager.instance.EndMovement(this);
                     return;
                 }
@@ -80,7 +87,6 @@ public class BullKnight : KnightBehavior
             KnightsGameManager.instance.canMove = false;
         }
         KnightsGameManager.instance.canMove = true;
-        tired = false;
     }
     protected override void OnArrive(KnightsSquareScript square)
     {
@@ -88,18 +94,41 @@ public class BullKnight : KnightBehavior
         moveIndex = 0;
         stepsMoved = 0;
         KnightsGameManager.instance.canMove = true;
+        currentSquare = square;
+        currentSquare.knight = this;
     }
     IEnumerator SelfPush(KnightsSquareScript next)
     {
+        char col = (char)(currentSquare.SquareColumn + lastDir.x);
+        int row = currentSquare.SquareRow + lastDir.y;
+
+        KnightsSquareScript target =
+            KnightsBoardManager.instance.GetSquare(col.ToString() + row);
+
+        if (target != null && target.knight != null)
+        {
+            currentSquare.knight = this;
+            currentSquare.empty = false;
+
+            KnightsGameManager.instance.EndMovement(this);
+            yield break;
+        }
+
         if (tired && !next.empty)
         {
+            currentSquare.knight = this;
+            currentSquare.empty = false;
+
             KnightsGameManager.instance.EndMovement(this);
             yield break;
         }
 
         KnightsGameManager.instance.canMove = false;
+
         yield return StartCoroutine(PushForce(this, lastDir, 1));
+
         yield return new WaitUntil(() => !isMoving);
+
         movementPaused = false;
         KnightsGameManager.instance.canMove = true;
     }
@@ -117,3 +146,4 @@ public class BullKnight : KnightBehavior
         lastMovement = stepsMoved >= 3;
     }
 }
+    
