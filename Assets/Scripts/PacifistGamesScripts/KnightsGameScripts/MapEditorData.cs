@@ -12,6 +12,7 @@ public class MapEditorData : MonoBehaviour
     public bool chooseHeaven;
     public bool chooseHell;
     public TextMeshProUGUI boardSizeX, boardSizeY;
+    public TextMeshProUGUI stormToStart, stormToExpand;
 
     public bool rockIsTall;
     public bool rockIsFragile;

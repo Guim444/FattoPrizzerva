@@ -82,6 +82,16 @@ public class KnightsGameManager : MonoBehaviour
             {
                 KnightsBoardManager.instance.height = y;
             }
+
+            if (int.TryParse(MapEditorData.instance.stormToStart.text, out int sts))
+            {
+                StormBehavior.instance.turnsToStart = sts;
+            }
+            if (int.TryParse(MapEditorData.instance.stormToExpand.text, out int ste))
+            {
+                StormBehavior.instance.turnsToExpand = ste;
+            }
+
             KnightsBoardManager.instance.GenerateBoard();
         }
 
@@ -301,7 +311,8 @@ public class KnightsGameManager : MonoBehaviour
     public IEnumerator NextPlayer()
     {
         yield return new WaitUntil(() => activeMovements.Count == 0);
-        turnCounter++;
+        if (currentPlayer == 1)
+            turnCounter++;
 
         if (KnightsBoardManager.instance.player1StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(1);
@@ -400,6 +411,15 @@ public class KnightsGameManager : MonoBehaviour
         }
         movementsInTheRound.Clear();
         revivedThisTurn = false;
+
+        if (StormBehavior.instance.turnsToStart == turnCounter)
+        {
+            StormBehavior.instance.StartStorm();
+        }
+        else if (StormBehavior.instance.stormStarted)
+        {
+            StormBehavior.instance.ExpandStorm();
+        }
     }
 
     public void WaterCourse()
