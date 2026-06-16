@@ -13,22 +13,54 @@ public class GenericSandboxManager : MonoBehaviour
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
 
+        text.text = Modify(text, num, 60, 0, true);
+    }
+    public void ModifyBoardSize(int num)
+    {
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
+        text.text = Modify(text, num, 12, 4, false);
+    }
+
+    public void ModifyStormStartTurns(int num)
+    {
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
+        text.text = Modify(text, num, 10, 4, false);
+    }
+    public void ModifyStormExpandTurns(int num)
+    {
+        GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
+        text.text = Modify(text, num, 5, 2, false);
+    }
+
+    public string Modify(TextMeshProUGUI text, int num, int max, int min, bool addZero)
+    {
         if (text != null)
         {
             if (int.TryParse(text.text, out int currentValue))
             {
                 currentValue += num;
-                currentValue = Mathf.Clamp(currentValue, -1, 60);
+                currentValue = Mathf.Clamp(currentValue, min - 1, max);
 
-                if (currentValue == 60)
-                    currentValue = 0;
-                else if (currentValue == -1)
-                    currentValue = 60 - Mathf.Abs(num);
+                if (currentValue == max)
+                    currentValue = min;
+                else if (currentValue == min - 1)
+                    currentValue = max - Mathf.Abs(num);
 
-                text.text = currentValue.ToString("00");
+                if (addZero)
+                    text.text = currentValue.ToString("00");
+                else
+                    text.text = currentValue.ToString();
+
             }
         }
+        Debug.Log(text.text);
+
+        return text.text;
     }
+
     public void ColumnSelect(int num)
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;

@@ -1364,7 +1364,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyBoardSize
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4213,7 +4213,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyStormStartTurns
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7501,7 +7501,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyStormStartTurns
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15405,7 +15405,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyBoardSize
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21523,7 +21523,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyBoardSize
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -28128,7 +28128,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyStormExpandTurns
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32194,7 +32194,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -37300,7 +37300,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyStormExpandTurns
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -38692,7 +38692,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 265999197}
         m_TargetAssemblyTypeName: GenericSandboxManager, Assembly-CSharp
-        m_MethodName: ModifyNum
+        m_MethodName: ModifyBoardSize
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
