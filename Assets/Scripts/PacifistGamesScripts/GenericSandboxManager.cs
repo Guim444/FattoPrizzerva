@@ -26,13 +26,13 @@ public class GenericSandboxManager : MonoBehaviour
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
-        text.text = Modify(text, num, 10, 4, false);
+        text.text = Modify(text, num, 20, 2, false);
     }
     public void ModifyStormExpandTurns(int num)
     {
         GameObject sender = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
         TextMeshProUGUI text = sender.GetComponentInParent<TextMeshProUGUI>();
-        text.text = Modify(text, num, 5, 2, false);
+        text.text = Modify(text, num, 8, 2, false);
     }
 
     public string Modify(TextMeshProUGUI text, int num, int max, int min, bool addZero)
@@ -42,9 +42,9 @@ public class GenericSandboxManager : MonoBehaviour
             if (int.TryParse(text.text, out int currentValue))
             {
                 currentValue += num;
-                currentValue = Mathf.Clamp(currentValue, min - 1, max);
+                currentValue = Mathf.Clamp(currentValue, min - 1, max + 1);
 
-                if (currentValue == max)
+                if (currentValue == max + 1)
                     currentValue = min;
                 else if (currentValue == min - 1)
                     currentValue = max - Mathf.Abs(num);

@@ -13,6 +13,7 @@ public class MapEditorData : MonoBehaviour
     public bool chooseHell;
     public TextMeshProUGUI boardSizeX, boardSizeY;
     public TextMeshProUGUI stormToStart, stormToExpand;
+    public Toggle stormEnabled;
 
     public bool rockIsTall;
     public bool rockIsFragile;
@@ -172,8 +173,7 @@ public class MapEditorData : MonoBehaviour
 
     public void AddVoid()
     {
-        fragileFloorSelected = false;
-
+        DeselectOptions();
         GameObject voidObj = new GameObject(); //Just so we don't set it null
         selectedObject = voidObj;
         voidSelected = true;
@@ -181,6 +181,7 @@ public class MapEditorData : MonoBehaviour
 
     public void AddLava()
     {
+        DeselectOptions();
         GameObject lavaObj = new GameObject();
         selectedObject = lavaObj;
         lavaSelected = true;
@@ -188,6 +189,8 @@ public class MapEditorData : MonoBehaviour
 
     public void AddIce()
     {
+        DeselectOptions();
+
         GameObject iceObj = new GameObject();
         selectedObject = iceObj;
         iceSelected = true;
@@ -195,7 +198,7 @@ public class MapEditorData : MonoBehaviour
 
     public void AddFragileFloor()
     {
-        voidSelected = false;
+        DeselectOptions();
 
         GameObject fragileFloorObj = new GameObject();
         selectedObject = fragileFloorObj;
@@ -260,6 +263,7 @@ public class MapEditorData : MonoBehaviour
 
     public void AddWaterCourse(int length)
     {
+        DeselectOptions();
         GameObject waterCourseObj = Instantiate(waterCoursePrefabs[length - 3]);
         selectedObject = waterCourseObj;
 
@@ -402,5 +406,13 @@ public class MapEditorData : MonoBehaviour
         errorMessage.GetComponentInChildren<TextMeshProUGUI>().text = message;
         yield return new WaitForSeconds(3);
         errorMessage.SetActive(false);
+    }
+
+    public void DeselectOptions()
+    {
+        voidSelected = false;
+        lavaSelected = false;
+        iceSelected = false;
+        fragileFloorSelected = false;
     }
 }

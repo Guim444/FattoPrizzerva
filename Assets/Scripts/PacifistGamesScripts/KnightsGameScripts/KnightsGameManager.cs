@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class KnightsGameManager : MonoBehaviour
 {
     public static KnightsGameManager instance;
-    public int currentPlayer = 1;
+    public int currentPlayer = 2;
     public int turnCounter = 0;
 
     public KnightBehavior selectedKnight;
@@ -91,6 +91,8 @@ public class KnightsGameManager : MonoBehaviour
             {
                 StormBehavior.instance.turnsToExpand = ste;
             }
+
+            StormBehavior.instance.stormEnabled = MapEditorData.instance.stormEnabled.isOn;
 
             KnightsBoardManager.instance.GenerateBoard();
         }
@@ -311,8 +313,7 @@ public class KnightsGameManager : MonoBehaviour
     public IEnumerator NextPlayer()
     {
         yield return new WaitUntil(() => activeMovements.Count == 0);
-        if (currentPlayer == 1)
-            turnCounter++;
+
 
         if (KnightsBoardManager.instance.player1StartZoneActive)
             KnightsBoardManager.instance.CheckStartZone(1);
@@ -412,13 +413,28 @@ public class KnightsGameManager : MonoBehaviour
         movementsInTheRound.Clear();
         revivedThisTurn = false;
 
-        if (StormBehavior.instance.turnsToStart == turnCounter)
+        if (currentPlayer == 2)
         {
-            StormBehavior.instance.StartStorm();
-        }
-        else if (StormBehavior.instance.stormStarted)
-        {
-            StormBehavior.instance.ExpandStorm();
+            turnCounter++;
+
+            if (!StormBehavior.instance.stormStarted)
+            {
+                if (turnCounter >= StormBehavior.instance.turnsToStart)
+                {
+                    StormBehavior.instance.StartStorm();
+                    StormBehavior.instance.turnsSinceLastExpansion = 0;
+                }
+            }
+            else
+            {
+                StormBehavior.instance.turnsSinceLastExpansion++;
+
+                if (StormBehavior.instance.turnsSinceLastExpansion >= StormBehavior.instance.turnsToExpand)
+                {
+                    StormBehavior.instance.ExpandStorm();
+                    StormBehavior.instance.turnsSinceLastExpansion = 0;
+                }
+            }
         }
     }
 
@@ -520,13 +536,12 @@ public class KnightsGameManager : MonoBehaviour
 
     public void ConfirmStartPosition()
     {
-        currentPlayer = currentPlayer == 1 ? 2 : 1;
-
         playerSelectionCount++;
 
         if (playerSelectionCount > 2)
         {
             gameHasStarted = true;
+
             List<KnightsSquareScript> allStartZones = new List<KnightsSquareScript>();
             allStartZones.AddRange(KnightsBoardManager.instance.player1StartZone);
             allStartZones.AddRange(KnightsBoardManager.instance.player2StartZone);
@@ -536,15 +551,15 @@ public class KnightsGameManager : MonoBehaviour
                 sq.ToggleGlow(false, 1);
 
                 if (sq.knight != null)
-                {
                     sq.knight.GetComponent<Renderer>().enabled = true;
-                }
             }
 
-            button.SetActive(false);            
+            button.SetActive(false);
         }
         else
         {
+            currentPlayer = currentPlayer == 1 ? 2 : 1;
+
             if (currentPlayer == 1)
             {
                 foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player1StartZone)
@@ -552,44 +567,38 @@ public class KnightsGameManager : MonoBehaviour
                     sq.ToggleGlow(true, 1);
 
                     if (sq.knight != null)
-                    {
                         sq.knight.GetComponent<Renderer>().enabled = true;
-                    }
                 }
+
                 foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player2StartZone)
                 {
                     sq.ToggleGlow(false, 1);
 
                     if (sq.knight != null)
-                    {
                         sq.knight.GetComponent<Renderer>().enabled = false;
-                    }
                 }
             }
-
-            else if (currentPlayer == 2)
+            else
             {
                 foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player1StartZone)
                 {
                     sq.ToggleGlow(false, 1);
 
                     if (sq.knight != null)
-                    {
                         sq.knight.GetComponent<Renderer>().enabled = false;
-                    }
                 }
+
                 foreach (KnightsSquareScript sq in KnightsBoardManager.instance.player2StartZone)
                 {
                     sq.ToggleGlow(true, 1);
 
                     if (sq.knight != null)
-                    {
                         sq.knight.GetComponent<Renderer>().enabled = true;
-                    }
                 }
             }
 
-            button.GetComponentInChildren<TextMeshProUGUI>().text = "Player " + currentPlayer + "'s turn";
+            button.GetComponentInChildren<TextMeshProUGUI>().text =
+                "Player " + currentPlayer + "'s turn";
         }
     }
 

@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class StormBehavior : MonoBehaviour
 {
+    public bool stormEnabled = true;
     public static StormBehavior instance;
     public int turnsToStart;
     public int turnsToExpand;
     public bool stormStarted = false;
     public int timesExpanded = 0;
+    public int turnsSinceLastExpansion = 0;
 
     public void Awake()
     {
@@ -17,6 +19,8 @@ public class StormBehavior : MonoBehaviour
 
     internal void ExpandStorm()
     {
+        if (!stormEnabled)
+            return;
         List<KnightsSquareScript> squaresToVoid = new List<KnightsSquareScript>();
 
         int minRow = 1 + timesExpanded;
@@ -40,6 +44,11 @@ public class StormBehavior : MonoBehaviour
         foreach (KnightsSquareScript sq in squaresToVoid)
         {
             sq.TurnVoid(true);
+
+            if (sq.knight != null && !sq.knight.isDead)
+            {
+                StartCoroutine(sq.knight.KillKnight(sq));
+            }
         }
 
         timesExpanded++;
@@ -47,7 +56,11 @@ public class StormBehavior : MonoBehaviour
 
     internal void StartStorm()
     {
+        if (!stormEnabled)
+            return;
         Debug.Log("Storm started!");
         stormStarted = true;
+
+        ExpandStorm();
     }
 }

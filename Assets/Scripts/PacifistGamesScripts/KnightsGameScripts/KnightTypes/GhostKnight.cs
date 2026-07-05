@@ -22,6 +22,13 @@ public class GhostKnight : KnightBehavior
 
     protected override void OnDepart()
     {
+        foreach (var adj in adjacentSquares)
+        {
+            if (adj.sq != null)
+            {
+                adj.sq.GetComponent<Renderer>().material.color = adj.sq.originalColor;
+            }
+        }
         grounded = false;
         base.OnDepart();
         invulnerable = true;
@@ -114,14 +121,27 @@ public class GhostKnight : KnightBehavior
             string key = targetCol.ToString() + targetRow;
 
             if (adjacentSquares[i].sq != null)
+            {
                 adjacentSquares[i].sq.knightAdjacent.Remove(this);
+                adjacentSquares[i].sq.gameObject.GetComponent<Renderer>().material.color = adjacentSquares[i].sq.originalColor;
+            }
 
             if (KnightsBoardManager.instance.squares.TryGetValue(key, out var newSquare))
             {
                 adjacentSquares[i].sq = newSquare;
 
                 if (!newSquare.knightAdjacent.Contains(this))
+                {
                     newSquare.knightAdjacent.Add(this);
+                    if (adjacentSquares[i].occupied)
+                    {
+                        newSquare.gameObject.GetComponent<Renderer>().material.color = Color.green;
+                    }
+                    else
+                    {
+                        newSquare.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+                    }
+                }
             }
             else
             {

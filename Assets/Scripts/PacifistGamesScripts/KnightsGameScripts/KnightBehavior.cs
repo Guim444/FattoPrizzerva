@@ -1000,6 +1000,9 @@ public abstract class KnightBehavior : MonoBehaviour
     }
     public IEnumerator SlideOnIce()
     {
+        if (!grounded)
+            yield break;
+
         while (true)
         {
             yield return StartCoroutine(WaitWhileOtherMovementsActive());
@@ -1007,8 +1010,22 @@ public abstract class KnightBehavior : MonoBehaviour
             char c = (char)(currentSquare.SquareColumn + slideDirection.x);
             int r = currentSquare.SquareRow + slideDirection.y;
 
-            if (!KnightsBoardManager.instance.squares.TryGetValue(c.ToString() + r, out var next))
+            KnightsSquareScript next = KnightsBoardManager.instance.GetSquare(c.ToString() + r);
+
+            if (next == null)
                 yield break;
+
+            if (next.isVoid)
+            {
+                currentSquare.knight = null;
+                currentSquare.empty = true;
+
+                currentSquare = next;
+
+                yield return StartCoroutine(SmoothMove(next.knightPosition, 0.3f));
+                yield return StartCoroutine(KillKnight(next));
+                yield break;
+            }
 
             if (!next.empty && next.knight != null)
             {
@@ -1037,7 +1054,7 @@ public abstract class KnightBehavior : MonoBehaviour
                     yield return StartCoroutine(GetImpaled(next.rock));
                     KnightsGameManager.instance.EndMovement(this);
                 }
-                
+
                 yield break;
             }
 
@@ -1051,13 +1068,9 @@ public abstract class KnightBehavior : MonoBehaviour
             next.empty = false;
 
             if (grounded)
-            {
                 StepOnSquare(next, true);
-            }
             else
-            {
                 StepOnSquare(next, false);
-            }
 
             yield return StartCoroutine(SmoothMove(next.knightPosition, 0.3f));
 
@@ -1122,63 +1135,65 @@ public abstract class KnightBehavior : MonoBehaviour
             yield break;
 
         yield return null;
+
         isDead = true;
         KnightsGameManager.instance.EndMovement(this);
         KnightsBoardManager.instance.knightList.Remove(this);
         GetComponent<BoxCollider>().enabled = false;
         KnightsBoardManager.instance.deadKnightList.Add(this);
 
+        if (square.knight == this)
+        {
+            square.knight = null;
+            square.empty = true;
+        }
+
+        if (previousSquare != null && previousSquare.knight == this)
+        {
+            previousSquare.knight = null;
+            previousSquare.empty = true;
+        }
+
+        deathSquare = square;
+
         if (square.isVoid)
         {
-            square.TurnVoid(false);
-            square.knight = null;
-            deathSquare = square;
-
-            square.empty = true;
+            yield return StartCoroutine(FadeOutByFalling(this, true));
         }
         else if (square.rock != null)
         {
-            if (previousSquare != null && previousSquare.knight == this)
-            {
-                previousSquare.knight = null;
-                previousSquare.empty = true;
-            }
-            deathSquare = square;
         }
         else if (square.isLava)
         {
-            yield return StartCoroutine(SinkInLava(square.knight, true));
-            square.knight = null;
-            square.empty = true;
-            deathSquare = square;
+            yield return StartCoroutine(SinkInLava(this, true));
             KnightsGameManager.instance.knightsInLava.Remove(this);
-
             square.isLava = false;
         }
         else if (square.isWaterSquare)
         {
-            string outsideName = "OUT_" + ((char)(square.SquareColumn + square.waterCourseDirection.x)).ToString() + (square.SquareRow + square.waterCourseDirection.y);
-            KnightsSquareScript target = KnightsBoardManager.instance.GetOutsideSquare(outsideName);
-            yield return StartCoroutine(SmoothMove(target.knightPosition, 0.3f));
+            string outsideName = "OUT_" +
+                ((char)(square.SquareColumn + square.waterCourseDirection.x)).ToString() +
+                (square.SquareRow + square.waterCourseDirection.y);
 
-            previousSquare.knight = null;
-            previousSquare.empty = true;
+            KnightsSquareScript target = KnightsBoardManager.instance.GetOutsideSquare(outsideName);
+
+            yield return StartCoroutine(SmoothMove(target.knightPosition, 0.3f));
             deathSquare = target;
+            yield return StartCoroutine(FadeOutByFalling(this, true));
         }
         else
         {
             yield return StartCoroutine(FadeOutByFalling(this, true));
         }
+
         if (KnightsGameManager.instance.movementsInTheRound.Contains(this))
             KnightsGameManager.instance.movementsInTheRound.Remove(this);
-
-        deathSquare = square;
 
         if (!KnightsGameManager.instance.revivedThisTurn)
         {
             if (player == 1)
                 KnightsGameManager.instance.CheckKnights(2);
-            else if (player == 2)
+            else
                 KnightsGameManager.instance.CheckKnights(1);
 
             KnightsGameManager.instance.revivedThisTurn = true;
@@ -1324,8 +1339,20 @@ public abstract class KnightBehavior : MonoBehaviour
             if (target == null)
             {
                 KnightsGameManager.instance.EndMovement(this);
-                Debug.Log("Target fuera del tablero");
-                yield return StartCoroutine(KillKnight(sq));
+                yield break;
+            }
+
+            if (target.isVoid)
+            {
+                yield return StartCoroutine(SmoothMove(target.knightPosition, 0.6f));
+
+                currentSquare.knight = null;
+                currentSquare.empty = true;
+
+                currentSquare = target;
+
+                KnightsGameManager.instance.EndMovement(this);
+                yield return StartCoroutine(KillKnight(target));
                 yield break;
             }
             else if (target.knight != null)

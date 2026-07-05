@@ -46,6 +46,10 @@ public class KnightsBoardManager : MonoBehaviour
     {
         if (squares.TryGetValue(squareName, out KnightsSquareScript square))
             return square;
+
+        if (outsideSquares.TryGetValue("OUT_" + squareName, out square))
+            return square;
+
         return null;
     }
 
@@ -166,6 +170,21 @@ public class KnightsBoardManager : MonoBehaviour
                 int colIndex = width + i;
 
                 CreateOutsideSquare(row, colIndex, rightParent);
+            }
+        }
+
+        Transform cornersParent = new GameObject("Corners").transform;
+        cornersParent.SetParent(outsideRoot);
+
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                CreateOutsideSquare(height + 1 + i, -(j + 1), cornersParent);
+                CreateOutsideSquare(height + 1 + i, width + j, cornersParent);
+
+                CreateOutsideSquare(-i, -(j + 1), cornersParent);
+                CreateOutsideSquare(-i, width + j, cornersParent);
             }
         }
 
@@ -400,24 +419,33 @@ public class KnightsBoardManager : MonoBehaviour
     }
     void CreateOutsideSquare(int row, int colIndex, Transform parent)
     {
-        GameObject squareObj = new GameObject("OutsideSquare");
-        squareObj.transform.SetParent(parent);
+        bool isWhite = (row + colIndex) % 2 == 0;
+        GameObject prefab = isWhite ? whiteSquarePrefab : blackSquarePrefab;
+
+        GameObject squareObj = Instantiate(prefab, parent);
 
         float x = height / 2f - 0.5f - (row - 1);
         float z = -(width / 2f - 0.5f) + colIndex;
 
         squareObj.transform.position = new Vector3(x, 0, z);
 
-        KnightsSquareScript sq = squareObj.AddComponent<KnightsSquareScript>();
+        KnightsSquareScript sq = squareObj.GetComponent<KnightsSquareScript>();
 
         sq.SquareColumn = (char)('A' + colIndex);
         sq.SquareRow = row;
+
         sq.empty = true;
+        sq.knight = null;
+        sq.rock = null;
+        sq.knightPosition = new Vector3(sq.transform.position.x, 0.15f, sq.transform.position.z);
 
         string key = $"OUT_{sq.SquareColumn}{sq.SquareRow}";
         sq.name = key;
 
+        sq.TurnVoid(true);
+
         outsideSquares.Add(key, sq);
+        squares.Add(key, sq);
     }
     void GenerateKnightsForPlayer(int player, List<KnightsSquareScript> startZone, Color color)
     {

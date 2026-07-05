@@ -95,6 +95,9 @@ public class KnightsSquareScript : MonoBehaviour
         {
             if (MapEditorData.instance.selectedObject.TryGetComponent<RockObstacleScript>(out RockObstacleScript currentRock))
             {
+                if (isVoid)
+                    return;
+
                 if (heavenStartZone || hellStartZone)
                 {
                     StartCoroutine(MapEditorData.instance.WarningMessage("You cannot set a rock in start squares."));
@@ -118,6 +121,9 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if (MapEditorData.instance.selectedObject.TryGetComponent<KnightStatue>(out KnightStatue statue))
             {
+                if (isVoid)
+                    return;
+
                 if (heavenStartZone || hellStartZone)
                 {
                     StartCoroutine(MapEditorData.instance.WarningMessage("You cannot set an statue in start squares."));
@@ -138,6 +144,9 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if(MapEditorData.instance.selectedObject.TryGetComponent<SnakeBody>(out SnakeBody snake))
             {
+                if (isVoid)
+                    return;
+
                 Vector3 position = snake.transform.position;
                 snake.transform.position = new Vector3(knightPosition.x, knightPosition.y - 0.8f, knightPosition.z);
                 snake.RecalcPositions();
@@ -151,6 +160,9 @@ public class KnightsSquareScript : MonoBehaviour
                 }
                 else
                 {
+                    if (isVoid)
+                        return;
+
                     foreach (var part in snake.bodyParts)
                     {
                         part.ToggleGlow(false, 0.3f);
@@ -196,6 +208,9 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if (MapEditorData.instance.lavaSelected)
             {
+                if (isVoid)
+                    return;
+
                 if (!isLava)
                 {
                     isLava = true;
@@ -241,6 +256,9 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if (MapEditorData.instance.iceSelected)
             {
+                if (isVoid)
+                    return;
+
                 if (!isIceSquare)
                 {
                     isIceSquare = true;
@@ -250,6 +268,7 @@ public class KnightsSquareScript : MonoBehaviour
                 }
                 else
                 {
+
                     isIceSquare = false;
                     mat.color = originalColor;
                     squareColor = mat.color;
@@ -261,6 +280,9 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if (MapEditorData.instance.fragileFloorSelected)
             {
+                if (isVoid)
+                    return;
+
                 if (!isFragile)
                 {
                     isFragile = true;
@@ -284,6 +306,7 @@ public class KnightsSquareScript : MonoBehaviour
                 }
                 else
                 {
+
                     isFragile = false;
                     mat.color = originalColor;
                     squareColor = mat.color;
@@ -304,6 +327,9 @@ public class KnightsSquareScript : MonoBehaviour
             }
             else if (MapEditorData.instance.selectedObject.TryGetComponent<WaterCourse>(out WaterCourse currentCourse))
             {
+                if (isVoid)
+                    return;
+
                 currentCourse.waterCourseSquares.Clear();
 
                 int row = SquareRow;
@@ -370,6 +396,9 @@ public class KnightsSquareScript : MonoBehaviour
         }
         else if (MapEditorData.instance.chooseHeaven)
         {
+            if (isVoid)
+                return;
+
             if (!hellStartZone)
             {
                 if (!KnightsBoardManager.instance.player1StartZone.Contains(this))
@@ -399,6 +428,9 @@ public class KnightsSquareScript : MonoBehaviour
         }
         else if (MapEditorData.instance.chooseHell)
         {
+            if (isVoid)
+                return;
+
             if (!heavenStartZone)
             {
                 if (!KnightsBoardManager.instance.player2StartZone.Contains(this))
@@ -553,31 +585,20 @@ public class KnightsSquareScript : MonoBehaviour
     //GHOST KNIGHT EXCLUSIVE
     public void CheckGhostAdjacency(KnightsSquareScript sq)
     {
-        Vector2Int[] directions =
+        foreach (GhostKnight ghost in knightAdjacent)
         {
-        new Vector2Int(0, 1),
-        new Vector2Int(0, -1),
-        new Vector2Int(1, 0),
-        new Vector2Int(-1, 0)
-    };
-
-        foreach (var dir in directions)
-        {
-            char col = (char)(sq.SquareColumn + dir.x);
-            int row = sq.SquareRow + dir.y;
-
-            if (KnightsBoardManager.instance.squares.TryGetValue(col.ToString() + row, out var adj))
+            foreach (GhostSquare gs in ghost.adjacentSquares)
             {
-                if (adj.knight is GhostKnight ghost)
+                if (gs.sq == this)
                 {
-                    GhostSquare g = ghost.adjacentSquares.FirstOrDefault(x => x.sq == sq);
+                    gs.occupied = knight != null;
 
-                    if (g != null)
-                    {
-                        g.occupied = true;
-                    }
+                    GetComponent<Renderer>().material.color =
+                        gs.occupied ? Color.green : Color.yellow;
 
-                    ghost.GhostKnightAdjacentHandler(null);
+                    ghost.GhostKnightAdjacentHandler(ghost);
+
+                    break;
                 }
             }
         }
